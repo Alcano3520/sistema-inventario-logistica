@@ -1,6 +1,0 @@
-# Configuración local de Claude Code (específica de esta máquina)
-.claude/
-
-# Capturas de pantalla de depuración
-photo_*.jpg
-photo_*.png
