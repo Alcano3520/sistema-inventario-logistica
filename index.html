@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Inventario</title>
+  <?!= include('Stylesheet'); ?>
+</head>
+<body>
+  <!-- Contenedor Principal -->
+  <div id="app">
+    <!-- Pantalla de Login -->
+    <div id="pantallaLogin" class="pantalla-login">
+      <div class="login-container">
+        <div class="login-header">
+          <h2>📦 Sistema de Inventario</h2>
+          <p>Inicie sesión para continuar</p>
+        </div>
+
+        <form id="formLogin" onsubmit="return false;">
+          <div class="form-group">
+            <label>Usuario o Email:</label>
+            <input type="text" id="loginEmail" class="form-control" placeholder="usuario@ejemplo.com" required autofocus>
+          </div>
+
+          <div class="form-group">
+            <label>Contraseña:</label>
+            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+          </div>
+
+          <div id="mensajeLogin" class="mensaje-login"></div>
+
+          <button type="button" class="btn btn-primary btn-block" onclick="iniciarSesion()">
+            🔐 Iniciar Sesión
+          </button>
+        </form>
+
+        <div class="login-footer">
+          <small>🔒 Sistema seguro con encriptación SHA-256</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pantalla de Carga -->
+    <div id="pantallaCarga" class="pantalla-carga" style="display: none;">
+      <div class="spinner"></div>
+      <p>Cargando sistema...</p>
+    </div>
+
+    <!-- Contenido Principal (se muestra después del login) -->
+    <div id="contenidoPrincipal" style="display: none;">
+      <!-- Header -->
+      <div class="header">
+        <h2>📦 Sistema de Inventario</h2>
+        <div class="usuario-info">
+          <span id="nombreUsuario"></span>
+          <span id="rolUsuario" class="badge"></span>
+          <button class="btn-cerrar-sesion" onclick="cerrarSesion()" title="Cerrar Sesión">
+            🚪 Salir
+          </button>
+        </div>
+      </div>
+
+      <!-- Navegación por Tabs -->
+      <div class="tabs">
+        <button class="tab-button active" id="tabDashboard" onclick="mostrarSeccion('dashboard')">
+          📊 Dashboard
+        </button>
+        <button class="tab-button" id="tabEntrada" onclick="mostrarSeccion('entrada')">
+          📥 Entrada
+        </button>
+        <button class="tab-button" id="tabSalida" onclick="mostrarSeccion('salida')">
+          📤 Salida
+        </button>
+        <button class="tab-button" id="tabInventario" onclick="mostrarSeccion('inventario')">
+          📋 Inventario
+        </button>
+        <button class="tab-button" id="tabProductos" style="display:none;" onclick="mostrarSeccion('productos')">
+          ➕ Productos
+        </button>
+        <button class="tab-button" id="tabHistorial" onclick="mostrarSeccion('historial')">
+          📜 Historial
+        </button>
+        <button class="tab-button" id="tabCargaMasiva" style="display:none;" onclick="mostrarSeccion('cargaMasiva')">
+          📂 Carga Masiva
+        </button>
+        <button class="tab-button" id="tabMigracion" style="display:none;" onclick="mostrarSeccion('migracion')">
+          🔄 Migración
+        </button>
+        <button class="tab-button" id="tabUsuarios" style="display:none;" onclick="mostrarSeccion('usuarios')">
+          👥 Usuarios
+        </button>
+        <button class="tab-button" id="tabMiPerfil" onclick="mostrarSeccion('miPerfil')">
+          ⚙️ Mi Perfil
+        </button>
+      </div>
+
+      <!-- ==================== SECCIÓN DASHBOARD ==================== -->
+      <div id="seccionDashboard" class="seccion active">
+        <h3>📊 Dashboard</h3>
+
+        <div class="estadisticas-grid">
+          <div class="estadistica-card">
+            <div class="estadistica-valor" id="totalProductos">0</div>
+            <div class="estadistica-label">Total Productos</div>
+          </div>
+          <div class="estadistica-card">
+            <div class="estadistica-valor" id="productosConStock">0</div>
+            <div class="estadistica-label">Con Stock</div>
+          </div>
+          <div class="estadistica-card">
+            <div class="estadistica-valor" id="productosSinStock">0</div>
+            <div class="estadistica-label">Sin Stock</div>
+          </div>
+          <div class="estadistica-card warning">
+            <div class="estadistica-valor" id="productosStockBajo">0</div>
+            <div class="estadistica-label">⚠️ Stock Bajo</div>
+          </div>
+        </div>
+
+        <div class="alerta info">
+          <strong>ℹ️ Información:</strong> Use las pestañas superiores para navegar entre las diferentes funcionalidades del sistema.
+        </div>
+
+        <div class="form-actions mb-20">
+          <button type="button" class="btn btn-secondary" onclick="ejecutarDiagnostico()">
+            🔍 Diagnóstico del Sistema
+          </button>
+          <button type="button" class="btn btn-warning" onclick="mostrarSeccion('duplicados')" style="display:none;" id="btnGestionDuplicados">
+            🔄 Gestionar Duplicados
+          </button>
+        </div>
+
+        <div id="resultadoDiagnostico"></div>
+
+        <div id="alertasStockBajo" style="display:none;" class="alerta warning">
+          <strong>⚠️ Productos con Stock Bajo:</strong>
+          <ul id="listaStockBajo"></ul>
+        </div>
+      </div>
+
+      <!-- ==================== SECCIÓN ENTRADA (igual que antes) ==================== -->
+      <div id="seccionEntrada" class="seccion">
+        <h3>📥 Registro de Entrada</h3>
+
+        <form id="formEntrada">
+          <div class="form-group">
+            <label>Fecha de Entrada:</label>
+            <input type="date" id="entradaFecha" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label>Proveedor:</label>
+            <input type="text" id="entradaProveedor" class="form-control" placeholder="Nombre del proveedor">
+          </div>
+
+          <div class="form-group">
+            <label>Número de Factura/OC:</label>
+            <input type="text" id="entradaNumFactura" class="form-control" placeholder="Opcional">
+          </div>
+
+          <div class="form-group">
+            <label>Observaciones:</label>
+            <textarea id="entradaObservaciones" class="form-control" rows="2" placeholder="Observaciones adicionales (opcional)"></textarea>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-header">
+              <h4>📦 Productos</h4>
+              <button type="button" class="btn btn-secondary" onclick="agregarItemEntrada()">
+                ➕ Agregar Producto
+              </button>
+            </div>
+            <div id="itemsEntrada"></div>
+          </div>
+
+          <div class="form-section">
+            <h4>✍️ Firma de Recepción</h4>
+            <div class="firma-container">
+              <canvas id="firmaEntrada" class="firma-canvas"></canvas>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="limpiarFirma('firmaEntrada')">
+                🗑️ Limpiar Firma
+              </button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="guardarEntrada()">
+              💾 Guardar Entrada
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="limpiarFormularioEntrada()">
+              🔄 Limpiar Formulario
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ==================== SECCIÓN SALIDA (igual que antes) ==================== -->
+      <div id="seccionSalida" class="seccion">
+        <h3>📤 Registro de Salida</h3>
+
+        <form id="formSalida">
+          <div class="form-group">
+            <label>Fecha de Salida:</label>
+            <input type="date" id="salidaFecha" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label><span class="required">*</span> Bote:</label>
+            <input type="text" id="salidaBote" class="form-control" placeholder="Ej: BOTE 1, BOTE 31" required>
+          </div>
+
+          <div class="form-group">
+            <label><span class="required">*</span> A quién se entrega:</label>
+            <input type="text" id="salidaAQuienEntrega" class="form-control" placeholder="Nombre de la persona que recibe" required>
+          </div>
+
+          <div class="form-group">
+            <label>Propósito de la salida:</label>
+            <textarea id="salidaProposito" class="form-control" rows="2" placeholder="Para qué se utilizarán los repuestos (opcional)"></textarea>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-header">
+              <h4>📦 Productos</h4>
+              <button type="button" class="btn btn-secondary" onclick="agregarItemSalida()">
+                ➕ Agregar Producto
+              </button>
+            </div>
+            <div id="itemsSalida"></div>
+          </div>
+
+          <div class="form-section">
+            <h4>✍️ Firma de Recepción</h4>
+            <div class="firma-container">
+              <canvas id="firmaSalida" class="firma-canvas"></canvas>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="limpiarFirma('firmaSalida')">
+                🗑️ Limpiar Firma
+              </button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="guardarSalida()">
+              💾 Guardar Salida
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="limpiarFormularioSalida()">
+              🔄 Limpiar Formulario
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ==================== SECCIÓN INVENTARIO ==================== -->
+      <div id="seccionInventario" class="seccion">
+        <h3>📋 Inventario Actual</h3>
+
+        <div class="form-group">
+          <input type="text" id="buscarInventario" class="form-control" placeholder="🔍 Buscar por código o producto...">
+        </div>
+
+        <div class="form-actions mb-20">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="exportarInventarioExcel()">
+            📗 Exportar a Excel
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="exportarInventarioCSV()">
+            📊 Exportar a CSV
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="exportarInventarioPDF()">
+            📄 Exportar a PDF
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="toggleFiltroInventario()">
+            🔽 Filtrar Productos
+          </button>
+        </div>
+
+        <div id="panelFiltroInventario" style="display:none; margin-bottom: 20px;">
+          <div class="alerta info">
+            <strong>Seleccione los productos a mostrar:</strong>
+          </div>
+          <div class="form-group">
+            <label>Buscar para agregar al filtro:</label>
+            <div class="autocomplete-container">
+              <input type="text" id="buscarProductoFiltro" class="form-control"
+                     placeholder="Buscar producto..." oninput="mostrarDropdownFiltro()"
+                     onfocus="mostrarDropdownFiltro()" autocomplete="off">
+              <div class="autocomplete-dropdown" id="dropdownFiltro"></div>
+            </div>
+          </div>
+          <div id="productosFiltrados" style="margin-top: 10px;">
+            <strong>Productos seleccionados:</strong>
+            <div id="listaProductosFiltrados" style="margin-top: 10px;">
+              <em>Ningún producto seleccionado. Se muestran todos.</em>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary btn-sm" onclick="aplicarFiltroInventario()">
+              ✅ Aplicar Filtro
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="limpiarFiltroInventario()">
+              🔄 Limpiar Filtro
+            </button>
+          </div>
+        </div>
+
+        <div class="tabla-container">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Entradas</th>
+                <th>Salidas</th>
+                <th>Stock</th>
+                <th>Categoría</th>
+                <th>Ubicación</th>
+                <th>Stock Min.</th>
+              </tr>
+            </thead>
+            <tbody id="tablaInventario">
+              <tr>
+                <td colspan="8" class="text-center">Cargando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== SECCIÓN PRODUCTOS (NUEVO) ==================== -->
+      <div id="seccionProductos" class="seccion">
+        <h3>➕ Agregar Nuevo Producto</h3>
+
+        <form id="formNuevoProducto">
+          <div class="form-group">
+            <label><span class="required">*</span> Código:</label>
+            <input type="text" id="nuevoProdCod" class="form-control" placeholder="Ej: 8M0098635" required>
+          </div>
+
+          <div class="form-group">
+            <label><span class="required">*</span> Nombre del Producto:</label>
+            <input type="text" id="nuevoProdNombre" class="form-control" placeholder="Ej: HEAD GASKET" required>
+          </div>
+
+          <div class="form-group">
+            <label>Categoría:</label>
+            <input type="text" id="nuevoProdCategoria" class="form-control" placeholder="Ej: Repuestos">
+          </div>
+
+          <div class="form-group">
+            <label>Ubicación:</label>
+            <input type="text" id="nuevoProdUbicacion" class="form-control" placeholder="Ej: Almacén">
+          </div>
+
+          <div class="form-group">
+            <label>Stock Mínimo:</label>
+            <input type="number" id="nuevoProdStockMin" class="form-control" value="5" min="0">
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="guardarNuevoProducto()">
+              💾 Agregar Producto
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="limpiarFormularioProducto()">
+              🔄 Limpiar
+            </button>
+          </div>
+        </form>
+
+        <div id="resultadoNuevoProducto" style="margin-top: 20px;"></div>
+      </div>
+
+      <!-- ==================== SECCIÓN HISTORIAL (igual que antes) ==================== -->
+      <div id="seccionHistorial" class="seccion">
+        <h3>📜 Historial de Transacciones</h3>
+
+        <div class="tabs-secundario">
+          <button class="tab-button-sec active" onclick="mostrarHistorial('entradas')">
+            Entradas
+          </button>
+          <button class="tab-button-sec" onclick="mostrarHistorial('salidas')">
+            Salidas
+          </button>
+        </div>
+
+        <div class="form-group">
+          <input type="text" id="buscarHistorial" class="form-control" placeholder="🔍 Buscar transacción...">
+        </div>
+
+        <div id="historialEntradas" class="historial-container">
+          <div id="listaEntradas"></div>
+        </div>
+
+        <div id="historialSalidas" class="historial-container" style="display:none;">
+          <div id="listaSalidas"></div>
+        </div>
+      </div>
+
+      <!-- ==================== SECCIÓN CARGA MASIVA ==================== -->
+      <div id="seccionCargaMasiva" class="seccion">
+        <h3>📂 Carga Masiva de Datos</h3>
+
+        <div class="tabs-secundario">
+          <button class="tab-button-sec active" onclick="mostrarCargaMasiva('productos')">
+            📦 Productos
+          </button>
+          <button class="tab-button-sec" onclick="mostrarCargaMasiva('entradas')">
+            📥 Entradas Históricas
+          </button>
+          <button class="tab-button-sec" onclick="mostrarCargaMasiva('salidas')">
+            📤 Salidas Históricas
+          </button>
+        </div>
+
+        <!-- Carga de Productos -->
+        <div id="cargaMasivaProductos" class="carga-container">
+          <div class="alerta info">
+            <strong>ℹ️ Formato CSV:</strong> El archivo debe tener las siguientes columnas:<br>
+            <code>COD, PRODUCTO, CATEGORIA, UBICACION, STOCK_MINIMO</code>
+          </div>
+
+          <div class="form-group">
+            <label>Pegue los datos CSV aquí:</label>
+            <textarea id="datosCargaMasiva" class="form-control" rows="10"
+              placeholder="Ejemplo:&#10;REP001,Filtro de Aceite,Filtros,Estante A1,5&#10;REP002,Bujía NGK,Eléctrico,Estante B2,10"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="procesarCargaMasiva()">
+              📤 Cargar Productos
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="limpiarCargaMasiva()">
+              🔄 Limpiar
+            </button>
+          </div>
+
+          <div id="resultadoCargaMasiva"></div>
+        </div>
+
+        <!-- Carga de Entradas Históricas -->
+        <div id="cargaMasivaEntradas" class="carga-container" style="display:none;">
+          <div class="alerta warning">
+            <strong>⚠️ IMPORTANTE:</strong> Esta función carga entradas históricas. Úsala solo una vez para migrar datos del Excel antiguo.
+          </div>
+
+          <div class="alerta info">
+            <strong>📋 Formato:</strong> Pegue los datos con las siguientes columnas:<br>
+            <code>COD, PRODUCTO, FECHA, CANTIDAD</code><br>
+            <small>Ejemplo de fecha: 24/10/2025 (dd/mm/yyyy)</small>
+          </div>
+
+          <div class="form-group">
+            <label>Datos de Entradas (CSV):</label>
+            <textarea id="datosEntradasHistoricas" class="form-control" rows="15"
+              placeholder="Ejemplo:&#10;8M0057703,GASKET ADP PLATE,24/10/2025,2&#10;8M6000366,HEAD GASKET,24/10/2025,3&#10;8M0098635,VALVE - INTAKE,24/10/2025,11"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="procesarCargaEntradasHistoricas()">
+              📤 Cargar Entradas
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="limpiarCargaEntradas()">
+              🔄 Limpiar
+            </button>
+          </div>
+
+          <div id="resultadoCargaEntradas"></div>
+        </div>
+
+        <!-- Carga de Salidas Históricas -->
+        <div id="cargaMasivaSalidas" class="carga-container" style="display:none;">
+          <div class="alerta warning">
+            <strong>⚠️ IMPORTANTE:</strong> Carga primero las ENTRADAS antes de cargar salidas para tener stock disponible.
+          </div>
+
+          <div class="alerta info">
+            <strong>📋 Formato:</strong> Pegue los datos con las siguientes columnas:<br>
+            <code>COD, PRODUCTO, FECHA, CANTIDAD, BOTE</code><br>
+            <small>Ejemplo de fecha: 10/25 (mm/dd, asume año 2025)</small>
+          </div>
+
+          <div class="form-group">
+            <label>Datos de Salidas (CSV):</label>
+            <textarea id="datosSalidasHistoricas" class="form-control" rows="15"
+              placeholder="Ejemplo:&#10;8M0142673,SOPORTE ALTERNADOR,10/25,1,BOTE 31&#10;8M0064961,LOCTITE,10/25,1,BOTE 31&#10;8M0088745,EMPAQUETADORA,10/25,1,BOTE 31"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="procesarCargaSalidasHistoricas()">
+              📤 Cargar Salidas
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="limpiarCargaSalidas()">
+              🔄 Limpiar
+            </button>
+          </div>
+
+          <div id="resultadoCargaSalidas"></div>
+        </div>
+      </div>
+
+      <!-- ==================== SECCIÓN MIGRACIÓN DE DATOS ==================== -->
+      <div id="seccionMigracion" class="seccion">
+        <h3>🔄 Migración de Datos Históricos</h3>
+
+        <div class="alerta warning">
+          <strong>⚠️ IMPORTANTE:</strong> Esta función es solo para administradores. Úsala una sola vez para migrar datos del Excel antiguo.
+          Las transacciones se crearán con las fechas originales.
+        </div>
+
+        <div class="tabs-secundario">
+          <button class="tab-button-sec active" onclick="mostrarMigracion('entradas')">
+            📥 Entradas
+          </button>
+          <button class="tab-button-sec" onclick="mostrarMigracion('salidas')">
+            📤 Salidas
+          </button>
+        </div>
+
+        <!-- Migración de Entradas -->
+        <div id="migracionEntradas" class="migracion-container">
+          <div class="alerta info">
+            <strong>📋 Formato de Entradas:</strong> Pegue los datos con las siguientes columnas:<br>
+            <code>COD, PRODUCTO, FECHA, CANTIDAD</code><br>
+            <small>Ejemplo de fecha: 24/10/2025</small>
+          </div>
+
+          <div class="form-group">
+            <label>Datos de Entradas (CSV):</label>
+            <textarea id="datosEntradas" class="form-control" rows="15"
+              placeholder="Ejemplo:&#10;8M0057703,GASKET ADP PLATE,24/10/2025,2&#10;8M6000366,HEAD GASKET,24/10/2025,3"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="procesarMigracionEntradas()">
+              📤 Migrar Entradas
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="limpiarMigracionEntradas()">
+              🔄 Limpiar
+            </button>
+          </div>
+
+          <div id="resultadoMigracionEntradas"></div>
+        </div>
+
+        <!-- Migración de Salidas -->
+        <div id="migracionSalidas" class="migracion-container" style="display:none;">
+          <div class="alerta info">
+            <strong>📋 Formato de Salidas:</strong> Pegue los datos con las siguientes columnas:<br>
+            <code>COD, PRODUCTO, FECHA, CANTIDAD, BOTE</code><br>
+            <small>Ejemplo de fecha: 10/25 (mes/día, asume año 2025)</small>
+          </div>
+
+          <div class="form-group">
+            <label>Datos de Salidas (CSV):</label>
+            <textarea id="datosSalidas" class="form-control" rows="15"
+              placeholder="Ejemplo:&#10;8M0142673,SOPORTE ALTERNADOR,10/25,1,BOTE 31&#10;8M0064961,LOCTITE,10/25,1,BOTE 31"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="procesarMigracionSalidas()">
+              📤 Migrar Salidas
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="limpiarMigracionSalidas()">
+              🔄 Limpiar
+            </button>
+          </div>
+
+          <div id="resultadoMigracionSalidas"></div>
+        </div>
+      </div>
+
+      <!-- ==================== SECCIÓN USUARIOS (igual que antes) ==================== -->
+      <div id="seccionUsuarios" class="seccion">
+        <h3>👥 Gestión de Usuarios</h3>
+
+        <button type="button" class="btn btn-primary" onclick="mostrarFormularioNuevoUsuario()">
+          ➕ Nuevo Usuario
+        </button>
+
+        <div id="formNuevoUsuario" class="form-modal" style="display:none;">
+          <div class="form-modal-content">
+            <h4>Crear Nuevo Usuario</h4>
+            <div class="form-group">
+              <label><span class="required">*</span> Email:</label>
+              <input type="email" id="nuevoUsuarioEmail" class="form-control" placeholder="usuario@ejemplo.com">
+            </div>
+            <div class="form-group">
+              <label><span class="required">*</span> Nombre Completo:</label>
+              <input type="text" id="nuevoUsuarioNombre" class="form-control" placeholder="Nombre completo">
+            </div>
+            <div class="form-group">
+              <label><span class="required">*</span> Nombre de Usuario:</label>
+              <input type="text" id="nuevoUsuarioUsuario" class="form-control" placeholder="usuario123">
+            </div>
+            <div class="form-group">
+              <label><span class="required">*</span> Contraseña:</label>
+              <input type="password" id="nuevoUsuarioPassword" class="form-control" placeholder="Mínimo 6 caracteres">
+            </div>
+            <div class="form-group">
+              <label><span class="required">*</span> Rol:</label>
+              <select id="nuevoUsuarioRol" class="form-control">
+                <option value="Operador">Operador</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary" onclick="crearNuevoUsuario()">
+                💾 Crear Usuario
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="cerrarFormularioNuevoUsuario()">
+                ❌ Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabla-container">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaUsuarios">
+              <tr>
+                <td colspan="6" class="text-center">Cargando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== SECCIÓN MI PERFIL (NUEVO) ==================== -->
+      <div id="seccionMiPerfil" class="seccion">
+        <h3>⚙️ Mi Perfil</h3>
+
+        <div class="form-section">
+          <h4>Información Personal</h4>
+          <div class="info-field">
+            <strong>Email:</strong> <span id="perfilEmail"></span>
+          </div>
+          <div class="info-field">
+            <strong>Nombre:</strong> <span id="perfilNombre"></span>
+          </div>
+          <div class="info-field">
+            <strong>Rol:</strong> <span id="perfilRol"></span>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Cambiar Contraseña</h4>
+          <div class="form-group">
+            <label>Contraseña Actual:</label>
+            <input type="password" id="passwordActual" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Nueva Contraseña:</label>
+            <input type="password" id="passwordNueva" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Confirmar Nueva Contraseña:</label>
+            <input type="password" id="passwordConfirmar" class="form-control">
+          </div>
+          <button type="button" class="btn btn-primary" onclick="cambiarMiPassword()">
+            🔐 Cambiar Contraseña
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== SECCIÓN GESTIÓN DE DUPLICADOS (ADMIN) ==================== -->
+      <div id="seccionDuplicados" class="seccion">
+        <h3>🔄 Gestión de Duplicados</h3>
+
+        <div class="alerta warning">
+          <strong>⚠️ ADVERTENCIA:</strong> Esta función es solo para administradores. Detecta y elimina transacciones duplicadas que puedan haberse creado por cargas masivas repetidas.
+          <br><br>
+          <strong>Proceso:</strong>
+          <ol>
+            <li>Detecta duplicados en base a proveedor/destinatario, fecha y número de factura/bote</li>
+            <li>Mantiene solo la primera transacción de cada grupo</li>
+            <li>Elimina las transacciones duplicadas y sus detalles</li>
+            <li>Recalcula todos los stocks desde cero</li>
+          </ol>
+        </div>
+
+        <div class="form-section">
+          <h4>Paso 1: Detectar Duplicados</h4>
+          <p>Analiza las transacciones para encontrar posibles duplicados.</p>
+          <button type="button" class="btn btn-secondary" onclick="detectarYMostrarDuplicados()">
+            🔍 Detectar Duplicados
+          </button>
+        </div>
+
+        <div id="resultadoDeteccionDuplicados"></div>
+
+        <div class="form-section">
+          <h4>Paso 2: Eliminar Duplicados</h4>
+          <p class="alerta error">
+            <strong>⚠️ PELIGRO:</strong> Esta acción eliminará permanentemente las transacciones duplicadas y recalculará todos los stocks.
+            <br><strong>NO SE PUEDE DESHACER.</strong>
+            <br><br>
+            Solo ejecute esto después de revisar los duplicados detectados arriba.
+          </p>
+          <button type="button" class="btn btn-danger" onclick="eliminarDuplicadosConfirmado()">
+            🗑️ ELIMINAR DUPLICADOS Y RECALCULAR STOCKS
+          </button>
+        </div>
+
+        <div id="resultadoEliminacionDuplicados"></div>
+
+        <div class="form-section">
+          <h4>Opción Alternativa: Solo Recalcular Stocks</h4>
+          <p>Si no desea eliminar duplicados pero necesita recalcular los stocks desde las transacciones existentes:</p>
+          <button type="button" class="btn btn-warning" onclick="recalcularStocks()">
+            🔢 Recalcular Todos los Stocks
+          </button>
+        </div>
+
+        <div id="resultadoRecalculo"></div>
+      </div>
+    </div>
+
+    <!-- Modal de Detalles de Transacción -->
+    <div id="modalDetalleTransaccion" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="cerrarModalDetalle()">&times;</span>
+        <div id="contenidoModalDetalle"></div>
+      </div>
+    </div>
+  </div>
+
+  <?!= include('JavaScript'); ?>
+</body>
+</html>
+

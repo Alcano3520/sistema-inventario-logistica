@@ -1,0 +1,2721 @@
+<script>
+  // ==========================================
+  // VARIABLES GLOBALES
+  // ==========================================
+  let usuarioActual = null;
+  let productos = [];
+  let canvasFirmaEntrada = null;
+  let ctxFirmaEntrada = null;
+  let canvasFirmaSalida = null;
+  let ctxFirmaSalida = null;
+  let dibujando = false;
+
+  // ==========================================
+  // INICIALIZACIÓN
+  // ==========================================
+  window.onload = function() {
+    // No inicializar el sistema automáticamente
+    // El usuario debe hacer login primero
+    console.log('Sistema cargado. Esperando autenticación...');
+  };
+
+  /**
+   * Inicia sesión con usuario y contraseña
+   */
+  function iniciarSesion() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const mensajeDiv = document.getElementById('mensajeLogin');
+
+    // Validar campos
+    if (!email || !password) {
+      mostrarMensajeLogin('Por favor complete todos los campos', 'error');
+      return;
+    }
+
+    // Mostrar cargando
+    mensajeDiv.textContent = '🔄 Autenticando...';
+    mensajeDiv.className = 'mensaje-login success';
+    mensajeDiv.style.display = 'block';
+
+    // Llamar al servidor para autenticar
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        if (resultado.error) {
+          mostrarMensajeLogin('❌ ' + resultado.error, 'error');
+        } else {
+          // Login exitoso
+          mostrarMensajeLogin('✅ Bienvenido ' + resultado.usuario.nombre, 'success');
+
+          // Esperar 1 segundo y luego cargar el sistema
+          setTimeout(function() {
+            usuarioActual = resultado.usuario;
+            cargarSistemaDespuesDeLogin();
+          }, 1000);
+        }
+      })
+      .withFailureHandler(function(error) {
+        mostrarMensajeLogin('❌ Error: ' + error.message, 'error');
+      })
+      .autenticarUsuario(email, password);
+  }
+
+  /**
+   * Muestra un mensaje en la pantalla de login
+   */
+  function mostrarMensajeLogin(mensaje, tipo) {
+    const mensajeDiv = document.getElementById('mensajeLogin');
+    mensajeDiv.textContent = mensaje;
+    mensajeDiv.className = 'mensaje-login ' + tipo;
+    mensajeDiv.style.display = 'block';
+  }
+
+  /**
+   * Carga el sistema después de un login exitoso
+   */
+  function cargarSistemaDespuesDeLogin() {
+    // Ocultar pantalla de login
+    document.getElementById('pantallaLogin').style.display = 'none';
+
+    // Mostrar pantalla de carga
+    document.getElementById('pantallaCarga').style.display = 'flex';
+
+    // Inicializar el sistema completo
+    inicializarSistemaCompleto();
+  }
+
+  /**
+   * Inicializa el sistema completo
+   */
+  function inicializarSistemaCompleto() {
+    // Mostrar información del usuario
+    document.getElementById('nombreUsuario').textContent = usuarioActual.nombre;
+    document.getElementById('rolUsuario').textContent = usuarioActual.rol;
+
+    // Mostrar tabs de admin si corresponde
+    if (usuarioActual.rol === 'Admin') {
+      document.getElementById('tabProductos').style.display = 'block';
+      document.getElementById('tabCargaMasiva').style.display = 'block';
+      document.getElementById('tabMigracion').style.display = 'block';
+      document.getElementById('tabUsuarios').style.display = 'block';
+      // Mostrar botón de gestión de duplicados en dashboard
+      const btnDuplicados = document.getElementById('btnGestionDuplicados');
+      if (btnDuplicados) {
+        btnDuplicados.style.display = 'inline-block';
+      }
+    }
+
+    // Inicializar componentes
+    inicializarCanvas();
+    cargarProductos();
+    cargarDashboard();
+    inicializarFechas();
+
+    // Pre-cargar historial de entradas (por defecto)
+    cargarHistorialEntradas();
+
+    // Ocultar pantalla de carga y mostrar contenido
+    document.getElementById('pantallaCarga').style.display = 'none';
+    document.getElementById('contenidoPrincipal').style.display = 'block';
+
+    // Agregar primer item por defecto en formularios
+    agregarItemEntrada();
+    agregarItemSalida();
+
+    // Cargar información del perfil
+    cargarMiPerfil();
+  }
+
+  /**
+   * Cierra la sesión actual
+   */
+  function cerrarSesion() {
+    if (confirm('¿Está seguro de cerrar sesión?')) {
+      google.script.run
+        .withSuccessHandler(function(resultado) {
+          // Recargar la página para volver al login
+          location.reload();
+        })
+        .withFailureHandler(function(error) {
+          alert('Error al cerrar sesión: ' + error.message);
+        })
+        .cerrarSesion();
+    }
+  }
+
+  /**
+   * Carga la información del perfil del usuario
+   */
+  function cargarMiPerfil() {
+    document.getElementById('perfilEmail').textContent = usuarioActual.email;
+    document.getElementById('perfilNombre').textContent = usuarioActual.nombre;
+    document.getElementById('perfilRol').textContent = usuarioActual.rol;
+  }
+
+  /**
+   * Cambia la contraseña del usuario actual
+   */
+  function cambiarMiPassword() {
+    const passwordActual = document.getElementById('passwordActual').value;
+    const passwordNueva = document.getElementById('passwordNueva').value;
+    const passwordConfirmar = document.getElementById('passwordConfirmar').value;
+
+    // Validaciones
+    if (!passwordActual || !passwordNueva || !passwordConfirmar) {
+      mostrarError('Debe completar todos los campos');
+      return;
+    }
+
+    if (passwordNueva !== passwordConfirmar) {
+      mostrarError('Las contraseñas nuevas no coinciden');
+      return;
+    }
+
+    if (passwordNueva.length < 6) {
+      mostrarError('La nueva contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+
+    mostrarCargando('Cambiando contraseña...');
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        ocultarCargando();
+
+        if (resultado.error) {
+          mostrarError(resultado.error);
+        } else {
+          mostrarExito('✅ Contraseña cambiada exitosamente');
+
+          // Limpiar campos
+          document.getElementById('passwordActual').value = '';
+          document.getElementById('passwordNueva').value = '';
+          document.getElementById('passwordConfirmar').value = '';
+        }
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .cambiarPassword(usuarioActual.email, passwordActual, passwordNueva);
+  }
+
+  /**
+   * Inicializa los canvas de firma
+   */
+  function inicializarCanvas() {
+    // Canvas de entrada
+    canvasFirmaEntrada = document.getElementById('firmaEntrada');
+    ctxFirmaEntrada = canvasFirmaEntrada.getContext('2d');
+    configurarCanvas(canvasFirmaEntrada, ctxFirmaEntrada);
+
+    // Canvas de salida
+    canvasFirmaSalida = document.getElementById('firmaSalida');
+    ctxFirmaSalida = canvasFirmaSalida.getContext('2d');
+    configurarCanvas(canvasFirmaSalida, ctxFirmaSalida);
+  }
+
+  /**
+   * Inicializa los campos de fecha con la fecha actual
+   */
+  function inicializarFechas() {
+    const hoy = new Date().toISOString().split('T')[0];
+    const entradaFecha = document.getElementById('entradaFecha');
+    const salidaFecha = document.getElementById('salidaFecha');
+
+    if (entradaFecha) entradaFecha.value = hoy;
+    if (salidaFecha) salidaFecha.value = hoy;
+  }
+
+  /**
+   * Configura un canvas de firma
+   */
+  function configurarCanvas(canvas, ctx) {
+    // Ajustar tamaño
+    canvas.width = 350;
+    canvas.height = 150;
+
+    // Configurar estilo de dibujo
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+
+    // Eventos de mouse
+    canvas.addEventListener('mousedown', function(e) {
+      dibujando = true;
+      const rect = canvas.getBoundingClientRect();
+      ctx.beginPath();
+      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    canvas.addEventListener('mousemove', function(e) {
+      if (!dibujando) return;
+      const rect = canvas.getBoundingClientRect();
+      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.stroke();
+    });
+
+    canvas.addEventListener('mouseup', function() {
+      dibujando = false;
+    });
+
+    canvas.addEventListener('mouseout', function() {
+      dibujando = false;
+    });
+
+    // Eventos táctiles (para dispositivos móviles)
+    canvas.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      dibujando = true;
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      ctx.beginPath();
+      ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    });
+
+    canvas.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+      if (!dibujando) return;
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+      ctx.stroke();
+    });
+
+    canvas.addEventListener('touchend', function() {
+      dibujando = false;
+    });
+  }
+
+  /**
+   * Limpia un canvas de firma
+   */
+  function limpiarFirma(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  /**
+   * Convierte un canvas a imagen base64
+   */
+  function obtenerFirmaBase64(canvas) {
+    return canvas.toDataURL();
+  }
+
+  // ==========================================
+  // NAVEGACIÓN
+  // ==========================================
+
+  /**
+   * Muestra una sección específica
+   */
+  function mostrarSeccion(nombreSeccion) {
+    // Ocultar todas las secciones
+    const secciones = document.querySelectorAll('.seccion');
+    secciones.forEach(s => s.classList.remove('active'));
+
+    // Mostrar sección seleccionada
+    document.getElementById('seccion' + capitalizar(nombreSeccion)).classList.add('active');
+
+    // Actualizar tabs activos
+    const tabs = document.querySelectorAll('.tab-button');
+    tabs.forEach(t => t.classList.remove('active'));
+
+    // Buscar el tab correspondiente por ID
+    const tabId = 'tab' + capitalizar(nombreSeccion);
+    const tabElement = document.getElementById(tabId);
+    if (tabElement) {
+      tabElement.classList.add('active');
+    }
+
+    // Cargar datos según la sección
+    switch(nombreSeccion) {
+      case 'dashboard':
+        cargarDashboard();
+        break;
+      case 'inventario':
+        cargarInventario();
+        break;
+      case 'historial':
+        cargarHistorialEntradas();
+        break;
+      case 'usuarios':
+        cargarUsuarios();
+        break;
+    }
+  }
+
+  /**
+   * Muestra un tipo de historial específico
+   */
+  function mostrarHistorial(tipo) {
+    // Actualizar tabs secundarios manualmente sin usar event.target
+    const tabs = document.querySelectorAll('.tab-button-sec');
+    tabs.forEach(t => t.classList.remove('active'));
+
+    // Activar el tab correcto por posición
+    if (tipo === 'entradas') {
+      tabs[0].classList.add('active'); // Primer tab (Entradas)
+      document.getElementById('historialEntradas').style.display = 'block';
+      document.getElementById('historialSalidas').style.display = 'none';
+      cargarHistorialEntradas();
+    } else {
+      tabs[1].classList.add('active'); // Segundo tab (Salidas)
+      document.getElementById('historialEntradas').style.display = 'none';
+      document.getElementById('historialSalidas').style.display = 'block';
+      cargarHistorialSalidas();
+    }
+  }
+
+  // ==========================================
+  // DASHBOARD
+  // ==========================================
+
+  /**
+   * Carga el dashboard con estadísticas
+   */
+  function cargarDashboard() {
+    google.script.run
+      .withSuccessHandler(function(stats) {
+        document.getElementById('totalProductos').textContent = stats.totalProductos;
+        document.getElementById('productosConStock').textContent = stats.productosConStock;
+        document.getElementById('productosSinStock').textContent = stats.productosSinStock;
+        document.getElementById('productosStockBajo').textContent = stats.productosStockBajo;
+
+        // Mostrar alertas de stock bajo
+        if (stats.productosStockBajo > 0) {
+          cargarProductosStockBajo();
+        } else {
+          document.getElementById('alertasStockBajo').style.display = 'none';
+        }
+      })
+      .withFailureHandler(mostrarError)
+      .obtenerEstadisticas();
+  }
+
+  /**
+   * Carga productos con stock bajo
+   */
+  function cargarProductosStockBajo() {
+    google.script.run
+      .withSuccessHandler(function(productos) {
+        // Validación defensiva
+        if (!productos || !Array.isArray(productos) || productos.length === 0) {
+          document.getElementById('alertasStockBajo').style.display = 'none';
+          return;
+        }
+
+        const lista = document.getElementById('listaStockBajo');
+        lista.innerHTML = '';
+
+        productos.forEach(p => {
+          const li = document.createElement('li');
+          li.textContent = `${p.cod} - ${p.producto} (Stock: ${p.stock} / Mínimo: ${p.stockMinimo})`;
+          lista.appendChild(li);
+        });
+
+        document.getElementById('alertasStockBajo').style.display = 'block';
+      })
+      .withFailureHandler(mostrarError)
+      .obtenerProductosStockBajo();
+  }
+
+  /**
+   * Ejecuta diagnóstico del sistema
+   */
+  function ejecutarDiagnostico() {
+    const container = document.getElementById('resultadoDiagnostico');
+    container.innerHTML = '<p class="text-center">🔍 Ejecutando diagnóstico...</p>';
+
+    google.script.run
+      .withSuccessHandler(function(diagnostico) {
+        let html = '<div class="alerta info"><strong>📋 Diagnóstico del Sistema:</strong><br><br>';
+
+        // Mostrar información de hojas
+        html += '<strong>Estado de las Hojas:</strong><ul>';
+        Object.keys(diagnostico.hojas).forEach(key => {
+          const hoja = diagnostico.hojas[key];
+          if (hoja.existe) {
+            html += `<li>✅ ${hoja.nombre}: ${hoja.datos} registros</li>`;
+          } else {
+            html += `<li>❌ ${hoja.nombre}: NO EXISTE</li>`;
+          }
+        });
+        html += '</ul>';
+
+        // Mostrar transacciones
+        html += '<strong>Transacciones Registradas:</strong><ul>';
+        html += `<li>📥 Entradas totales: ${diagnostico.transacciones.entradas}</li>`;
+        html += `<li>📥 Entradas migradas: ${diagnostico.transacciones.entradasMigradas}</li>`;
+        html += `<li>📤 Salidas totales: ${diagnostico.transacciones.salidas}</li>`;
+        html += `<li>📤 Salidas migradas: ${diagnostico.transacciones.salidasMigradas}</li>`;
+        html += '</ul>';
+
+        // Verificar problemas
+        if (diagnostico.transacciones.entradas === 0 && diagnostico.transacciones.salidas === 0) {
+          html += '<br><div class="alerta warning"><strong>⚠️ No hay transacciones registradas.</strong><br>';
+          html += 'Las migraciones que realizaste no se guardaron. Posibles causas:<br>';
+          html += '1. No actualizaste el archivo Code_v2_seguro.gs en Google Apps Script<br>';
+          html += '2. Las hojas necesarias no existen<br>';
+          html += '3. Hubo un error durante la migración que no se mostró</div>';
+        }
+
+        html += '</div>';
+        container.innerHTML = html;
+      })
+      .withFailureHandler(function(error) {
+        container.innerHTML = `<div class="alerta error"><strong>❌ Error en diagnóstico:</strong><br>${error.message}</div>`;
+      })
+      .diagnosticoSistema();
+  }
+
+  // ==========================================
+  // PRODUCTOS
+  // ==========================================
+
+  /**
+   * Carga todos los productos
+   */
+  function cargarProductos() {
+    google.script.run
+      .withSuccessHandler(function(data) {
+        // Validación defensiva
+        productos = (data && Array.isArray(data)) ? data : [];
+      })
+      .withFailureHandler(mostrarError)
+      .obtenerProductos();
+  }
+
+  /**
+   * Carga el inventario
+   */
+  function cargarInventario() {
+    const tbody = document.getElementById('tablaInventario');
+    tbody.innerHTML = '<tr><td colspan="8" class="text-center">Cargando...</td></tr>';
+
+    google.script.run
+      .withSuccessHandler(function(data) {
+        // Validación defensiva
+        productos = (data && Array.isArray(data)) ? data : [];
+        mostrarInventario(productos);
+      })
+      .withFailureHandler(mostrarError)
+      .obtenerProductos();
+  }
+
+  /**
+   * Muestra el inventario en la tabla
+   */
+  function mostrarInventario(data) {
+    const tbody = document.getElementById('tablaInventario');
+    tbody.innerHTML = '';
+
+    // Validación defensiva
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center">No hay productos registrados</td></tr>';
+      return;
+    }
+
+    data.forEach(p => {
+      const tr = document.createElement('tr');
+
+      // Aplicar clase según stock
+      if (p.stock === 0) {
+        tr.classList.add('stock-cero');
+      } else if (p.stockMinimo > 0 && p.stock <= p.stockMinimo) {
+        tr.classList.add('stock-bajo');
+      }
+
+      tr.innerHTML = `
+        <td>${p.cod}</td>
+        <td>${p.producto}</td>
+        <td>${p.entrada}</td>
+        <td>${p.salida}</td>
+        <td><strong>${p.stock}</strong></td>
+        <td>${p.categoria || '-'}</td>
+        <td>${p.ubicacion || '-'}</td>
+        <td>${p.stockMinimo || '-'}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  /**
+   * Búsqueda en inventario
+   */
+  document.addEventListener('DOMContentLoaded', function() {
+    const buscadorInventario = document.getElementById('buscarInventario');
+    if (buscadorInventario) {
+      buscadorInventario.addEventListener('input', function() {
+        const termino = this.value.toLowerCase();
+        const productosFiltrados = productos.filter(p =>
+          p.cod.toString().toLowerCase().includes(termino) ||
+          p.producto.toLowerCase().includes(termino)
+        );
+        mostrarInventario(productosFiltrados);
+      });
+    }
+
+    // Si existe el campo de login, agregar listener de Enter
+    const loginPassword = document.getElementById('loginPassword');
+    if (loginPassword) {
+      loginPassword.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          iniciarSesion();
+        }
+      });
+    }
+
+    const loginEmail = document.getElementById('loginEmail');
+    if (loginEmail) {
+      loginEmail.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          document.getElementById('loginPassword').focus();
+        }
+      });
+    }
+  });
+
+  // ==========================================
+  // ENTRADA DE PRODUCTOS
+  // ==========================================
+
+  let contadorItemsEntrada = 0;
+
+  /**
+   * Agrega una línea de ítem para entrada
+   */
+  function agregarItemEntrada() {
+    contadorItemsEntrada++;
+    const container = document.getElementById('itemsEntrada');
+
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'item-row';
+    itemDiv.id = 'itemEntrada' + contadorItemsEntrada;
+
+    itemDiv.innerHTML = `
+      <div class="form-group">
+        <label>Producto:</label>
+        <div class="autocomplete-container">
+          <input type="text"
+                 class="form-control entrada-producto"
+                 id="entradaProducto${contadorItemsEntrada}"
+                 oninput="mostrarDropdownProductos(${contadorItemsEntrada}, 'entrada')"
+                 onfocus="mostrarDropdownProductos(${contadorItemsEntrada}, 'entrada')"
+                 placeholder="Buscar producto..."
+                 autocomplete="off">
+          <div class="autocomplete-dropdown" id="dropdownEntrada${contadorItemsEntrada}"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Código:</label>
+        <input type="text"
+               class="form-control entrada-cod"
+               id="entradaCod${contadorItemsEntrada}"
+               readonly
+               placeholder="Código">
+      </div>
+      <div class="form-group">
+        <label>Cantidad:</label>
+        <input type="number"
+               class="form-control entrada-cantidad"
+               min="0"
+               step="1"
+               placeholder="0">
+      </div>
+      <button type="button" class="btn-remove" onclick="eliminarItemEntrada(${contadorItemsEntrada})">
+        🗑️
+      </button>
+    `;
+
+    container.appendChild(itemDiv);
+  }
+
+  /**
+   * Muestra dropdown de productos con autocompletado
+   */
+  function mostrarDropdownProductos(id, tipo) {
+    const inputProducto = document.getElementById(tipo + 'Producto' + id);
+    const dropdown = document.getElementById('dropdown' + capitalizar(tipo) + id);
+    const termino = inputProducto.value.toLowerCase().trim();
+
+    // Limpiar dropdown
+    dropdown.innerHTML = '';
+
+    if (termino.length === 0) {
+      dropdown.classList.remove('active');
+      return;
+    }
+
+    // Filtrar productos
+    const productosFiltrados = productos.filter(p =>
+      p.producto.toLowerCase().includes(termino) ||
+      p.cod.toString().toLowerCase().includes(termino)
+    );
+
+    if (productosFiltrados.length === 0) {
+      dropdown.innerHTML = '<div class="autocomplete-no-results">No se encontraron productos</div>';
+      dropdown.classList.add('active');
+      return;
+    }
+
+    // Mostrar resultados (máximo 10)
+    productosFiltrados.slice(0, 10).forEach(producto => {
+      const item = document.createElement('div');
+      item.className = 'autocomplete-item';
+      item.innerHTML = `
+        <div class="autocomplete-item-cod">${producto.cod}</div>
+        <div class="autocomplete-item-nombre">${producto.producto}</div>
+      `;
+
+      item.onclick = function() {
+        seleccionarProducto(id, tipo, producto);
+      };
+
+      dropdown.appendChild(item);
+    });
+
+    dropdown.classList.add('active');
+  }
+
+  /**
+   * Selecciona un producto del dropdown
+   */
+  function seleccionarProducto(id, tipo, producto) {
+    const inputProducto = document.getElementById(tipo + 'Producto' + id);
+    const inputCod = document.getElementById(tipo + 'Cod' + id);
+    const dropdown = document.getElementById('dropdown' + capitalizar(tipo) + id);
+
+    // Llenar campos
+    inputProducto.value = producto.producto;
+    inputCod.value = producto.cod;
+
+    // Cerrar dropdown
+    dropdown.classList.remove('active');
+    dropdown.innerHTML = '';
+  }
+
+  /**
+   * Elimina un ítem de entrada
+   */
+  function eliminarItemEntrada(id) {
+    const item = document.getElementById('itemEntrada' + id);
+    if (item) {
+      item.remove();
+    }
+  }
+
+  /**
+   * Guarda una entrada
+   */
+  function guardarEntrada() {
+    // Recopilar datos del formulario
+    const fecha = document.getElementById('entradaFecha').value;
+    const proveedor = document.getElementById('entradaProveedor').value;
+    const numFactura = document.getElementById('entradaNumFactura').value;
+    const observaciones = document.getElementById('entradaObservaciones').value;
+    const firma = obtenerFirmaBase64(canvasFirmaEntrada);
+
+    // Recopilar items
+    const items = [];
+    const itemsDiv = document.querySelectorAll('#itemsEntrada .item-row');
+
+    itemsDiv.forEach(itemDiv => {
+      const cod = itemDiv.querySelector('.entrada-cod').value;
+      const cantidad = parseFloat(itemDiv.querySelector('.entrada-cantidad').value);
+
+      if (cod && cantidad > 0) {
+        items.push({ cod, cantidad });
+      }
+    });
+
+    // Validar
+    if (items.length === 0) {
+      mostrarError('Debe agregar al menos un producto con cantidad mayor a 0');
+      return;
+    }
+
+    // Enviar al servidor
+    const datos = {
+      fecha,
+      proveedor,
+      numFactura,
+      observaciones,
+      firma,
+      items
+    };
+
+    mostrarCargando('Guardando entrada...');
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        ocultarCargando();
+        if (resultado.error) {
+          mostrarError(resultado.error);
+        } else {
+          mostrarExito('✅ Entrada registrada exitosamente. ID: ' + resultado.idTransaccion);
+          limpiarFormularioEntrada();
+          cargarProductos();
+          cargarDashboard();
+        }
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .registrarEntrada(datos);
+  }
+
+  /**
+   * Limpia el formulario de entrada
+   */
+  function limpiarFormularioEntrada() {
+    document.getElementById('entradaFecha').value = new Date().toISOString().split('T')[0];
+    document.getElementById('entradaProveedor').value = '';
+    document.getElementById('entradaNumFactura').value = '';
+    document.getElementById('entradaObservaciones').value = '';
+    document.getElementById('itemsEntrada').innerHTML = '';
+    limpiarFirma('firmaEntrada');
+    contadorItemsEntrada = 0;
+    agregarItemEntrada();
+  }
+
+  // ==========================================
+  // SALIDA DE PRODUCTOS
+  // ==========================================
+
+  let contadorItemsSalida = 0;
+
+  /**
+   * Agrega una línea de ítem para salida
+   */
+  function agregarItemSalida() {
+    contadorItemsSalida++;
+    const container = document.getElementById('itemsSalida');
+
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'item-row';
+    itemDiv.id = 'itemSalida' + contadorItemsSalida;
+
+    itemDiv.innerHTML = `
+      <div class="form-group">
+        <label>Producto:</label>
+        <div class="autocomplete-container">
+          <input type="text"
+                 class="form-control salida-producto"
+                 id="salidaProducto${contadorItemsSalida}"
+                 oninput="mostrarDropdownProductos(${contadorItemsSalida}, 'salida')"
+                 onfocus="mostrarDropdownProductos(${contadorItemsSalida}, 'salida')"
+                 placeholder="Buscar producto..."
+                 autocomplete="off">
+          <div class="autocomplete-dropdown" id="dropdownSalida${contadorItemsSalida}"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Código:</label>
+        <input type="text"
+               class="form-control salida-cod"
+               id="salidaCod${contadorItemsSalida}"
+               readonly
+               placeholder="Código">
+      </div>
+      <div class="form-group">
+        <label>Cantidad:</label>
+        <input type="number"
+               class="form-control salida-cantidad"
+               min="0"
+               step="1"
+               placeholder="0">
+      </div>
+      <button type="button" class="btn-remove" onclick="eliminarItemSalida(${contadorItemsSalida})">
+        🗑️
+      </button>
+    `;
+
+    container.appendChild(itemDiv);
+  }
+
+
+  /**
+   * Elimina un ítem de salida
+   */
+  function eliminarItemSalida(id) {
+    const item = document.getElementById('itemSalida' + id);
+    if (item) {
+      item.remove();
+    }
+  }
+
+  /**
+   * Guarda una salida
+   */
+  function guardarSalida() {
+    // Recopilar datos del formulario
+    const fecha = document.getElementById('salidaFecha').value;
+    const aQuienEntrega = document.getElementById('salidaAQuienEntrega').value;
+    const bote = document.getElementById('salidaBote').value;
+    const proposito = document.getElementById('salidaProposito').value;
+    const firma = obtenerFirmaBase64(canvasFirmaSalida);
+
+    // Validar
+    if (!aQuienEntrega) {
+      mostrarError('Debe especificar a quién se entrega');
+      return;
+    }
+
+    if (!bote) {
+      mostrarError('Debe especificar el bote');
+      return;
+    }
+
+    // Recopilar items
+    const items = [];
+    const itemsDiv = document.querySelectorAll('#itemsSalida .item-row');
+
+    itemsDiv.forEach(itemDiv => {
+      const cod = itemDiv.querySelector('.salida-cod').value;
+      const cantidad = parseFloat(itemDiv.querySelector('.salida-cantidad').value);
+
+      if (cod && cantidad > 0) {
+        items.push({ cod, cantidad });
+      }
+    });
+
+    // Validar items
+    if (items.length === 0) {
+      mostrarError('Debe agregar al menos un producto con cantidad mayor a 0');
+      return;
+    }
+
+    // Enviar al servidor
+    const datos = {
+      fecha,
+      aQuienEntrega,
+      bote,
+      proposito,
+      firma,
+      items
+    };
+
+    mostrarCargando('Guardando salida...');
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        ocultarCargando();
+        if (resultado.error) {
+          mostrarError(resultado.error);
+        } else {
+          mostrarExito('✅ Salida registrada exitosamente. ID: ' + resultado.idTransaccion);
+          limpiarFormularioSalida();
+          cargarProductos();
+          cargarDashboard();
+        }
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .registrarSalida(datos);
+  }
+
+  /**
+   * Limpia el formulario de salida
+   */
+  function limpiarFormularioSalida() {
+    document.getElementById('salidaFecha').value = new Date().toISOString().split('T')[0];
+    document.getElementById('salidaAQuienEntrega').value = '';
+    document.getElementById('salidaBote').value = '';
+    document.getElementById('salidaProposito').value = '';
+    document.getElementById('itemsSalida').innerHTML = '';
+    limpiarFirma('firmaSalida');
+    contadorItemsSalida = 0;
+    agregarItemSalida();
+  }
+
+  // ==========================================
+  // HISTORIAL
+  // ==========================================
+
+  /**
+   * Carga el historial de entradas
+   */
+  function cargarHistorialEntradas() {
+    const container = document.getElementById('listaEntradas');
+    container.innerHTML = '<p class="text-center">Cargando...</p>';
+
+    google.script.run
+      .withSuccessHandler(function(transacciones) {
+        container.innerHTML = '';
+
+        if (!transacciones || !Array.isArray(transacciones) || transacciones.length === 0) {
+          container.innerHTML = '<p class="text-center">No hay transacciones de entrada</p>';
+          return;
+        }
+
+        transacciones.forEach(t => {
+          const card = crearCardTransaccionEntrada(t);
+          container.appendChild(card);
+        });
+      })
+      .withFailureHandler(function(error) {
+        console.error('Error cargando entradas:', error);
+        container.innerHTML = '<p class="text-center" style="color:red;">Error: ' + (error.message || error) + '</p>';
+      })
+      .obtenerHistorialEntradas({});
+  }
+
+  /**
+   * Crea una card para transacción de entrada
+   */
+  function crearCardTransaccionEntrada(t) {
+    const div = document.createElement('div');
+    div.className = 'transaccion-card';
+    div.onclick = () => mostrarDetalleEntrada(t);
+
+    // Validación defensiva
+    if (!t) {
+      console.error('Transacción es null o undefined');
+      return div;
+    }
+
+    const fecha = t.fechaHora ? new Date(t.fechaHora) : new Date();
+    const items = t.items || [];
+
+    div.innerHTML = `
+      <div class="transaccion-header">
+        <span>${t.idTransaccion || 'Sin ID'}</span>
+        <span>${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}</span>
+      </div>
+      <div class="transaccion-info">
+        <strong>Proveedor:</strong> ${t.proveedor || 'N/A'}
+      </div>
+      <div class="transaccion-info">
+        <strong>Usuario:</strong> ${t.usuario || 'N/A'}
+      </div>
+      <div class="transaccion-info">
+        <strong>Items:</strong> ${items.length} producto(s)
+      </div>
+    `;
+
+    return div;
+  }
+
+  /**
+   * Muestra detalle de entrada
+   */
+  function mostrarDetalleEntrada(t) {
+    const modal = document.getElementById('modalDetalleTransaccion');
+    const contenido = document.getElementById('contenidoModalDetalle');
+
+    const fecha = new Date(t.fechaHora);
+
+    let itemsHtml = '';
+    t.items.forEach(item => {
+      itemsHtml += `
+        <tr>
+          <td>${item.cod}</td>
+          <td>${item.producto}</td>
+          <td><strong>${item.cantidad}</strong></td>
+        </tr>
+      `;
+    });
+
+    contenido.innerHTML = `
+      <h3>📥 Detalle de Entrada</h3>
+      <div class="mb-20">
+        <p><strong>ID:</strong> ${t.idTransaccion}</p>
+        <p><strong>Fecha:</strong> ${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}</p>
+        <p><strong>Proveedor:</strong> ${t.proveedor || 'N/A'}</p>
+        <p><strong>Factura/OC:</strong> ${t.numFactura || 'N/A'}</p>
+        <p><strong>Usuario:</strong> ${t.usuario}</p>
+        <p><strong>Observaciones:</strong> ${t.observaciones || 'Ninguna'}</p>
+      </div>
+      <h4>Productos:</h4>
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsHtml}
+        </tbody>
+      </table>
+      ${t.firma ? `<div class="mt-20"><h4>Firma:</h4><img src="${t.firma}" class="firma-visualizar"></div>` : ''}
+    `;
+
+    modal.style.display = 'block';
+  }
+
+  /**
+   * Carga el historial de salidas
+   */
+  function cargarHistorialSalidas() {
+    const container = document.getElementById('listaSalidas');
+    container.innerHTML = '<p class="text-center">Cargando...</p>';
+
+    google.script.run
+      .withSuccessHandler(function(transacciones) {
+        console.log('Salidas recibidas:', transacciones);
+        container.innerHTML = '';
+
+        // Validación defensiva
+        if (!transacciones || !Array.isArray(transacciones) || transacciones.length === 0) {
+          container.innerHTML = '<p class="text-center">No hay transacciones de salida</p>';
+          return;
+        }
+
+        console.log('Mostrando ' + transacciones.length + ' salidas');
+        transacciones.forEach(t => {
+          const card = crearCardTransaccionSalida(t);
+          container.appendChild(card);
+        });
+      })
+      .withFailureHandler(function(error) {
+        console.error('Error cargando salidas:', error);
+        container.innerHTML = '<p class="text-center" style="color:red;">Error: ' + (error.message || error) + '</p>';
+      })
+      .obtenerHistorialSalidas({});
+  }
+
+  /**
+   * Crea una card para transacción de salida
+   */
+  function crearCardTransaccionSalida(t) {
+    const div = document.createElement('div');
+    div.className = 'transaccion-card';
+    div.onclick = () => mostrarDetalleSalida(t);
+
+    if (!t) {
+      return div;
+    }
+
+    const fecha = t.fechaHora ? new Date(t.fechaHora) : new Date();
+    const items = t.items || [];
+
+    div.innerHTML = `
+      <div class="transaccion-header">
+        <span>${t.idTransaccion || 'Sin ID'}</span>
+        <span>${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}</span>
+      </div>
+      <div class="transaccion-info">
+        <strong>Entregado a:</strong> ${t.aQuienEntrega || 'N/A'}
+      </div>
+      <div class="transaccion-info">
+        <strong>Bote:</strong> ${t.bote || 'N/A'}
+      </div>
+      <div class="transaccion-info">
+        <strong>Usuario:</strong> ${t.usuario || 'N/A'}
+      </div>
+      <div class="transaccion-info">
+        <strong>Items:</strong> ${items.length} producto(s)
+      </div>
+    `;
+
+    return div;
+  }
+
+  /**
+   * Muestra detalle de salida
+   */
+  function mostrarDetalleSalida(t) {
+    const modal = document.getElementById('modalDetalleTransaccion');
+    const contenido = document.getElementById('contenidoModalDetalle');
+
+    if (!t) return;
+
+    const fecha = t.fechaHora ? new Date(t.fechaHora) : new Date();
+    const items = t.items || [];
+
+    let itemsHtml = '';
+    items.forEach(item => {
+      itemsHtml += `
+        <tr>
+          <td>${item.cod || ''}</td>
+          <td>${item.producto || ''}</td>
+          <td><strong>${item.cantidad || 0}</strong></td>
+        </tr>
+      `;
+    });
+
+    contenido.innerHTML = `
+      <h3>Detalle de Salida</h3>
+      <div class="mb-20">
+        <p><strong>ID:</strong> ${t.idTransaccion || 'N/A'}</p>
+        <p><strong>Fecha:</strong> ${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}</p>
+        <p><strong>Entregado a:</strong> ${t.aQuienEntrega || 'N/A'}</p>
+        <p><strong>Bote:</strong> ${t.bote || 'N/A'}</p>
+        <p><strong>Propósito:</strong> ${t.proposito || 'N/A'}</p>
+        <p><strong>Usuario:</strong> ${t.usuario || 'N/A'}</p>
+      </div>
+      <h4>Productos:</h4>
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsHtml}
+        </tbody>
+      </table>
+      ${t.firma ? `<div class="mt-20"><h4>Firma:</h4><img src="${t.firma}" class="firma-visualizar"></div>` : ''}
+    `;
+
+    modal.style.display = 'block';
+  }
+
+  /**
+   * Cierra el modal de detalle
+   */
+  function cerrarModalDetalle() {
+    document.getElementById('modalDetalleTransaccion').style.display = 'none';
+  }
+
+  // ==========================================
+  // CARGA MASIVA
+  // ==========================================
+
+  /**
+   * Procesa la carga masiva de productos
+   */
+  function procesarCargaMasiva() {
+    const textarea = document.getElementById('datosCargaMasiva');
+    const datos = textarea.value.trim();
+
+    if (!datos) {
+      mostrarError('Debe ingresar datos para cargar');
+      return;
+    }
+
+    // Parsear CSV
+    const lineas = datos.split('\n');
+    const datosArray = [];
+
+    lineas.forEach(linea => {
+      const campos = linea.split(',').map(c => c.trim());
+      if (campos.length >= 2) {
+        datosArray.push(campos);
+      }
+    });
+
+    if (datosArray.length === 0) {
+      mostrarError('No se encontraron datos válidos');
+      return;
+    }
+
+    mostrarCargando(`⏳ Cargando ${datosArray.length} productos...\nPor favor espere...`);
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        if (resultado.error) {
+          ocultarCargando();
+          mostrarError(resultado.error);
+          return;
+        }
+
+        // Actualizar mensaje de carga
+        mostrarCargando('✅ Carga completada!\nActualizando interfaz...');
+
+        let mensaje = `
+          <div class="alerta success">
+            <strong>✅ Carga masiva completada:</strong><br>
+            - Productos agregados: ${resultado.agregados}<br>
+            - Productos actualizados: ${resultado.actualizados}
+        `;
+
+        if (resultado.errores.length > 0) {
+          mensaje += `<br><br><strong>⚠️ Errores:</strong><ul>`;
+          resultado.errores.forEach(error => {
+            mensaje += `<li>${error}</li>`;
+          });
+          mensaje += `</ul>`;
+        }
+
+        mensaje += `</div>`;
+
+        document.getElementById('resultadoCargaMasiva').innerHTML = mensaje;
+
+        // Recargar productos y dashboard
+        cargarProductos();
+        cargarDashboard();
+
+        // Esperar un momento antes de ocultar para que el usuario vea el mensaje de éxito
+        setTimeout(function() {
+          ocultarCargando();
+        }, 1000);
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .cargarProductosMasivos(datosArray);
+  }
+
+  /**
+   * Limpia la carga masiva
+   */
+  function limpiarCargaMasiva() {
+    document.getElementById('datosCargaMasiva').value = '';
+    document.getElementById('resultadoCargaMasiva').innerHTML = '';
+  }
+
+  /**
+   * Muestra la sección de carga masiva (productos, entradas o salidas)
+   */
+  function mostrarCargaMasiva(tipo) {
+    // Actualizar tabs secundarios
+    const tabs = document.querySelectorAll('.tab-button-sec');
+    tabs.forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Ocultar todos los containers
+    document.getElementById('cargaMasivaProductos').style.display = 'none';
+    document.getElementById('cargaMasivaEntradas').style.display = 'none';
+    document.getElementById('cargaMasivaSalidas').style.display = 'none';
+
+    // Mostrar el container seleccionado
+    if (tipo === 'productos') {
+      document.getElementById('cargaMasivaProductos').style.display = 'block';
+    } else if (tipo === 'entradas') {
+      document.getElementById('cargaMasivaEntradas').style.display = 'block';
+    } else if (tipo === 'salidas') {
+      document.getElementById('cargaMasivaSalidas').style.display = 'block';
+    }
+  }
+
+  /**
+   * Procesa la carga de entradas históricas
+   */
+  function procesarCargaEntradasHistoricas() {
+    const textarea = document.getElementById('datosEntradasHistoricas');
+    const datos = textarea.value.trim();
+    const resultadoDiv = document.getElementById('resultadoCargaEntradas');
+
+    if (!datos) {
+      mostrarError('Debe ingresar datos para cargar');
+      return;
+    }
+
+    // VALIDACIÓN PREVIA: Parsear y validar CSV antes de enviar
+    const lineas = datos.split('\n').filter(l => l.trim()); // Filtrar líneas vacías
+    const datosArray = [];
+    const erroresPrevalidacion = [];
+    let lineasSaltadasPrev = 0;
+
+    lineas.forEach((linea, index) => {
+      const numLinea = index + 1;
+      const campos = linea.split(',').map(c => c.trim());
+
+      // Validar número de campos
+      if (campos.length < 4) {
+        erroresPrevalidacion.push(`Línea ${numLinea}: Solo tiene ${campos.length} campos, necesita 4 (COD, PRODUCTO, FECHA, CANTIDAD). Datos: "${linea.substring(0, 50)}..."`);
+        lineasSaltadasPrev++;
+        return;
+      }
+
+      const cod = campos[0];
+      const producto = campos[1];
+      const fecha = campos[2];
+      const cantidad = campos[3];
+
+      // Validar campos individuales
+      if (!cod) {
+        erroresPrevalidacion.push(`Línea ${numLinea}: Código vacío`);
+        lineasSaltadasPrev++;
+        return;
+      }
+      if (!producto) {
+        erroresPrevalidacion.push(`Línea ${numLinea}: Nombre de producto vacío (código: ${cod})`);
+        lineasSaltadasPrev++;
+        return;
+      }
+      if (!fecha) {
+        erroresPrevalidacion.push(`Línea ${numLinea}: Fecha vacía (código: ${cod})`);
+        lineasSaltadasPrev++;
+        return;
+      }
+      if (!cantidad || isNaN(parseFloat(cantidad)) || parseFloat(cantidad) <= 0) {
+        erroresPrevalidacion.push(`Línea ${numLinea}: Cantidad inválida "${cantidad}" (código: ${cod})`);
+        lineasSaltadasPrev++;
+        return;
+      }
+
+      // Si pasó todas las validaciones, agregar
+      datosArray.push(campos);
+    });
+
+    // Mostrar resumen de prevalidación
+    let mensajePreval = `<div class="alerta info">
+      <strong>📋 Prevalidación del CSV:</strong><br>
+      - Total líneas en el archivo: ${lineas.length}<br>
+      - Líneas válidas para procesar: ${datosArray.length}<br>
+      - Líneas con problemas: ${lineasSaltadasPrev}
+    `;
+
+    if (erroresPrevalidacion.length > 0) {
+      mensajePreval += `<br><br><strong>⚠️ Problemas detectados (${erroresPrevalidacion.length}):</strong><ul style="max-height: 200px; overflow-y: auto;">`;
+      erroresPrevalidacion.forEach(error => {
+        mensajePreval += `<li style="font-size: 11px;">${error}</li>`;
+      });
+      mensajePreval += `</ul>`;
+    }
+    mensajePreval += `</div>`;
+
+    if (datosArray.length === 0) {
+      resultadoDiv.innerHTML = mensajePreval + `<div class="alerta error"><strong>❌ No hay datos válidos para procesar.</strong><br>Revise el formato: COD, PRODUCTO, FECHA, CANTIDAD</div>`;
+      return;
+    }
+
+    // Mostrar prevalidación y preguntar
+    resultadoDiv.innerHTML = mensajePreval;
+
+    if (!confirm(`Se encontraron ${datosArray.length} líneas válidas de ${lineas.length} totales.\n\n${lineasSaltadasPrev > 0 ? `⚠️ ${lineasSaltadasPrev} líneas tienen problemas y serán saltadas.\n\n` : ''}¿Desea continuar con la carga?`)) {
+      return;
+    }
+
+    mostrarCargando(`⏳ Procesando ${datosArray.length} entradas...\nPor favor espere, esto puede tomar varios minutos...`);
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        if (resultado.error) {
+          ocultarCargando();
+          let errorMsg = `<div class="alerta error"><strong>❌ Error:</strong> ${resultado.error}`;
+          if (resultado.stack) {
+            errorMsg += `<br><small>Detalle técnico: ${resultado.stack}</small>`;
+          }
+          errorMsg += `</div>`;
+          resultadoDiv.innerHTML = mensajePreval + errorMsg;
+          return;
+        }
+
+        // Actualizar mensaje de carga
+        mostrarCargando('✅ Entradas registradas!\nActualizando inventario...');
+
+        let mensaje = `
+          <div class="alerta success">
+            <strong>✅ Carga de entradas completada:</strong><br>
+            <table style="width:100%; margin-top:10px;">
+              <tr><td>📊 Total filas recibidas:</td><td><strong>${resultado.totalFilasRecibidas || datosArray.length}</strong></td></tr>
+              <tr><td>✅ Items procesados:</td><td><strong>${resultado.procesados}</strong></td></tr>
+              <tr><td>📦 Transacciones creadas:</td><td><strong>${resultado.transaccionesCreadas}</strong></td></tr>
+              <tr><td>🆕 Productos nuevos creados:</td><td><strong>${resultado.productosCreados || 0}</strong></td></tr>
+              <tr><td>⏭️ Items saltados:</td><td><strong>${resultado.saltados}</strong></td></tr>
+            </table>
+        `;
+
+        if (resultado.resumen) {
+          mensaje += `<br><em>${resultado.resumen}</em>`;
+        }
+
+        if (resultado.errores && resultado.errores.length > 0) {
+          mensaje += `<br><br><strong>⚠️ Errores durante el proceso (${resultado.errores.length}):</strong>
+          <ul style="max-height: 150px; overflow-y: auto; font-size: 11px;">`;
+          resultado.errores.slice(0, 20).forEach(error => {
+            mensaje += `<li>${error}</li>`;
+          });
+          if (resultado.errores.length > 20) {
+            mensaje += `<li><strong>... y ${resultado.errores.length - 20} errores más</strong></li>`;
+          }
+          mensaje += `</ul>`;
+        }
+
+        mensaje += `</div>`;
+
+        resultadoDiv.innerHTML = mensajePreval + mensaje;
+
+        // Recargar datos
+        cargarProductos();
+        cargarDashboard();
+
+        // Esperar un momento antes de ocultar
+        setTimeout(function() {
+          ocultarCargando();
+        }, 1500);
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        resultadoDiv.innerHTML = mensajePreval + `<div class="alerta error"><strong>❌ Error de conexión:</strong> ${error.message}</div>`;
+      })
+      .migrarEntradasHistoricas(datosArray);
+  }
+
+  /**
+   * Procesa la carga de salidas históricas
+   */
+  function procesarCargaSalidasHistoricas() {
+    const textarea = document.getElementById('datosSalidasHistoricas');
+    const datos = textarea.value.trim();
+
+    if (!datos) {
+      mostrarError('Debe ingresar datos para cargar');
+      return;
+    }
+
+    if (!confirm('¿Está seguro de cargar estas salidas históricas? Esta acción creará transacciones y actualizará los stocks.')) {
+      return;
+    }
+
+    // Parsear CSV
+    const lineas = datos.split('\n');
+    const datosArray = [];
+
+    lineas.forEach(linea => {
+      const campos = linea.split(',').map(c => c.trim());
+      if (campos.length >= 4 && campos[0] && campos[2] && campos[3]) {
+        datosArray.push(campos);
+      }
+    });
+
+    if (datosArray.length === 0) {
+      mostrarError('No se encontraron datos válidos');
+      return;
+    }
+
+    mostrarCargando(`⏳ Procesando ${datosArray.length} salidas...\nPor favor espere, esto puede tomar varios minutos...`);
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        if (resultado.error) {
+          ocultarCargando();
+          mostrarError(resultado.error);
+          return;
+        }
+
+        // Actualizar mensaje de carga
+        mostrarCargando('✅ Salidas registradas!\nActualizando inventario...');
+
+        let mensaje = `
+          <div class="alerta success">
+            <strong>✅ Carga de salidas completada:</strong><br>
+            - Items procesados: ${resultado.procesados}<br>
+            - Transacciones creadas: ${resultado.transaccionesCreadas}<br>
+            - Items saltados: ${resultado.saltados}
+        `;
+
+        if (resultado.errores.length > 0) {
+          mensaje += `<br><br><strong>⚠️ Errores (${resultado.errores.length}):</strong><ul>`;
+          resultado.errores.slice(0, 10).forEach(error => {
+            mensaje += `<li>${error}</li>`;
+          });
+          if (resultado.errores.length > 10) {
+            mensaje += `<li>... y ${resultado.errores.length - 10} errores más</li>`;
+          }
+          mensaje += `</ul>`;
+        }
+
+        mensaje += `</div>`;
+
+        document.getElementById('resultadoCargaSalidas').innerHTML = mensaje;
+
+        // Recargar datos
+        cargarProductos();
+        cargarDashboard();
+
+        // Esperar un momento antes de ocultar
+        setTimeout(function() {
+          ocultarCargando();
+        }, 1500);
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .migrarSalidasHistoricas(datosArray);
+  }
+
+  /**
+   * Limpia el formulario de carga de entradas
+   */
+  function limpiarCargaEntradas() {
+    document.getElementById('datosEntradasHistoricas').value = '';
+    document.getElementById('resultadoCargaEntradas').innerHTML = '';
+  }
+
+  /**
+   * Limpia el formulario de carga de salidas
+   */
+  function limpiarCargaSalidas() {
+    document.getElementById('datosSalidasHistoricas').value = '';
+    document.getElementById('resultadoCargaSalidas').innerHTML = '';
+  }
+
+  // ==========================================
+  // GESTIÓN DE USUARIOS
+  // ==========================================
+
+  /**
+   * Carga la lista de usuarios
+   */
+  function cargarUsuarios() {
+    const tbody = document.getElementById('tablaUsuarios');
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center">Cargando...</td></tr>';
+
+    google.script.run
+      .withSuccessHandler(function(usuarios) {
+        if (usuarios.error) {
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center">${usuarios.error}</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = '';
+
+        usuarios.forEach(u => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${u.email}</td>
+            <td>${u.nombre}</td>
+            <td>${u.usuario}</td>
+            <td><span class="badge">${u.rol}</span></td>
+            <td class="${u.activo ? 'estado-activo' : 'estado-inactivo'}">
+              ${u.activo ? 'Activo' : 'Inactivo'}
+            </td>
+            <td>
+              <button class="btn-accion btn-toggle" onclick="toggleUsuario('${u.email}', ${!u.activo})">
+                ${u.activo ? '🔒 Desactivar' : '🔓 Activar'}
+              </button>
+              <button class="btn-accion btn-editar" onclick="restablecerPasswordUsuario('${u.email}')">
+                🔑 Restablecer Pass
+              </button>
+              <button class="btn-accion btn-eliminar" onclick="confirmarEliminarUsuario('${u.email}')">
+                🗑️ Eliminar
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .withFailureHandler(mostrarError)
+      .obtenerTodosLosUsuarios();
+  }
+
+  /**
+   * Muestra el formulario de nuevo usuario
+   */
+  function mostrarFormularioNuevoUsuario() {
+    document.getElementById('formNuevoUsuario').style.display = 'block';
+  }
+
+  /**
+   * Cierra el formulario de nuevo usuario
+   */
+  function cerrarFormularioNuevoUsuario() {
+    document.getElementById('formNuevoUsuario').style.display = 'none';
+    document.getElementById('nuevoUsuarioEmail').value = '';
+    document.getElementById('nuevoUsuarioNombre').value = '';
+    document.getElementById('nuevoUsuarioUsuario').value = '';
+    document.getElementById('nuevoUsuarioPassword').value = '';
+    document.getElementById('nuevoUsuarioRol').value = 'Operador';
+  }
+
+  /**
+   * Crea un nuevo usuario con contraseña
+   */
+  function crearNuevoUsuario() {
+    const email = document.getElementById('nuevoUsuarioEmail').value;
+    const nombre = document.getElementById('nuevoUsuarioNombre').value;
+    const usuario = document.getElementById('nuevoUsuarioUsuario').value;
+    const password = document.getElementById('nuevoUsuarioPassword').value;
+    const rol = document.getElementById('nuevoUsuarioRol').value;
+
+    if (!email || !nombre || !usuario || !password) {
+      mostrarError('Todos los campos son requeridos');
+      return;
+    }
+
+    if (password.length < 6) {
+      mostrarError('La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+
+    mostrarCargando('Creando usuario...');
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        ocultarCargando();
+
+        if (resultado.error) {
+          mostrarError(resultado.error);
+        } else {
+          mostrarExito('✅ Usuario creado exitosamente');
+          cerrarFormularioNuevoUsuario();
+          cargarUsuarios();
+        }
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .crearUsuario(email, nombre, rol, usuario, password);
+  }
+
+  /**
+   * Restablece la contraseña de un usuario (solo admin)
+   */
+  function restablecerPasswordUsuario(email) {
+    const nuevaPassword = prompt('Ingrese la nueva contraseña (mínimo 6 caracteres):');
+
+    if (!nuevaPassword) {
+      return;
+    }
+
+    if (nuevaPassword.length < 6) {
+      mostrarError('La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+
+    mostrarCargando('Restableciendo contraseña...');
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        ocultarCargando();
+
+        if (resultado.error) {
+          mostrarError(resultado.error);
+        } else {
+          mostrarExito('✅ Contraseña restablecida exitosamente');
+        }
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .restablecerPassword(email, nuevaPassword);
+  }
+
+  /**
+   * Activa/desactiva un usuario
+   */
+  function toggleUsuario(email, activo) {
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        if (resultado.error) {
+          mostrarError(resultado.error);
+        } else {
+          mostrarExito('Usuario actualizado exitosamente');
+          cargarUsuarios();
+        }
+      })
+      .withFailureHandler(mostrarError)
+      .actualizarUsuario(email, null, null, activo);
+  }
+
+  /**
+   * Confirma eliminación de usuario
+   */
+  function confirmarEliminarUsuario(email) {
+    if (confirm('¿Está seguro de eliminar este usuario? Esta acción no se puede deshacer.')) {
+      eliminarUsuarioConfirmado(email);
+    }
+  }
+
+  /**
+   * Elimina un usuario
+   */
+  function eliminarUsuarioConfirmado(email) {
+    mostrarCargando('Eliminando usuario...');
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        ocultarCargando();
+
+        if (resultado.error) {
+          mostrarError(resultado.error);
+        } else {
+          mostrarExito('✅ Usuario eliminado exitosamente');
+          cargarUsuarios();
+        }
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .eliminarUsuario(email);
+  }
+
+  // ==========================================
+  // UTILIDADES
+  // ==========================================
+
+  /**
+   * Capitaliza la primera letra de una cadena
+   */
+  function capitalizar(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  /**
+   * Muestra un mensaje de error
+   */
+  function mostrarError(mensaje) {
+    alert('❌ Error: ' + mensaje);
+  }
+
+  /**
+   * Muestra un mensaje de éxito
+   */
+  function mostrarExito(mensaje) {
+    alert(mensaje);
+  }
+
+  /**
+   * Muestra un mensaje de advertencia
+   */
+  function mostrarAdvertencia(mensaje) {
+    alert(mensaje);
+  }
+
+  /**
+   * Muestra indicador de carga
+   */
+  function mostrarCargando(mensaje) {
+    // Crear overlay si no existe
+    let overlay = document.getElementById('overlayGlobalCargando');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'overlayGlobalCargando';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      `;
+
+      const contenedor = document.createElement('div');
+      contenedor.style.cssText = `
+        background: white;
+        padding: 30px 40px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      `;
+
+      const spinner = document.createElement('div');
+      spinner.style.cssText = `
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #4CAF50;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+      `;
+
+      const texto = document.createElement('div');
+      texto.id = 'textoCargandoGlobal';
+      texto.style.cssText = `
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+      `;
+      texto.textContent = mensaje;
+
+      contenedor.appendChild(spinner);
+      contenedor.appendChild(texto);
+      overlay.appendChild(contenedor);
+      document.body.appendChild(overlay);
+
+      // Agregar animación de spinner si no existe
+      if (!document.getElementById('spinnerAnimation')) {
+        const style = document.createElement('style');
+        style.id = 'spinnerAnimation';
+        style.textContent = `
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    } else {
+      // Actualizar mensaje
+      const texto = document.getElementById('textoCargandoGlobal');
+      if (texto) {
+        texto.textContent = mensaje;
+      }
+      overlay.style.display = 'flex';
+    }
+
+    console.log(mensaje);
+  }
+
+  /**
+   * Oculta indicador de carga
+   */
+  function ocultarCargando() {
+    const overlay = document.getElementById('overlayGlobalCargando');
+    if (overlay) {
+      overlay.style.display = 'none';
+    }
+    console.log('Carga completada');
+  }
+
+  // ==========================================
+  // GESTIÓN DE PRODUCTOS
+  // ==========================================
+
+  /**
+   * Guarda un nuevo producto
+   */
+  function guardarNuevoProducto() {
+    const cod = document.getElementById('nuevoProdCod').value.trim();
+    const nombre = document.getElementById('nuevoProdNombre').value.trim();
+    const categoria = document.getElementById('nuevoProdCategoria').value.trim();
+    const ubicacion = document.getElementById('nuevoProdUbicacion').value.trim();
+    const stockMin = parseInt(document.getElementById('nuevoProdStockMin').value) || 5;
+
+    // Validaciones
+    if (!cod || !nombre) {
+      mostrarError('Código y nombre de producto son requeridos');
+      return;
+    }
+
+    mostrarCargando('Agregando producto...');
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        ocultarCargando();
+
+        const resultadoDiv = document.getElementById('resultadoNuevoProducto');
+
+        if (resultado.error) {
+          resultadoDiv.innerHTML = `<div class="alerta error">${resultado.error}</div>`;
+        } else {
+          resultadoDiv.innerHTML = `<div class="alerta success">✅ ${resultado.message}</div>`;
+          limpiarFormularioProducto();
+
+          // Recargar productos para actualizar el datalist
+          cargarProductos();
+
+          // Ocultar mensaje después de 3 segundos
+          setTimeout(() => {
+            resultadoDiv.innerHTML = '';
+          }, 3000);
+        }
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        const resultadoDiv = document.getElementById('resultadoNuevoProducto');
+        resultadoDiv.innerHTML = `<div class="alerta error">❌ Error: ${error.message}</div>`;
+      })
+      .agregarProducto(cod, nombre, categoria, ubicacion, stockMin);
+  }
+
+  /**
+   * Limpia el formulario de nuevo producto
+   */
+  function limpiarFormularioProducto() {
+    document.getElementById('nuevoProdCod').value = '';
+    document.getElementById('nuevoProdNombre').value = '';
+    document.getElementById('nuevoProdCategoria').value = '';
+    document.getElementById('nuevoProdUbicacion').value = '';
+    document.getElementById('nuevoProdStockMin').value = '5';
+  }
+
+  // Cerrar modal al hacer clic fuera de él
+  window.onclick = function(event) {
+    const modal = document.getElementById('modalDetalleTransaccion');
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  }
+
+  // Cerrar dropdown de autocompletado al hacer clic fuera
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('.autocomplete-container')) {
+      document.querySelectorAll('.autocomplete-dropdown').forEach(dropdown => {
+        dropdown.classList.remove('active');
+      });
+    }
+  });
+
+  // ==========================================
+  // EXPORTACIÓN DE INVENTARIO
+  // ==========================================
+
+  let productosFiltroSeleccionados = [];
+
+  /**
+   * Exporta inventario a Excel (CSV compatible)
+   */
+  function exportarInventarioExcel() {
+    mostrarCargando('Preparando exportación a Excel...');
+
+    const filtro = productosFiltroSeleccionados.length > 0 ?
+      productosFiltroSeleccionados.map(p => p.cod) : null;
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        ocultarCargando();
+
+        if (resultado.error) {
+          mostrarError(resultado.error);
+          return;
+        }
+
+        // Convertir datos a CSV
+        const csvContent = arrayToCSV(resultado.datos);
+
+        // Descargar archivo
+        descargarArchivo(csvContent, resultado.fileName + '.csv', 'text/csv;charset=utf-8;');
+
+        mostrarExito(`✅ Exportados ${resultado.totalRegistros} productos a Excel`);
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .exportarInventario(filtro);
+  }
+
+  /**
+   * Exporta inventario a CSV
+   */
+  function exportarInventarioCSV() {
+    exportarInventarioExcel(); // Usa la misma función
+  }
+
+  /**
+   * Exporta inventario a PDF
+   */
+  function exportarInventarioPDF() {
+    mostrarCargando('Preparando exportación a PDF...');
+
+    const filtro = productosFiltroSeleccionados.length > 0 ?
+      productosFiltroSeleccionados.map(p => p.cod) : null;
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        ocultarCargando();
+
+        if (resultado.error) {
+          mostrarError(resultado.error);
+          return;
+        }
+
+        // Crear HTML para imprimir
+        const datos = resultado.datos;
+        let tableHtml = '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; font-size: 12px;">';
+        tableHtml += '<thead style="background-color: #4CAF50; color: white;">';
+
+        // Encabezados
+        tableHtml += '<tr>';
+        datos[0].forEach(header => {
+          tableHtml += `<th>${header}</th>`;
+        });
+        tableHtml += '</tr></thead><tbody>';
+
+        // Datos
+        for (let i = 1; i < datos.length; i++) {
+          tableHtml += '<tr>';
+          datos[i].forEach(cell => {
+            tableHtml += `<td>${cell}</td>`;
+          });
+          tableHtml += '</tr>';
+        }
+
+        tableHtml += '</tbody></table>';
+
+        // Crear ventana de impresión
+        const ventana = window.open('', '_blank');
+        const fecha = new Date().toLocaleString();
+
+        ventana.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Inventario - ${resultado.fileName}</title>
+            <style>
+              @media print {
+                @page { margin: 1cm; }
+                body { margin: 0; }
+              }
+              body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+              }
+              h1 {
+                text-align: center;
+                color: #333;
+              }
+              .info {
+                text-align: center;
+                margin-bottom: 20px;
+                color: #666;
+              }
+              table {
+                margin: 0 auto;
+              }
+              th {
+                background-color: #4CAF50 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>📦 Inventario de Repuestos</h1>
+            <div class="info">
+              <p><strong>Fecha de generación:</strong> ${fecha}</p>
+              <p><strong>Total de productos:</strong> ${resultado.totalRegistros}</p>
+            </div>
+            ${tableHtml}
+            <script>
+              window.onload = function() {
+                window.print();
+              };
+            <\/script>
+          </body>
+          </html>
+        `);
+
+        ventana.document.close();
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .exportarInventario(filtro);
+  }
+
+  /**
+   * Convierte un array 2D a CSV
+   */
+  function arrayToCSV(data) {
+    return data.map(row =>
+      row.map(cell => {
+        const cellStr = String(cell);
+        // Escapar comillas y envolver en comillas si contiene coma, comilla o salto de línea
+        if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+          return '"' + cellStr.replace(/"/g, '""') + '"';
+        }
+        return cellStr;
+      }).join(',')
+    ).join('\n');
+  }
+
+  /**
+   * Descarga un archivo
+   */
+  function descargarArchivo(contenido, nombreArchivo, tipoMIME) {
+    const blob = new Blob(['\uFEFF' + contenido], { type: tipoMIME });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }
+
+  // ==========================================
+  // FILTRADO DE INVENTARIO
+  // ==========================================
+
+  /**
+   * Muestra/oculta el panel de filtro
+   */
+  function toggleFiltroInventario() {
+    const panel = document.getElementById('panelFiltroInventario');
+    const btn = event.target;
+
+    if (panel.style.display === 'none') {
+      panel.style.display = 'block';
+      btn.textContent = '🔼 Ocultar Filtro';
+    } else {
+      panel.style.display = 'none';
+      btn.textContent = '🔽 Filtrar Productos';
+    }
+  }
+
+  /**
+   * Muestra dropdown para filtro de productos
+   */
+  function mostrarDropdownFiltro() {
+    const input = document.getElementById('buscarProductoFiltro');
+    const dropdown = document.getElementById('dropdownFiltro');
+    const termino = input.value.toLowerCase().trim();
+
+    dropdown.innerHTML = '';
+
+    if (termino.length === 0) {
+      dropdown.classList.remove('active');
+      return;
+    }
+
+    // Filtrar productos que no estén ya seleccionados
+    const productosDisponibles = productos.filter(p =>
+      !productosFiltroSeleccionados.find(ps => ps.cod === p.cod) &&
+      (p.producto.toLowerCase().includes(termino) || p.cod.toString().toLowerCase().includes(termino))
+    );
+
+    if (productosDisponibles.length === 0) {
+      dropdown.innerHTML = '<div class="autocomplete-no-results">No se encontraron productos</div>';
+      dropdown.classList.add('active');
+      return;
+    }
+
+    productosDisponibles.slice(0, 10).forEach(producto => {
+      const item = document.createElement('div');
+      item.className = 'autocomplete-item';
+      item.innerHTML = `
+        <div class="autocomplete-item-cod">${producto.cod}</div>
+        <div class="autocomplete-item-nombre">${producto.producto}</div>
+      `;
+
+      item.onclick = function() {
+        agregarProductoAFiltro(producto);
+      };
+
+      dropdown.appendChild(item);
+    });
+
+    dropdown.classList.add('active');
+  }
+
+  /**
+   * Agrega un producto al filtro
+   */
+  function agregarProductoAFiltro(producto) {
+    if (!productosFiltroSeleccionados.find(p => p.cod === producto.cod)) {
+      productosFiltroSeleccionados.push(producto);
+      actualizarListaProductosFiltrados();
+    }
+
+    document.getElementById('buscarProductoFiltro').value = '';
+    document.getElementById('dropdownFiltro').classList.remove('active');
+  }
+
+  /**
+   * Elimina un producto del filtro
+   */
+  function eliminarProductoDeFiltro(cod) {
+    productosFiltroSeleccionados = productosFiltroSeleccionados.filter(p => p.cod !== cod);
+    actualizarListaProductosFiltrados();
+  }
+
+  /**
+   * Actualiza la lista visual de productos filtrados
+   */
+  function actualizarListaProductosFiltrados() {
+    const lista = document.getElementById('listaProductosFiltrados');
+
+    if (productosFiltroSeleccionados.length === 0) {
+      lista.innerHTML = '<em>Ningún producto seleccionado. Se muestran todos.</em>';
+      return;
+    }
+
+    let html = '';
+    productosFiltroSeleccionados.forEach(p => {
+      html += `
+        <div style="display: inline-block; background: #e3f2fd; padding: 5px 10px; margin: 5px; border-radius: 15px;">
+          <strong>${p.cod}</strong> - ${p.producto}
+          <button onclick="eliminarProductoDeFiltro('${p.cod}')" style="border: none; background: transparent; cursor: pointer; margin-left: 5px; color: red;">
+            ✖
+          </button>
+        </div>
+      `;
+    });
+
+    lista.innerHTML = html;
+  }
+
+  /**
+   * Aplica el filtro al inventario
+   */
+  function aplicarFiltroInventario() {
+    if (productosFiltroSeleccionados.length === 0) {
+      mostrarInventario(productos);
+    } else {
+      const productosFiltrados = productos.filter(p =>
+        productosFiltroSeleccionados.find(ps => ps.cod === p.cod)
+      );
+      mostrarInventario(productosFiltrados);
+    }
+
+    mostrarExito(`Mostrando ${productosFiltroSeleccionados.length > 0 ? productosFiltroSeleccionados.length : productos.length} productos`);
+  }
+
+  /**
+   * Limpia el filtro del inventario
+   */
+  function limpiarFiltroInventario() {
+    productosFiltroSeleccionados = [];
+    actualizarListaProductosFiltrados();
+    mostrarInventario(productos);
+    document.getElementById('buscarProductoFiltro').value = '';
+    mostrarExito('Filtro limpiado. Mostrando todos los productos.');
+  }
+
+  // ==========================================
+  // MIGRACIÓN DE DATOS HISTÓRICOS
+  // ==========================================
+
+  /**
+   * Muestra la sección de migración (entradas o salidas)
+   */
+  function mostrarMigracion(tipo) {
+    // Actualizar tabs secundarios
+    const tabs = document.querySelectorAll('.tab-button-sec');
+    tabs.forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+
+    if (tipo === 'entradas') {
+      document.getElementById('migracionEntradas').style.display = 'block';
+      document.getElementById('migracionSalidas').style.display = 'none';
+    } else {
+      document.getElementById('migracionEntradas').style.display = 'none';
+      document.getElementById('migracionSalidas').style.display = 'block';
+    }
+  }
+
+  /**
+   * Procesa la migración de entradas
+   */
+  function procesarMigracionEntradas() {
+    const textarea = document.getElementById('datosEntradas');
+    const datos = textarea.value.trim();
+
+    if (!datos) {
+      mostrarError('Debe ingresar datos para migrar');
+      return;
+    }
+
+    if (!confirm('¿Está seguro de migrar estas entradas? Esta acción creará transacciones históricas y actualizará los stocks.')) {
+      return;
+    }
+
+    // Parsear CSV
+    const lineas = datos.split('\n');
+    const datosArray = [];
+
+    lineas.forEach(linea => {
+      const campos = linea.split(',').map(c => c.trim());
+      if (campos.length >= 4 && campos[0] && campos[2] && campos[3]) {
+        datosArray.push(campos);
+      }
+    });
+
+    if (datosArray.length === 0) {
+      mostrarError('No se encontraron datos válidos');
+      return;
+    }
+
+    mostrarCargando(`⏳ Migrando ${datosArray.length} entradas históricas...\nEsto puede tomar varios minutos...\nNO CIERRE ESTA VENTANA`);
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        if (resultado.error) {
+          ocultarCargando();
+          mostrarError(resultado.error);
+          return;
+        }
+
+        // Actualizar mensaje
+        mostrarCargando('✅ Migración completada!\nActualizando sistema...');
+
+        let mensaje = `
+          <div class="alerta success">
+            <strong>✅ Migración de entradas completada:</strong><br>
+            - Items procesados: ${resultado.procesados}<br>
+            - Transacciones creadas: ${resultado.transaccionesCreadas}<br>
+            - Items saltados: ${resultado.saltados}
+        `;
+
+        if (resultado.errores.length > 0) {
+          mensaje += `<br><br><strong>⚠️ Errores (${resultado.errores.length}):</strong><ul>`;
+          resultado.errores.slice(0, 10).forEach(error => {
+            mensaje += `<li>${error}</li>`;
+          });
+          if (resultado.errores.length > 10) {
+            mensaje += `<li>... y ${resultado.errores.length - 10} errores más</li>`;
+          }
+          mensaje += `</ul>`;
+        }
+
+        mensaje += `</div>`;
+
+        document.getElementById('resultadoMigracionEntradas').innerHTML = mensaje;
+
+        // Recargar datos
+        cargarProductos();
+        cargarDashboard();
+
+        // Esperar antes de ocultar
+        setTimeout(function() {
+          ocultarCargando();
+        }, 1500);
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .migrarEntradasHistoricas(datosArray);
+  }
+
+  /**
+   * Procesa la migración de salidas
+   */
+  function procesarMigracionSalidas() {
+    const textarea = document.getElementById('datosSalidas');
+    const datos = textarea.value.trim();
+
+    if (!datos) {
+      mostrarError('Debe ingresar datos para migrar');
+      return;
+    }
+
+    if (!confirm('¿Está seguro de migrar estas salidas? Esta acción creará transacciones históricas y actualizará los stocks.')) {
+      return;
+    }
+
+    // Parsear CSV
+    const lineas = datos.split('\n');
+    const datosArray = [];
+
+    lineas.forEach(linea => {
+      const campos = linea.split(',').map(c => c.trim());
+      if (campos.length >= 4 && campos[0] && campos[2] && campos[3]) {
+        datosArray.push(campos);
+      }
+    });
+
+    if (datosArray.length === 0) {
+      mostrarError('No se encontraron datos válidos');
+      return;
+    }
+
+    mostrarCargando(`⏳ Migrando ${datosArray.length} salidas históricas...\nEsto puede tomar varios minutos...\nNO CIERRE ESTA VENTANA`);
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        if (resultado.error) {
+          ocultarCargando();
+          mostrarError(resultado.error);
+          return;
+        }
+
+        // Actualizar mensaje
+        mostrarCargando('✅ Migración completada!\nActualizando sistema...');
+
+        let mensaje = `
+          <div class="alerta success">
+            <strong>✅ Migración de salidas completada:</strong><br>
+            - Items procesados: ${resultado.procesados}<br>
+            - Transacciones creadas: ${resultado.transaccionesCreadas}<br>
+            - Items saltados: ${resultado.saltados}
+        `;
+
+        if (resultado.errores.length > 0) {
+          mensaje += `<br><br><strong>⚠️ Errores (${resultado.errores.length}):</strong><ul>`;
+          resultado.errores.slice(0, 10).forEach(error => {
+            mensaje += `<li>${error}</li>`;
+          });
+          if (resultado.errores.length > 10) {
+            mensaje += `<li>... y ${resultado.errores.length - 10} errores más</li>`;
+          }
+          mensaje += `</ul>`;
+        }
+
+        mensaje += `</div>`;
+
+        document.getElementById('resultadoMigracionSalidas').innerHTML = mensaje;
+
+        // Recargar datos
+        cargarProductos();
+        cargarDashboard();
+
+        // Esperar antes de ocultar
+        setTimeout(function() {
+          ocultarCargando();
+        }, 1500);
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        mostrarError(error.message);
+      })
+      .migrarSalidasHistoricas(datosArray);
+  }
+
+  /**
+   * Limpia el formulario de migración de entradas
+   */
+  function limpiarMigracionEntradas() {
+    document.getElementById('datosEntradas').value = '';
+    document.getElementById('resultadoMigracionEntradas').innerHTML = '';
+  }
+
+  /**
+   * Limpia el formulario de migración de salidas
+   */
+  function limpiarMigracionSalidas() {
+    document.getElementById('datosSalidas').value = '';
+    document.getElementById('resultadoMigracionSalidas').innerHTML = '';
+  }
+
+  // ==========================================
+  // GESTIÓN DE DUPLICADOS
+  // ==========================================
+
+  /**
+   * Detecta y muestra duplicados en pantalla
+   */
+  function detectarYMostrarDuplicados() {
+    const container = document.getElementById('resultadoDeteccionDuplicados');
+    container.innerHTML = '<p class="text-center">🔍 Detectando duplicados...</p>';
+
+    mostrarCargando('🔍 Detectando duplicados...\nPor favor espere...');
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        ocultarCargando();
+
+        // Validación: verificar si resultado es null o undefined
+        if (!resultado) {
+          container.innerHTML = `<div class="alerta error"><strong>❌ Error:</strong> El servidor no devolvió ningún resultado. Verifique que la función detectarDuplicados() exista en Code_v2_seguro.gs</div>`;
+          return;
+        }
+
+        if (resultado.error) {
+          container.innerHTML = `<div class="alerta error"><strong>❌ Error:</strong> ${resultado.error}</div>`;
+          return;
+        }
+
+        let html = '<div class="alerta info">';
+        html += '<h4>📊 Resultado de la Detección</h4>';
+        html += `<p><strong>Entradas duplicadas encontradas:</strong> ${resultado.totalEntradasDuplicadas} transacciones</p>`;
+        html += `<p><strong>Salidas duplicadas encontradas:</strong> ${resultado.totalSalidasDuplicadas} transacciones</p>`;
+
+        // MOSTRAR SOLO RESUMEN - No listar todo para evitar congelamiento
+        if (resultado.entradasDuplicadas.length > 0) {
+          html += '<br><h5>📥 Resumen de Entradas Duplicadas:</h5>';
+          html += `<p><strong>Total de grupos duplicados:</strong> ${resultado.entradasDuplicadas.length}</p>`;
+
+          // Mostrar solo los primeros 5 grupos como ejemplo
+          html += '<p><strong>Primeros grupos (muestra máximo 5):</strong></p><ul>';
+          const maxGrupos = Math.min(5, resultado.entradasDuplicadas.length);
+
+          for (let i = 0; i < maxGrupos; i++) {
+            const grupo = resultado.entradasDuplicadas[i];
+            html += `<li><strong>Grupo ${i + 1}:</strong> ${grupo.cantidad} transacciones duplicadas<br>`;
+            html += `Proveedor: ${grupo.transacciones[0].proveedor || 'N/A'}<br>`;
+            html += `Fecha: ${new Date(grupo.transacciones[0].fecha).toLocaleDateString()}<br>`;
+
+            // Mostrar solo primeras 2 IDs de ejemplo
+            html += 'Ejemplos de IDs duplicados: ';
+            const maxIds = Math.min(2, grupo.transacciones.length);
+            for (let j = 0; j < maxIds; j++) {
+              html += grupo.transacciones[j].idTransaccion;
+              if (j < maxIds - 1) html += ', ';
+            }
+            if (grupo.transacciones.length > 2) {
+              html += ` ... y ${grupo.transacciones.length - 2} más`;
+            }
+            html += '</li>';
+          }
+          html += '</ul>';
+
+          if (resultado.entradasDuplicadas.length > 5) {
+            html += `<p><em>... y ${resultado.entradasDuplicadas.length - 5} grupos más no mostrados</em></p>`;
+          }
+        }
+
+        // Mostrar resumen de salidas duplicadas
+        if (resultado.salidasDuplicadas.length > 0) {
+          html += '<br><h5>📤 Resumen de Salidas Duplicadas:</h5>';
+          html += `<p><strong>Total de grupos duplicados:</strong> ${resultado.salidasDuplicadas.length}</p>`;
+
+          // Mostrar solo los primeros 5 grupos como ejemplo
+          html += '<p><strong>Primeros grupos (muestra máximo 5):</strong></p><ul>';
+          const maxGrupos = Math.min(5, resultado.salidasDuplicadas.length);
+
+          for (let i = 0; i < maxGrupos; i++) {
+            const grupo = resultado.salidasDuplicadas[i];
+            html += `<li><strong>Grupo ${i + 1}:</strong> ${grupo.cantidad} transacciones duplicadas<br>`;
+            html += `Entregado a: ${grupo.transacciones[0].aQuienEntrega || 'N/A'}<br>`;
+            html += `Bote: ${grupo.transacciones[0].bote || 'N/A'}<br>`;
+            html += `Fecha: ${new Date(grupo.transacciones[0].fecha).toLocaleDateString()}<br>`;
+
+            // Mostrar solo primeras 2 IDs de ejemplo
+            html += 'Ejemplos de IDs duplicados: ';
+            const maxIds = Math.min(2, grupo.transacciones.length);
+            for (let j = 0; j < maxIds; j++) {
+              html += grupo.transacciones[j].idTransaccion;
+              if (j < maxIds - 1) html += ', ';
+            }
+            if (grupo.transacciones.length > 2) {
+              html += ` ... y ${grupo.transacciones.length - 2} más`;
+            }
+            html += '</li>';
+          }
+          html += '</ul>';
+
+          if (resultado.salidasDuplicadas.length > 5) {
+            html += `<p><em>... y ${resultado.salidasDuplicadas.length - 5} grupos más no mostrados</em></p>`;
+          }
+        }
+
+        if (resultado.totalEntradasDuplicadas === 0 && resultado.totalSalidasDuplicadas === 0) {
+          html += '<br><p style="color: green; font-weight: bold;">✅ ¡No se encontraron duplicados! El sistema está limpio.</p>';
+        } else {
+          html += '<br><div class="alerta warning">';
+          html += '<p><strong>⚠️ Acción Recomendada:</strong></p>';
+          html += '<p>Se encontraron duplicados. Use el botón "ELIMINAR DUPLICADOS" abajo para:</p>';
+          html += '<ol>';
+          html += '<li>Mantener solo la primera transacción de cada grupo</li>';
+          html += '<li>Eliminar todas las transacciones duplicadas</li>';
+          html += '<li>Recalcular los stocks correctamente</li>';
+          html += '</ol>';
+          html += '</div>';
+        }
+
+        html += '</div>';
+        container.innerHTML = html;
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        container.innerHTML = `<div class="alerta error"><strong>❌ Error:</strong> ${error.message}</div>`;
+      })
+      .detectarDuplicados();
+  }
+
+  /**
+   * Elimina duplicados con confirmación
+   */
+  function eliminarDuplicadosConfirmado() {
+    const confirmacion = confirm(
+      '⚠️ ADVERTENCIA CRÍTICA ⚠️\n\n' +
+      'Esta acción:\n' +
+      '1. Eliminará PERMANENTEMENTE todas las transacciones duplicadas\n' +
+      '2. Recalculará TODOS los stocks desde cero\n' +
+      '3. NO SE PUEDE DESHACER\n\n' +
+      '¿Está COMPLETAMENTE SEGURO de continuar?'
+    );
+
+    if (!confirmacion) {
+      return;
+    }
+
+    const confirmacion2 = confirm(
+      '⚠️ ÚLTIMA CONFIRMACIÓN ⚠️\n\n' +
+      'Esta es su última oportunidad para cancelar.\n\n' +
+      '¿Proceder con la eliminación de duplicados?'
+    );
+
+    if (!confirmacion2) {
+      return;
+    }
+
+    const container = document.getElementById('resultadoEliminacionDuplicados');
+    container.innerHTML = '<p class="text-center">🗑️ Eliminando duplicados...</p>';
+
+    mostrarCargando('🗑️ Eliminando duplicados y recalculando stocks...\nEsto puede tomar varios minutos...\nNO CIERRE ESTA VENTANA');
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        if (resultado.error) {
+          ocultarCargando();
+          container.innerHTML = `<div class="alerta error"><strong>❌ Error:</strong> ${resultado.error}</div>`;
+          return;
+        }
+
+        mostrarCargando('✅ Duplicados eliminados!\nActualizando sistema...');
+
+        let html = '<div class="alerta success">';
+        html += '<h4>✅ Proceso Completado</h4>';
+        html += `<p><strong>Entradas eliminadas:</strong> ${resultado.entradasEliminadas}</p>`;
+        html += `<p><strong>Salidas eliminadas:</strong> ${resultado.salidasEliminadas}</p>`;
+        html += `<p><strong>Filas de detalle eliminadas:</strong> ${resultado.filasDetalleEliminadas}</p>`;
+        html += `<p><strong>Productos con stocks recalculados:</strong> ${resultado.stocksRecalculados}</p>`;
+        html += `<br><p style="color: green; font-weight: bold;">${resultado.mensaje}</p>`;
+        html += '</div>';
+
+        container.innerHTML = html;
+
+        // Limpiar el resultado de detección
+        document.getElementById('resultadoDeteccionDuplicados').innerHTML = '';
+
+        // Recargar datos
+        cargarProductos();
+        cargarDashboard();
+
+        setTimeout(function() {
+          ocultarCargando();
+        }, 1500);
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        container.innerHTML = `<div class="alerta error"><strong>❌ Error:</strong> ${error.message}</div>`;
+      })
+      .eliminarDuplicados();
+  }
+
+  /**
+   * Recalcula todos los stocks desde cero
+   */
+  function recalcularStocks() {
+    const confirmacion = confirm(
+      '⚠️ ADVERTENCIA ⚠️\n\n' +
+      'Esta acción recalculará TODOS los stocks desde cero basándose en las transacciones.\n\n' +
+      '¿Continuar?'
+    );
+
+    if (!confirmacion) {
+      return;
+    }
+
+    const container = document.getElementById('resultadoRecalculo');
+    container.innerHTML = '<p class="text-center">🔢 Recalculando stocks...</p>';
+
+    mostrarCargando('🔢 Recalculando todos los stocks...\nPor favor espere...');
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        if (resultado.error) {
+          ocultarCargando();
+          container.innerHTML = `<div class="alerta error"><strong>❌ Error:</strong> ${resultado.error}</div>`;
+          return;
+        }
+
+        mostrarCargando('✅ Stocks recalculados!\nActualizando interfaz...');
+
+        let html = '<div class="alerta success">';
+        html += '<h4>✅ Stocks Recalculados</h4>';
+        html += `<p><strong>Productos actualizados:</strong> ${resultado.productosActualizados}</p>`;
+        html += `<p style="color: green; font-weight: bold;">${resultado.mensaje}</p>`;
+        html += '</div>';
+
+        container.innerHTML = html;
+
+        // Recargar datos
+        cargarProductos();
+        cargarDashboard();
+
+        setTimeout(function() {
+          ocultarCargando();
+        }, 1000);
+      })
+      .withFailureHandler(function(error) {
+        ocultarCargando();
+        container.innerHTML = `<div class="alerta error"><strong>❌ Error:</strong> ${error.message}</div>`;
+      })
+      .recalcularTodosLosStocks();
+  }
+</script>
+
