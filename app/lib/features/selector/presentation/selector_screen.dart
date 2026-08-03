@@ -26,7 +26,7 @@ class SelectorScreen extends ConsumerWidget {
                 children: [
                   const Expanded(
                     child: Text(
-                      '📦 Sistema de Inventario',
+                      '📦 Inventario Logística Insevig',
                       style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),

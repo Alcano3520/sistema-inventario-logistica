@@ -19,7 +19,7 @@ class InventarioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sistema de Inventario',
+      title: 'Inventario Logística Insevig',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       home: const _AuthGate(),
