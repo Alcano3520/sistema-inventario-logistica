@@ -113764,7 +113764,7 @@ mg(a,b){var s,r,q,p=null,o=b.cF($.qN(),t.ZG),n=A.fc(o),m=t.p,l=A.cr(p,A.hw(A.b([
 if(o.gkN())s=B.em
 else{s=n!=null
 r=A.b([A.av(s?"Hola, "+n.c:"Selecciona un inventario",p,p,p,B.aVr,p,p,p),B.hJ,B.aY7,B.bc],m)
-if(s&&!B.l.eQ(n.f,new A.aBS()))r.push(A.cr(p,B.aXZ,B.Q,p,p,new A.c_(B.dB,p,B.uA,A.cz(6),p,p,B.ai),p,p,p,B.de,p,p,1/0))
+if(s&&n.d!=="Admin"&&!B.l.eQ(n.f,new A.aBS()))r.push(A.cr(p,B.aXZ,B.Q,p,p,new A.c_(B.dB,p,B.uA,A.cz(6),p,p,B.ai),p,p,p,B.de,p,p,1/0))
 else{s=A.bH(a,p,t.w).w.a.a>600?3:2
 q=t.hZ
 q=A.Q(new A.dZ(new A.aE(B.hl,new A.aBT(n),t.zO),new A.aBU(b,a),q),q.h("k.E"))
@@ -113783,7 +113783,7 @@ $1(a){return a.a===this.a},
 $S:123}
 A.aBT.prototype={
 $1(a){var s=this.a
-s=s==null||B.l.q(s.f,a.a)
+s=s==null||s.d==="Admin"||B.l.q(s.f,a.a)
 return s},
 $S:123}
 A.aBU.prototype={
