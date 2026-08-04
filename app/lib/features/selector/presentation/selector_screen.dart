@@ -59,8 +59,10 @@ class SelectorScreen extends ConsumerWidget {
                             style: TextStyle(color: AppColors.textSecondary),
                           ),
                           const SizedBox(height: 20),
-                          if (perfil != null && !perfil.modulos.any((m) => modulosDisponibles
-                              .any((mod) => mod.clave == m && mod.disponible)))
+                          if (perfil != null &&
+                              !perfil.esAdmin &&
+                              !perfil.modulos.any((m) => modulosDisponibles
+                                  .any((mod) => mod.clave == m && mod.disponible)))
                             Container(
                               width: double.infinity,
                               padding: const EdgeInsets.all(15),
@@ -86,11 +88,13 @@ class SelectorScreen extends ConsumerWidget {
                                   mainAxisExtent: 150,
                                 ),
                                 children: modulosDisponibles
-                                    // Los módulos ya activos se filtran por permiso; los que
-                                    // aún no existen se muestran como vista previa para todos.
+                                    // Los módulos ya activos se filtran por permiso (el Admin
+                                    // siempre ve todos); los que aún no existen se muestran
+                                    // como vista previa para todos.
                                     .where((m) =>
                                         !m.disponible ||
                                         perfil == null ||
+                                        perfil.esAdmin ||
                                         perfil.modulos.contains(m.clave))
                                     .map((m) => _TarjetaModulo(
                                           modulo: m,
