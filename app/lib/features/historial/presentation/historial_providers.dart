@@ -1,9 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/modulos.dart';
 import '../data/historial_repository.dart';
 import '../domain/transaccion.dart';
 
-final historialRepositoryProvider = Provider((ref) => HistorialRepository());
+final historialRepositoryProvider = Provider<HistorialRepository>(
+  (ref) => HistorialRepository(ref.watch(tablasActivasProvider)),
+);
 
 final historialEntradasProvider = FutureProvider.autoDispose<List<TransaccionEntrada>>((ref) {
   return ref.watch(historialRepositoryProvider).obtenerHistorialEntradas();

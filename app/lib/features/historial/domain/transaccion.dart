@@ -44,7 +44,7 @@ class TransaccionEntrada {
       usuarioNombre: map['usuario_nombre'] as String? ?? '',
       observaciones: map['observaciones'] as String? ?? '',
       firmaUrl: map['firma_url'] as String?,
-      items: ((map['inv_detalle_entradas'] as List?) ?? [])
+      items: ((map['detalles'] as List?) ?? [])
           .map((e) => DetalleItem.fromMap(e as Map<String, dynamic>))
           .toList(),
     );
@@ -81,7 +81,7 @@ class TransaccionSalida {
       proposito: map['proposito'] as String? ?? '',
       usuarioNombre: map['usuario_nombre'] as String? ?? '',
       firmaUrl: map['firma_url'] as String?,
-      items: ((map['inv_detalle_salidas'] as List?) ?? [])
+      items: ((map['detalles'] as List?) ?? [])
           .map((e) => DetalleItem.fromMap(e as Map<String, dynamic>))
           .toList(),
     );

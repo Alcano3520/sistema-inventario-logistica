@@ -95,10 +95,14 @@ class SelectorScreen extends ConsumerWidget {
                                     .map((m) => _TarjetaModulo(
                                           modulo: m,
                                           onTap: m.disponible
-                                              ? () => Navigator.of(context).push(
+                                              ? () {
+                                                  ref.read(moduloActivoProvider.notifier).state =
+                                                      m.clave;
+                                                  Navigator.of(context).push(
                                                     MaterialPageRoute(
                                                         builder: (_) => const AppShell()),
-                                                  )
+                                                  );
+                                                }
                                               : null,
                                         ))
                                     .toList(),

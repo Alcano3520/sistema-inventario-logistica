@@ -1,9 +1,19 @@
 import 'dart:typed_data';
 
+import '../../../core/modulos.dart';
 import '../../../core/supabase_config.dart';
 import '../domain/item_movimiento.dart';
 
 class MovimientosRepository {
+  final ModuloTablas tablas;
+
+  const MovimientosRepository(this.tablas);
+
+  String _rutaFirma(String subcarpeta, String idTransaccion) {
+    final prefijo = tablas.carpetaFirmas.isEmpty ? '' : '${tablas.carpetaFirmas}/';
+    return '$prefijo$subcarpeta/$idTransaccion.png';
+  }
+
   Future<void> registrarEntrada({
     required DateTime fecha,
     required String proveedor,
@@ -15,7 +25,7 @@ class MovimientosRepository {
     Uint8List? firma,
   }) async {
     final transaccion = await supabase
-        .from('inv_transacciones_entrada')
+        .from(tablas.transaccionesEntrada)
         .insert({
           'fecha_hora': fecha.toIso8601String(),
           'proveedor': proveedor,
@@ -29,7 +39,7 @@ class MovimientosRepository {
 
     final idTransaccion = transaccion['id_transaccion'] as String;
 
-    await supabase.from('inv_detalle_entradas').insert(items
+    await supabase.from(tablas.detalleEntradas).insert(items
         .map((i) => {
               'id_transaccion': idTransaccion,
               'cod': i.cod,
@@ -40,9 +50,9 @@ class MovimientosRepository {
 
     if (firma != null) {
       await _subirFirma(
-          bucketPath: 'entradas/$idTransaccion.png',
+          bucketPath: _rutaFirma('entradas', idTransaccion),
           bytes: firma,
-          tabla: 'inv_transacciones_entrada',
+          tabla: tablas.transaccionesEntrada,
           idTransaccion: idTransaccion);
     }
   }
@@ -58,7 +68,7 @@ class MovimientosRepository {
     Uint8List? firma,
   }) async {
     final transaccion = await supabase
-        .from('inv_transacciones_salida')
+        .from(tablas.transaccionesSalida)
         .insert({
           'fecha_hora': fecha.toIso8601String(),
           'bote': bote,
@@ -72,7 +82,7 @@ class MovimientosRepository {
 
     final idTransaccion = transaccion['id_transaccion'] as String;
 
-    await supabase.from('inv_detalle_salidas').insert(items
+    await supabase.from(tablas.detalleSalidas).insert(items
         .map((i) => {
               'id_transaccion': idTransaccion,
               'cod': i.cod,
@@ -83,9 +93,9 @@ class MovimientosRepository {
 
     if (firma != null) {
       await _subirFirma(
-          bucketPath: 'salidas/$idTransaccion.png',
+          bucketPath: _rutaFirma('salidas', idTransaccion),
           bytes: firma,
-          tabla: 'inv_transacciones_salida',
+          tabla: tablas.transaccionesSalida,
           idTransaccion: idTransaccion);
     }
   }

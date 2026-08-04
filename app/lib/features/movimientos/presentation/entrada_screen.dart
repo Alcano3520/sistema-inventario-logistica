@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:signature/signature.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../core/modulos.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../productos/presentation/productos_providers.dart';
 import '../data/movimientos_repository.dart';
@@ -10,7 +11,9 @@ import '../domain/item_movimiento.dart';
 import 'firma_widget.dart';
 import 'item_row_widget.dart';
 
-final movimientosRepositoryProvider = Provider((ref) => MovimientosRepository());
+final movimientosRepositoryProvider = Provider<MovimientosRepository>(
+  (ref) => MovimientosRepository(ref.watch(tablasActivasProvider)),
+);
 
 class EntradaScreen extends ConsumerStatefulWidget {
   const EntradaScreen({super.key});

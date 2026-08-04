@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../core/modulos.dart';
 import '../../productos/presentation/productos_providers.dart';
 import '../data/duplicados_repository.dart';
 
-final duplicadosRepositoryProvider = Provider((ref) => DuplicadosRepository());
+final duplicadosRepositoryProvider = Provider<DuplicadosRepository>(
+  (ref) => DuplicadosRepository(ref.watch(tablasActivasProvider)),
+);
 
 class DuplicadosScreen extends ConsumerStatefulWidget {
   const DuplicadosScreen({super.key});

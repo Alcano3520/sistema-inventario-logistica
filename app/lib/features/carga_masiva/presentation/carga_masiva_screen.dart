@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../core/modulos.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../productos/presentation/productos_providers.dart';
 import '../data/carga_masiva_repository.dart';
 import 'csv_import_panel.dart';
 
-final cargaMasivaRepositoryProvider = Provider((ref) => CargaMasivaRepository());
+final cargaMasivaRepositoryProvider = Provider<CargaMasivaRepository>(
+  (ref) => CargaMasivaRepository(ref.watch(tablasActivasProvider)),
+);
 
 class CargaMasivaScreen extends ConsumerStatefulWidget {
   const CargaMasivaScreen({super.key});
@@ -23,6 +26,7 @@ class _CargaMasivaScreenState extends ConsumerState<CargaMasivaScreen> {
   Widget build(BuildContext context) {
     final perfil = ref.watch(perfilActualProvider).valueOrNull;
     final repo = ref.read(cargaMasivaRepositoryProvider);
+    final tablas = ref.watch(tablasActivasProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -71,8 +75,9 @@ class _CargaMasivaScreenState extends ConsumerState<CargaMasivaScreen> {
           else
             CsvImportPanel(
               infoTitulo: '📋 Formato:',
-              infoTexto: 'COD, PRODUCTO, FECHA, CANTIDAD, BOTE  (fecha dd/mm/yyyy)',
-              hint: '8M0142673,SOPORTE ALTERNADOR,10/01/2025,1,BOTE 31',
+              infoTexto:
+                  'COD, PRODUCTO, FECHA, CANTIDAD, ${tablas.etiquetaVehiculo.toUpperCase()}  (fecha dd/mm/yyyy)',
+              hint: '8M0142673,SOPORTE ALTERNADOR,10/01/2025,1,${tablas.ejemploVehiculo}',
               botonTexto: '📤 Cargar Salidas',
               etiquetaExito: 'Ítems de salida procesados',
               onProcesar: (csv) async {

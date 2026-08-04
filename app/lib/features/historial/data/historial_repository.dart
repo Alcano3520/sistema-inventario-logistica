@@ -1,11 +1,16 @@
+import '../../../core/modulos.dart';
 import '../../../core/supabase_config.dart';
 import '../domain/transaccion.dart';
 
 class HistorialRepository {
+  final ModuloTablas tablas;
+
+  const HistorialRepository(this.tablas);
+
   Future<List<TransaccionEntrada>> obtenerHistorialEntradas() async {
     final data = await supabase
-        .from('inv_transacciones_entrada')
-        .select('*, inv_detalle_entradas(*)')
+        .from(tablas.transaccionesEntrada)
+        .select('*, detalles:${tablas.detalleEntradas}(*)')
         .order('fecha_hora', ascending: false);
     return (data as List)
         .map((e) => TransaccionEntrada.fromMap(e as Map<String, dynamic>))
@@ -14,8 +19,8 @@ class HistorialRepository {
 
   Future<List<TransaccionSalida>> obtenerHistorialSalidas() async {
     final data = await supabase
-        .from('inv_transacciones_salida')
-        .select('*, inv_detalle_salidas(*)')
+        .from(tablas.transaccionesSalida)
+        .select('*, detalles:${tablas.detalleSalidas}(*)')
         .order('fecha_hora', ascending: false);
     return (data as List)
         .map((e) => TransaccionSalida.fromMap(e as Map<String, dynamic>))

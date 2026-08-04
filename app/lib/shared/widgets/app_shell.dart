@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/app_theme.dart';
+import '../../core/modulos.dart';
 import '../../features/auth/presentation/auth_providers.dart';
 import '../../features/carga_masiva/presentation/carga_masiva_screen.dart';
 import '../../features/carga_masiva/presentation/migracion_screen.dart';
@@ -111,6 +112,12 @@ class _MenuLateral extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final claveModulo = ref.watch(moduloActivoProvider);
+    final modulo = modulosDisponibles.firstWhere(
+      (m) => m.clave == claveModulo,
+      orElse: () => modulosDisponibles.first,
+    );
+
     return Drawer(
       child: Column(
         children: [
@@ -126,8 +133,8 @@ class _MenuLateral extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('📦 INVENTARIO_BARCOS',
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('${modulo.emoji} ${modulo.titulo}',
+                    style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 Text(nombre,
                     style: const TextStyle(color: Colors.white, fontSize: 14),

@@ -1,14 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/modulos.dart';
 import '../data/productos_repository.dart';
 import '../domain/producto.dart';
 
-final productosRepositoryProvider = Provider<ProductosRepository>((ref) => ProductosRepository());
+final productosRepositoryProvider = Provider<ProductosRepository>(
+  (ref) => ProductosRepository(ref.watch(tablasActivasProvider)),
+);
 
 class ProductosNotifier extends AsyncNotifier<List<Producto>> {
   @override
   Future<List<Producto>> build() {
-    return ref.read(productosRepositoryProvider).obtenerProductos();
+    return ref.watch(productosRepositoryProvider).obtenerProductos();
   }
 
   Future<void> refrescar() async {

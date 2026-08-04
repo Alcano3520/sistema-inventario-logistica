@@ -1,7 +1,12 @@
+import '../../../core/modulos.dart';
 import '../../../core/supabase_config.dart';
 import '../domain/resultado_carga.dart';
 
 class CargaMasivaRepository {
+  final ModuloTablas tablas;
+
+  const CargaMasivaRepository(this.tablas);
+
   List<List<String>> _parsearCsv(String texto) {
     return texto
         .split('\n')
@@ -43,7 +48,7 @@ class CargaMasivaRepository {
     }
 
     if (validas.isNotEmpty) {
-      await supabase.from('inv_productos').upsert(validas, onConflict: 'cod');
+      await supabase.from(tablas.productos).upsert(validas, onConflict: 'cod');
     }
 
     return ResultadoCarga(agregados: validas.length, actualizados: 0, errores: errores);
@@ -95,7 +100,7 @@ class CargaMasivaRepository {
     for (final entry in porFecha.entries) {
       final items = entry.value;
       final transaccion = await supabase
-          .from('inv_transacciones_entrada')
+          .from(tablas.transaccionesEntrada)
           .insert({
             'fecha_hora': (items.first['fecha'] as DateTime).toIso8601String(),
             'proveedor': 'Migración histórica',
@@ -108,7 +113,7 @@ class CargaMasivaRepository {
 
       final idTransaccion = transaccion['id_transaccion'] as String;
 
-      await supabase.from('inv_detalle_entradas').insert(items
+      await supabase.from(tablas.detalleEntradas).insert(items
           .map((i) => {
                 'id_transaccion': idTransaccion,
                 'cod': i['cod'],
@@ -135,7 +140,8 @@ class CargaMasivaRepository {
     for (var i = 0; i < filas.length; i++) {
       final f = filas[i];
       if (f.length < 5) {
-        errores.add('Fila ${i + 1}: se esperan 5 columnas (COD, PRODUCTO, FECHA, CANTIDAD, BOTE).');
+        errores.add(
+            'Fila ${i + 1}: se esperan 5 columnas (COD, PRODUCTO, FECHA, CANTIDAD, ${tablas.etiquetaVehiculo.toUpperCase()}).');
         continue;
       }
       final cod = f[0];
@@ -172,7 +178,7 @@ class CargaMasivaRepository {
       final items = entry.value;
       try {
         final transaccion = await supabase
-            .from('inv_transacciones_salida')
+            .from(tablas.transaccionesSalida)
             .insert({
               'fecha_hora': (items.first['fecha'] as DateTime).toIso8601String(),
               'bote': items.first['bote'],
@@ -186,7 +192,7 @@ class CargaMasivaRepository {
 
         final idTransaccion = transaccion['id_transaccion'] as String;
 
-        await supabase.from('inv_detalle_salidas').insert(items
+        await supabase.from(tablas.detalleSalidas).insert(items
             .map((i) => {
                   'id_transaccion': idTransaccion,
                   'cod': i['cod'],

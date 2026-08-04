@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../core/modulos.dart';
 import '../../../core/supabase_config.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../duplicados/presentation/duplicados_screen.dart';
@@ -12,12 +13,13 @@ class DashboardScreen extends ConsumerWidget {
 
   Future<void> _ejecutarDiagnostico(BuildContext context, WidgetRef ref) async {
     final productos = ref.read(productosProvider).valueOrNull ?? [];
+    final tablas = ref.read(tablasActivasProvider);
     late final int entradas;
     late final int salidas;
     late final int perfiles;
     try {
-      entradas = await supabase.from('inv_transacciones_entrada').count();
-      salidas = await supabase.from('inv_transacciones_salida').count();
+      entradas = await supabase.from(tablas.transaccionesEntrada).count();
+      salidas = await supabase.from(tablas.transaccionesSalida).count();
       perfiles = await supabase.from('inv_perfiles').count();
     } catch (_) {
       entradas = -1;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../core/modulos.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../productos/presentation/productos_providers.dart';
 import 'carga_masiva_screen.dart' show cargaMasivaRepositoryProvider;
@@ -21,6 +22,7 @@ class _MigracionScreenState extends ConsumerState<MigracionScreen> {
   Widget build(BuildContext context) {
     final perfil = ref.watch(perfilActualProvider).valueOrNull;
     final repo = ref.read(cargaMasivaRepositoryProvider);
+    final tablas = ref.watch(tablasActivasProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -70,8 +72,9 @@ class _MigracionScreenState extends ConsumerState<MigracionScreen> {
           else
             CsvImportPanel(
               infoTitulo: '📋 Formato de Salidas:',
-              infoTexto: 'COD, PRODUCTO, FECHA, CANTIDAD, BOTE  (fecha dd/mm/yyyy)',
-              hint: '8M0142673,SOPORTE ALTERNADOR,10/01/2025,1,BOTE 31',
+              infoTexto:
+                  'COD, PRODUCTO, FECHA, CANTIDAD, ${tablas.etiquetaVehiculo.toUpperCase()}  (fecha dd/mm/yyyy)',
+              hint: '8M0142673,SOPORTE ALTERNADOR,10/01/2025,1,${tablas.ejemploVehiculo}',
               botonTexto: '📤 Migrar Salidas',
               etiquetaExito: 'Ítems de salida migrados',
               onProcesar: (csv) async {

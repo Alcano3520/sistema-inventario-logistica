@@ -4,6 +4,7 @@ import 'package:postgrest/postgrest.dart';
 import 'package:signature/signature.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../core/modulos.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../productos/presentation/productos_providers.dart';
 import 'entrada_screen.dart' show movimientosRepositoryProvider;
@@ -57,8 +58,9 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
       _exito = null;
     });
 
+    final tablas = ref.read(tablasActivasProvider);
     if (_boteController.text.trim().isEmpty) {
-      setState(() => _error = 'Debe especificar el bote.');
+      setState(() => _error = 'Debe especificar el campo "${tablas.etiquetaVehiculo}".');
       return;
     }
     if (_aQuienController.text.trim().isEmpty) {
@@ -112,6 +114,7 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
   @override
   Widget build(BuildContext context) {
     final productos = ref.watch(productosProvider).valueOrNull ?? [];
+    final tablas = ref.watch(tablasActivasProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -142,11 +145,11 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          _labelRequerido('Bote:'),
+          _labelRequerido('${tablas.etiquetaVehiculo}:'),
           const SizedBox(height: 6),
           TextField(
               controller: _boteController,
-              decoration: const InputDecoration(hintText: 'Ej: BOTE 1, BOTE 31')),
+              decoration: InputDecoration(hintText: tablas.hintVehiculo)),
           const SizedBox(height: 16),
           _labelRequerido('A quién se entrega:'),
           const SizedBox(height: 6),
