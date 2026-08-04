@@ -1,12 +1,21 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:excel/excel.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import '../domain/producto.dart';
+
+/// Resultado de una exportación: la ruta elegida por el usuario, o null si
+/// canceló el diálogo de "Guardar como".
+class ResultadoExportacion {
+  final String? ruta;
+  final bool cancelado;
+
+  const ResultadoExportacion({this.ruta, this.cancelado = false});
+}
 
 class ExportadorInventario {
   static const _encabezados = [
@@ -20,16 +29,6 @@ class ExportadorInventario {
     'Stock Min.'
   ];
 
-  Future<Directory> _directorioDestino() async {
-    try {
-      final descargas = await getDownloadsDirectory();
-      if (descargas != null) return descargas;
-    } catch (_) {
-      // Plataforma sin carpeta de descargas (ej. Android/iOS): usar documentos de la app.
-    }
-    return getApplicationDocumentsDirectory();
-  }
-
   String _nombreArchivo(String extension) {
     final ahora = DateTime.now();
     String p2(int n) => n.toString().padLeft(2, '0');
@@ -37,7 +36,28 @@ class ExportadorInventario {
         '${p2(ahora.hour)}${p2(ahora.minute)}.$extension';
   }
 
-  Future<String> exportarCsv(List<Producto> productos) async {
+  /// Abre el diálogo nativo "Guardar como" para que el usuario elija dónde
+  /// guardar el archivo. Devuelve la ruta elegida, o null si canceló.
+  Future<ResultadoExportacion> _guardar({
+    required Uint8List bytes,
+    required String nombreArchivo,
+    required String extension,
+  }) async {
+    final ruta = await FilePicker.saveFile(
+      dialogTitle: 'Guardar como',
+      fileName: nombreArchivo,
+      type: FileType.custom,
+      allowedExtensions: [extension],
+      bytes: bytes,
+    );
+
+    if (ruta == null) {
+      return const ResultadoExportacion(cancelado: true);
+    }
+    return ResultadoExportacion(ruta: ruta);
+  }
+
+  Future<ResultadoExportacion> exportarCsv(List<Producto> productos) async {
     final buffer = StringBuffer();
     buffer.writeln(_encabezados.join(','));
     for (final p in productos) {
@@ -53,11 +73,9 @@ class ExportadorInventario {
       ].join(','));
     }
 
-    final dir = await _directorioDestino();
-    final file = File('${dir.path}/${_nombreArchivo('csv')}');
     // BOM UTF-8 para que Excel reconozca tildes/ñ correctamente.
-    await file.writeAsBytes([0xEF, 0xBB, 0xBF, ...utf8.encode(buffer.toString())]);
-    return file.path;
+    final bytes = Uint8List.fromList([0xEF, 0xBB, 0xBF, ...utf8.encode(buffer.toString())]);
+    return _guardar(bytes: bytes, nombreArchivo: _nombreArchivo('csv'), extension: 'csv');
   }
 
   String _csv(String valor) {
@@ -67,7 +85,7 @@ class ExportadorInventario {
     return valor;
   }
 
-  Future<String> exportarExcel(List<Producto> productos) async {
+  Future<ResultadoExportacion> exportarExcel(List<Producto> productos) async {
     final libro = Excel.createExcel();
     final hoja = libro['Inventario'];
     libro.setDefaultSheet('Inventario');
@@ -86,18 +104,19 @@ class ExportadorInventario {
       ]);
     }
 
-    final bytes = libro.save();
-    if (bytes == null) {
+    final datos = libro.save();
+    if (datos == null) {
       throw Exception('No se pudo generar el archivo Excel.');
     }
 
-    final dir = await _directorioDestino();
-    final file = File('${dir.path}/${_nombreArchivo('xlsx')}');
-    await file.writeAsBytes(bytes);
-    return file.path;
+    return _guardar(
+      bytes: Uint8List.fromList(datos),
+      nombreArchivo: _nombreArchivo('xlsx'),
+      extension: 'xlsx',
+    );
   }
 
-  Future<String> exportarPdf(List<Producto> productos) async {
+  Future<ResultadoExportacion> exportarPdf(List<Producto> productos) async {
     final doc = pw.Document();
 
     doc.addPage(
@@ -127,9 +146,6 @@ class ExportadorInventario {
     );
 
     final bytes = await doc.save();
-    final dir = await _directorioDestino();
-    final file = File('${dir.path}/${_nombreArchivo('pdf')}');
-    await file.writeAsBytes(bytes);
-    return file.path;
+    return _guardar(bytes: bytes, nombreArchivo: _nombreArchivo('pdf'), extension: 'pdf');
   }
 }

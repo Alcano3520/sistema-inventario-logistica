@@ -18,7 +18,8 @@ class InventarioScreen extends ConsumerStatefulWidget {
 class _InventarioScreenState extends ConsumerState<InventarioScreen> {
   bool _exportando = false;
 
-  Future<void> _exportar(Future<String> Function(List<Producto>) fn) async {
+  Future<void> _exportar(
+      Future<ResultadoExportacion> Function(List<Producto>) fn) async {
     if (_exportando) return;
     final productos = ref.read(productosFiltradosProvider);
     if (productos.isEmpty) {
@@ -30,10 +31,10 @@ class _InventarioScreenState extends ConsumerState<InventarioScreen> {
 
     setState(() => _exportando = true);
     try {
-      final ruta = await fn(productos);
-      if (mounted) {
+      final resultado = await fn(productos);
+      if (mounted && !resultado.cancelado) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('✅ Exportado a: $ruta')),
+          SnackBar(content: Text('✅ Guardado en: ${resultado.ruta}')),
         );
       }
     } catch (e) {
