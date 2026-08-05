@@ -110,14 +110,13 @@ class _AjusteStockGeneralScreenState extends ConsumerState<AjusteStockGeneralScr
   Widget build(BuildContext context) {
     final articulos = ref.watch(articulosGeneralProvider).valueOrNull ?? [];
     final busqueda = _busquedaController.text.trim().toLowerCase();
-    final filtrados = busqueda.isEmpty
-        ? const <ArticuloGeneral>[]
-        : articulos
-            .where((a) =>
+    final filtrados = (busqueda.isEmpty
+            ? articulos
+            : articulos.where((a) =>
                 a.descripcion.toLowerCase().contains(busqueda) ||
-                a.codigoInterno.toLowerCase().contains(busqueda))
-            .take(15)
-            .toList();
+                a.codigoInterno.toLowerCase().contains(busqueda)))
+        .take(15)
+        .toList();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -149,21 +148,41 @@ class _AjusteStockGeneralScreenState extends ConsumerState<AjusteStockGeneralScr
                 ],
               ),
             )
+          else if (articulos.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF4E5),
+                borderRadius: BorderRadius.circular(6),
+                border: const Border(left: BorderSide(color: AppColors.warning, width: 4)),
+              ),
+              child: const Text(
+                '⚠️ Todavía no hay artículos registrados. Agrégalos primero en la pestaña "Artículos".',
+              ),
+            )
           else ...[
             TextField(
               controller: _busquedaController,
               decoration: const InputDecoration(hintText: 'Buscar artículo...'),
               onChanged: (_) => setState(() {}),
             ),
-            ...filtrados.map((a) => ListTile(
-                  dense: true,
-                  title: Text(a.descripcion),
-                  subtitle: Text('${a.codigoInterno} · Stock: ${a.stockDisponible}'),
-                  onTap: () => setState(() {
-                    _articulo = a;
-                    _busquedaController.clear();
-                  }),
-                )),
+            const SizedBox(height: 8),
+            if (filtrados.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text('No se encontraron artículos con "$busqueda".',
+                    style: const TextStyle(color: AppColors.textSecondary)),
+              )
+            else
+              ...filtrados.map((a) => ListTile(
+                    dense: true,
+                    title: Text(a.descripcion),
+                    subtitle: Text('${a.codigoInterno} · Stock: ${a.stockDisponible}'),
+                    onTap: () => setState(() {
+                      _articulo = a;
+                      _busquedaController.clear();
+                    }),
+                  )),
           ],
           const SizedBox(height: 16),
           SegmentedButton<_TipoAjuste>(
