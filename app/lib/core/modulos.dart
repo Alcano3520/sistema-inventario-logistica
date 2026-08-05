@@ -74,24 +74,34 @@ const _tablasPorModulo = <String, ModuloTablas>{
 
 ModuloTablas tablasDeModulo(String clave) => _tablasPorModulo[clave] ?? _tablasBarcos;
 
+/// Los módulos "simples" (Barcos/Motos) comparten las mismas pantallas de
+/// productos/entrada/salida, solo cambia la tabla. "Dotación" (Inventario
+/// General) es un flujo completamente distinto (entregas a empleados,
+/// descuentos de nómina, devoluciones, correcciones) con sus propias
+/// pantallas, así que [AppShell] arma un menú diferente según este tipo.
+enum TipoModulo { simple, dotacion }
+
 class ModuloInfo {
   final String clave;
   final String emoji;
   final String titulo;
   final bool disponible;
+  final TipoModulo tipo;
 
   const ModuloInfo({
     required this.clave,
     required this.emoji,
     required this.titulo,
     this.disponible = true,
+    this.tipo = TipoModulo.simple,
   });
 }
 
 /// Catálogo central de módulos/inventarios de la aplicación. Al agregar un
-/// inventario nuevo, se suma aquí (con sus tablas en [_tablasPorModulo]) y
-/// en el selector.
+/// inventario nuevo, se suma aquí (con sus tablas en [_tablasPorModulo] si
+/// es de tipo simple) y en el selector.
 const modulosDisponibles = [
+  ModuloInfo(clave: 'general', emoji: '📦', titulo: 'INVENTARIO_GENERAL', tipo: TipoModulo.dotacion),
   ModuloInfo(clave: 'barcos', emoji: '🚤', titulo: 'INVENTARIO_BARCOS'),
   ModuloInfo(clave: 'motos', emoji: '🏍️', titulo: 'INVENTARIO_MOTOS'),
 ];

@@ -7,6 +7,17 @@ import '../../features/auth/presentation/auth_providers.dart';
 import '../../features/carga_masiva/presentation/carga_masiva_screen.dart';
 import '../../features/carga_masiva/presentation/migracion_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
+import '../../features/general/presentation/ajuste_stock_general_screen.dart';
+import '../../features/general/presentation/articulos_general_screen.dart';
+import '../../features/general/presentation/carga_masiva_general_screen.dart';
+import '../../features/general/presentation/correcciones_general_screen.dart';
+import '../../features/general/presentation/dashboard_general_screen.dart';
+import '../../features/general/presentation/descuentos_general_screen.dart';
+import '../../features/general/presentation/devolucion_general_screen.dart';
+import '../../features/general/presentation/entrega_general_screen.dart';
+import '../../features/general/presentation/historial_general_screen.dart';
+import '../../features/general/presentation/inventario_general_screen.dart';
+import '../../features/general/presentation/reportes_general_screen.dart';
 import '../../features/historial/presentation/historial_screen.dart';
 import '../../features/movimientos/presentation/entrada_screen.dart';
 import '../../features/movimientos/presentation/salida_screen.dart';
@@ -34,7 +45,7 @@ class _AppShellState extends ConsumerState<AppShell> {
   int _index = 0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<_TabDef> _construirTabs(bool esAdmin) {
+  List<_TabDef> _construirTabsSimple(bool esAdmin) {
     return [
       const _TabDef('📊', 'Dashboard', DashboardScreen()),
       const _TabDef('📥', 'Entrada', EntradaScreen()),
@@ -49,6 +60,24 @@ class _AppShellState extends ConsumerState<AppShell> {
     ];
   }
 
+  List<_TabDef> _construirTabsDotacion(bool esAdmin) {
+    return [
+      const _TabDef('📊', 'Dashboard', DashboardGeneralScreen()),
+      const _TabDef('🧾', 'Entregas', EntregaGeneralScreen()),
+      const _TabDef('↩️', 'Devoluciones', DevolucionGeneralScreen()),
+      const _TabDef('📋', 'Inventario', InventarioGeneralScreen()),
+      if (esAdmin) const _TabDef('➕', 'Artículos', ArticulosGeneralScreen()),
+      const _TabDef('📜', 'Historial', HistorialGeneralScreen()),
+      if (esAdmin) const _TabDef('⚖️', 'Ajuste Stock', AjusteStockGeneralScreen()),
+      if (esAdmin) const _TabDef('📂', 'Carga Masiva', CargaMasivaGeneralScreen()),
+      if (esAdmin) const _TabDef('🛠️', 'Correcciones', CorreccionesGeneralScreen()),
+      if (esAdmin) const _TabDef('💰', 'Descuentos', DescuentosGeneralScreen()),
+      const _TabDef('📄', 'Reportes', ReportesGeneralScreen()),
+      if (esAdmin) const _TabDef('👥', 'Usuarios', UsuariosScreen()),
+      const _TabDef('⚙️', 'Mi Perfil', MiPerfilScreen()),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final perfilAsync = ref.watch(perfilActualProvider);
@@ -58,7 +87,14 @@ class _AppShellState extends ConsumerState<AppShell> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final tabs = _construirTabs(perfil.esAdmin);
+    final claveModulo = ref.watch(moduloActivoProvider);
+    final moduloInfo = modulosDisponibles.firstWhere(
+      (m) => m.clave == claveModulo,
+      orElse: () => modulosDisponibles.first,
+    );
+    final tabs = moduloInfo.tipo == TipoModulo.dotacion
+        ? _construirTabsDotacion(perfil.esAdmin)
+        : _construirTabsSimple(perfil.esAdmin);
     if (_index >= tabs.length) _index = 0;
 
     return Scaffold(
