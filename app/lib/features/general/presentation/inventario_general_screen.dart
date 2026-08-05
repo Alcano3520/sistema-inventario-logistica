@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/app_theme.dart';
 import '../domain/articulo_general.dart';
+import 'articulo_detalle_general_screen.dart';
 import 'general_providers.dart';
 
 class InventarioGeneralScreen extends ConsumerWidget {
@@ -80,7 +81,12 @@ class _TarjetaArticulo extends StatelessWidget {
             ? const Color(0xFFFFF4E5)
             : AppColors.surface;
 
-    return Container(
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => ArticuloDetalleGeneralScreen(articulo: articulo)),
+      ),
+      child: Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -132,6 +138,7 @@ class _TarjetaArticulo extends StatelessWidget {
             ],
           ),
         ],
+      ),
       ),
     );
   }
@@ -185,6 +192,9 @@ class _TablaInventario extends StatelessWidget {
                     : null;
             return DataRow(
               color: rowColor != null ? WidgetStateProperty.all(rowColor) : null,
+              onSelectChanged: (_) => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => ArticuloDetalleGeneralScreen(articulo: a)),
+              ),
               cells: [
                 DataCell(Text(a.codigoInterno)),
                 DataCell(Text(a.descripcion)),

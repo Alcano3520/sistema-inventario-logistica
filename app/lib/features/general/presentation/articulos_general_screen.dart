@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:postgrest/postgrest.dart';
 
 import '../../../core/app_theme.dart';
+import '../domain/articulo_general.dart';
 import 'general_providers.dart';
 
 class ArticulosGeneralScreen extends ConsumerStatefulWidget {
@@ -200,6 +201,15 @@ class _ArticulosGeneralScreenState extends ConsumerState<ArticulosGeneralScreen>
               const SizedBox(height: 20),
               _mensaje(_resultadoError!, exito: false),
             ],
+            const SizedBox(height: 30),
+            const Divider(),
+            const SizedBox(height: 10),
+            const Text(
+              '📋 Artículos registrados',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 12),
+            const _ListaArticulos(),
           ],
         ),
       ),
@@ -253,6 +263,248 @@ class _ArticulosGeneralScreenState extends ConsumerState<ArticulosGeneralScreen>
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ListaArticulos extends ConsumerWidget {
+  const _ListaArticulos();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final articulosAsync = ref.watch(articulosGeneralProvider);
+
+    return articulosAsync.when(
+      loading: () => const Center(child: Padding(
+        padding: EdgeInsets.all(20),
+        child: CircularProgressIndicator(),
+      )),
+      error: (e, _) => Text('Error al cargar artículos: $e'),
+      data: (articulos) {
+        if (articulos.isEmpty) {
+          return const Text('Aún no hay artículos registrados.',
+              style: TextStyle(color: AppColors.textSecondary));
+        }
+        return Column(
+          children: articulos
+              .map((a) => Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      title: Text(a.descripcion),
+                      subtitle: Text(
+                          '${a.codigoInterno} · ${a.categoria.isEmpty ? 'Sin categoría' : a.categoria} · '
+                          'Stock: ${a.stockDisponible}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: AppColors.primary),
+                            tooltip: 'Editar',
+                            onPressed: () => showDialog(
+                              context: context,
+                              builder: (_) => _EditarArticuloDialog(articulo: a),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.visibility_off, color: AppColors.error),
+                            tooltip: 'Desactivar',
+                            onPressed: () async {
+                              final confirmar = await showDialog<bool>(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: const Text('Desactivar artículo'),
+                                  content: Text(
+                                      '¿Desactivar "${a.descripcion}"? Ya no aparecerá disponible para entregas, pero su historial se conserva.'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () => Navigator.pop(context, false),
+                                        child: const Text('Cancelar')),
+                                    ElevatedButton(
+                                        onPressed: () => Navigator.pop(context, true),
+                                        child: const Text('Desactivar')),
+                                  ],
+                                ),
+                              );
+                              if (confirmar == true) {
+                                await ref
+                                    .read(articulosGeneralRepositoryProvider)
+                                    .desactivarArticulo(a.id);
+                                await ref.read(articulosGeneralProvider.notifier).refrescar();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ))
+              .toList(),
+        );
+      },
+    );
+  }
+}
+
+class _EditarArticuloDialog extends ConsumerStatefulWidget {
+  final ArticuloGeneral articulo;
+  const _EditarArticuloDialog({required this.articulo});
+
+  @override
+  ConsumerState<_EditarArticuloDialog> createState() => _EditarArticuloDialogState();
+}
+
+class _EditarArticuloDialogState extends ConsumerState<_EditarArticuloDialog> {
+  late final TextEditingController _descripcionController;
+  late final TextEditingController _categoriaController;
+  late final TextEditingController _subcategoriaController;
+  late final TextEditingController _ubicacionController;
+  late final TextEditingController _proveedorController;
+  late final TextEditingController _stockMinimoController;
+  late final TextEditingController _valorUnitarioController;
+  late final TextEditingController _valorDescuentoController;
+  late bool _esDescontable;
+  late bool _requiereDevolucion;
+  bool _guardando = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    final a = widget.articulo;
+    _descripcionController = TextEditingController(text: a.descripcion);
+    _categoriaController = TextEditingController(text: a.categoria);
+    _subcategoriaController = TextEditingController(text: a.subcategoria ?? '');
+    _ubicacionController = TextEditingController(text: a.ubicacionBodega ?? '');
+    _proveedorController = TextEditingController(text: a.proveedor ?? '');
+    _stockMinimoController = TextEditingController(text: '${a.stockMinimo}');
+    _valorUnitarioController = TextEditingController(text: '${a.valorUnitario}');
+    _valorDescuentoController = TextEditingController(text: '${a.valorDescuento}');
+    _esDescontable = a.esDescontable;
+    _requiereDevolucion = a.requiereDevolucion;
+  }
+
+  @override
+  void dispose() {
+    _descripcionController.dispose();
+    _categoriaController.dispose();
+    _subcategoriaController.dispose();
+    _ubicacionController.dispose();
+    _proveedorController.dispose();
+    _stockMinimoController.dispose();
+    _valorUnitarioController.dispose();
+    _valorDescuentoController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _guardar() async {
+    setState(() {
+      _guardando = true;
+      _error = null;
+    });
+    try {
+      await ref.read(articulosGeneralRepositoryProvider).actualizarArticulo(
+            id: widget.articulo.id,
+            descripcion: _descripcionController.text,
+            categoria: _categoriaController.text,
+            subcategoria: _subcategoriaController.text,
+            stockMinimo: num.tryParse(_stockMinimoController.text) ?? widget.articulo.stockMinimo,
+            valorUnitario: num.tryParse(_valorUnitarioController.text) ?? widget.articulo.valorUnitario,
+            valorDescuento:
+                num.tryParse(_valorDescuentoController.text) ?? widget.articulo.valorDescuento,
+            esDescontable: _esDescontable,
+            requiereDevolucion: _requiereDevolucion,
+            ubicacionBodega: _ubicacionController.text,
+            proveedor: _proveedorController.text,
+          );
+      await ref.read(articulosGeneralProvider.notifier).refrescar();
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      setState(() => _error = 'Error al guardar: $e');
+    } finally {
+      if (mounted) setState(() => _guardando = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Editar: ${widget.articulo.codigoInterno}'),
+      content: SizedBox(
+        width: 400,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                  controller: _descripcionController,
+                  decoration: const InputDecoration(labelText: 'Descripción')),
+              const SizedBox(height: 10),
+              TextField(
+                  controller: _categoriaController,
+                  decoration: const InputDecoration(labelText: 'Categoría')),
+              const SizedBox(height: 10),
+              TextField(
+                  controller: _subcategoriaController,
+                  decoration: const InputDecoration(labelText: 'Subcategoría')),
+              const SizedBox(height: 10),
+              TextField(
+                  controller: _ubicacionController,
+                  decoration: const InputDecoration(labelText: 'Ubicación en bodega')),
+              const SizedBox(height: 10),
+              TextField(
+                  controller: _proveedorController,
+                  decoration: const InputDecoration(labelText: 'Proveedor')),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _stockMinimoController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Stock mínimo'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _valorUnitarioController,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(labelText: 'Valor unitario (\$)'),
+              ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('¿Genera descuento de nómina?'),
+                value: _esDescontable,
+                onChanged: (v) => setState(() => _esDescontable = v),
+              ),
+              if (_esDescontable)
+                TextField(
+                  controller: _valorDescuentoController,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(labelText: 'Valor de descuento (\$)'),
+                ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('¿Requiere devolución?'),
+                value: _requiereDevolucion,
+                onChanged: (v) => setState(() => _requiereDevolucion = v),
+              ),
+              if (_error != null) ...[
+                const SizedBox(height: 10),
+                Text(_error!, style: const TextStyle(color: AppColors.error)),
+              ],
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _guardando ? null : () => Navigator.pop(context),
+          child: const Text('Cancelar'),
+        ),
+        ElevatedButton(
+          onPressed: _guardando ? null : _guardar,
+          child: _guardando
+              ? const SizedBox(
+                  height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
+              : const Text('Guardar'),
+        ),
+      ],
     );
   }
 }

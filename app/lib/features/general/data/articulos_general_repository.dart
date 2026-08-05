@@ -1,4 +1,5 @@
 import '../../../core/supabase_config.dart';
+import '../domain/articulo_cambio.dart';
 import '../domain/articulo_general.dart';
 
 class ArticulosGeneralRepository {
@@ -68,5 +69,14 @@ class ArticulosGeneralRepository {
 
   Future<void> desactivarArticulo(String id) async {
     await supabase.from('inv_general_articulos').update({'activo': false}).eq('id', id);
+  }
+
+  Future<List<ArticuloCambio>> obtenerCambios(String articuloId) async {
+    final data = await supabase
+        .from('inv_general_articulos_cambios')
+        .select()
+        .eq('articulo_id', articuloId)
+        .order('created_at', ascending: false);
+    return (data as List).map((e) => ArticuloCambio.fromMap(e as Map<String, dynamic>)).toList();
   }
 }

@@ -258,6 +258,7 @@ class MovimientosGeneralRepository {
 
   Future<List<MovimientoGeneral>> obtenerHistorial({
     String? tipoMovimiento,
+    String? articuloId,
     DateTime? desde,
     DateTime? hasta,
     int limite = 200,
@@ -266,6 +267,7 @@ class MovimientosGeneralRepository {
         .from('inv_general_movimientos')
         .select('*, inv_general_articulos(descripcion, codigo_interno)');
     if (tipoMovimiento != null) query = query.eq('tipo_movimiento', tipoMovimiento);
+    if (articuloId != null) query = query.eq('articulo_id', articuloId);
     if (desde != null) query = query.gte('fecha_movimiento', desde.toIso8601String());
     if (hasta != null) query = query.lte('fecha_movimiento', hasta.toIso8601String());
 
@@ -278,6 +280,36 @@ class MovimientosGeneralRepository {
       'p_movimiento_id': movimientoId,
       'p_motivo': motivo,
     });
+  }
+
+  /// `true` si el movimiento tiene un descuento ya exportado a nómina —
+  /// en ese caso no se debe permitir editarlo ni anularlo (la anulación ya
+  /// lo bloquea server-side; esto se usa para bloquear también la edición).
+  Future<bool> tieneDescuentoExportado(String movimientoId) async {
+    final data = await supabase
+        .from('inv_general_descuentos_nomina')
+        .select('id')
+        .eq('movimiento_id', movimientoId)
+        .eq('exportado', true)
+        .limit(1);
+    return (data as List).isNotEmpty;
+  }
+
+  /// Edita cantidad/descuento/observaciones de un movimiento sin revertir ni
+  /// recalcular stock (edición de metadatos, no una corrección de stock).
+  Future<void> editarMovimiento({
+    required String movimientoId,
+    required num cantidad,
+    required bool aplicaDescuento,
+    required num valorDescuento,
+    required String observaciones,
+  }) async {
+    await supabase.from('inv_general_movimientos').update({
+      'cantidad': cantidad,
+      'aplica_descuento': aplicaDescuento,
+      'valor_descuento': valorDescuento,
+      'observaciones': observaciones,
+    }).eq('id', movimientoId);
   }
 
   Future<Map<String, dynamic>> recalcularStocks() async {

@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/app_theme.dart';
 import '../../auth/presentation/auth_providers.dart';
-import '../domain/articulo_general.dart';
 import '../domain/empleado_externo.dart';
 import '../domain/item_carrito.dart';
 import 'general_providers.dart';
@@ -146,14 +145,13 @@ class _DevolucionGeneralScreenState extends ConsumerState<DevolucionGeneralScree
   Widget build(BuildContext context) {
     final articulos = ref.watch(articulosGeneralProvider).valueOrNull ?? [];
     final busquedaArticulo = _busquedaArticuloController.text.trim().toLowerCase();
-    final articulosFiltrados = busquedaArticulo.isEmpty
-        ? const <ArticuloGeneral>[]
-        : articulos
-            .where((a) =>
+    final articulosFiltrados = (busquedaArticulo.isEmpty
+            ? articulos
+            : articulos.where((a) =>
                 a.descripcion.toLowerCase().contains(busquedaArticulo) ||
-                a.codigoInterno.toLowerCase().contains(busquedaArticulo))
-            .take(15)
-            .toList();
+                a.codigoInterno.toLowerCase().contains(busquedaArticulo)))
+        .take(15)
+        .toList();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -200,30 +198,53 @@ class _DevolucionGeneralScreenState extends ConsumerState<DevolucionGeneralScree
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextField(
-                  controller: _busquedaArticuloController,
-                  decoration: const InputDecoration(hintText: 'Buscar artículo por código o nombre...'),
-                  onChanged: (_) => setState(() {}),
-                ),
-                if (articulosFiltrados.isNotEmpty) ...[
+                if (articulos.isEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF4E5),
+                      borderRadius: BorderRadius.circular(6),
+                      border: const Border(left: BorderSide(color: AppColors.warning, width: 4)),
+                    ),
+                    child: const Text(
+                      '⚠️ Todavía no hay artículos registrados en el Inventario General. '
+                      'Un Admin debe agregarlos primero en la pestaña "Artículos".',
+                    ),
+                  )
+                else ...[
+                  TextField(
+                    controller: _busquedaArticuloController,
+                    decoration:
+                        const InputDecoration(hintText: 'Buscar artículo por código o nombre...'),
+                    onChanged: (_) => setState(() {}),
+                  ),
                   const SizedBox(height: 8),
-                  ...articulosFiltrados.map((a) => ListTile(
-                        dense: true,
-                        title: Text(a.descripcion),
-                        subtitle: Text(a.codigoInterno),
-                        trailing: const Icon(Icons.add_circle, color: AppColors.primary),
-                        onTap: () {
-                          setState(() {
-                            final existente = _carrito.where((i) => i.articulo.id == a.id).firstOrNull;
-                            if (existente != null) {
-                              existente.cantidad += 1;
-                            } else {
-                              _carrito.add(ItemCarrito(articulo: a));
-                            }
-                          });
-                          _busquedaArticuloController.clear();
-                        },
-                      )),
+                  if (articulosFiltrados.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text('No se encontraron artículos con "$busquedaArticulo".',
+                          style: const TextStyle(color: AppColors.textSecondary)),
+                    )
+                  else
+                    ...articulosFiltrados.map((a) => ListTile(
+                          dense: true,
+                          title: Text(a.descripcion),
+                          subtitle: Text(a.codigoInterno),
+                          trailing: const Icon(Icons.add_circle, color: AppColors.primary),
+                          onTap: () {
+                            setState(() {
+                              final existente =
+                                  _carrito.where((i) => i.articulo.id == a.id).firstOrNull;
+                              if (existente != null) {
+                                existente.cantidad += 1;
+                              } else {
+                                _carrito.add(ItemCarrito(articulo: a));
+                              }
+                            });
+                            _busquedaArticuloController.clear();
+                          },
+                        )),
                 ],
                 const SizedBox(height: 16),
                 if (_carrito.isEmpty)

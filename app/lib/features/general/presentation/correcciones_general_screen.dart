@@ -27,7 +27,98 @@ class _CorreccionesGeneralScreenState extends ConsumerState<CorreccionesGeneralS
     super.dispose();
   }
 
+  Future<bool> _verificarBloqueado(MovimientoGeneral movimiento, {required String accion}) async {
+    if (!movimiento.aplicaDescuento) return false;
+    final exportado = await ref.read(movimientosGeneralRepositoryProvider).tieneDescuentoExportado(movimiento.id);
+    if (exportado && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'No se puede $accion: el descuento de este movimiento ya fue exportado a nómina.')));
+    }
+    return exportado;
+  }
+
+  Future<void> _editar(MovimientoGeneral movimiento) async {
+    if (await _verificarBloqueado(movimiento, accion: 'editar')) return;
+    if (!mounted) return;
+
+    final cantidadController = TextEditingController(text: '${movimiento.cantidad}');
+    final valorController = TextEditingController(text: '${movimiento.valorDescuento}');
+    final observacionesController = TextEditingController(text: movimiento.observaciones);
+    var aplicaDescuento = movimiento.aplicaDescuento;
+
+    final guardar = await showDialog<bool>(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text('Editar: ${movimiento.tipoMovimiento} · ${movimiento.articuloDescripcion ?? ''}'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: cantidadController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Cantidad'),
+                ),
+                const SizedBox(height: 10),
+                if (movimiento.tipoMovimiento == 'SALIDA') ...[
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('¿Aplica descuento?'),
+                    value: aplicaDescuento,
+                    onChanged: (v) => setDialogState(() => aplicaDescuento = v),
+                  ),
+                  if (aplicaDescuento)
+                    TextField(
+                      controller: valorController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: const InputDecoration(labelText: 'Valor de descuento (\$)'),
+                    ),
+                  const SizedBox(height: 10),
+                ],
+                TextField(
+                  controller: observacionesController,
+                  maxLines: 2,
+                  decoration: const InputDecoration(labelText: 'Observaciones'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+            ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('Guardar')),
+          ],
+        ),
+      ),
+    );
+    if (guardar != true) return;
+
+    try {
+      await ref.read(movimientosGeneralRepositoryProvider).editarMovimiento(
+            movimientoId: movimiento.id,
+            cantidad: num.tryParse(cantidadController.text) ?? movimiento.cantidad,
+            aplicaDescuento: aplicaDescuento,
+            valorDescuento: num.tryParse(valorController.text) ?? movimiento.valorDescuento,
+            observaciones: observacionesController.text,
+          );
+      ref.invalidate(_correccionesGeneralProvider);
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Movimiento actualizado.')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al editar: $e')));
+      }
+    }
+  }
+
   Future<void> _anular(MovimientoGeneral movimiento) async {
+    if (await _verificarBloqueado(movimiento, accion: 'anular')) return;
+    if (!mounted) return;
+
     final motivoController = TextEditingController();
     final confirmar = await showDialog<bool>(
       context: context,
@@ -133,10 +224,15 @@ class _CorreccionesGeneralScreenState extends ConsumerState<CorreccionesGeneralS
                               '${m.anulado ? ' · ANULADO' : ''}'),
                           trailing: m.anulado
                               ? null
-                              : IconButton(
-                                  icon: const Icon(Icons.undo, color: AppColors.error),
-                                  tooltip: 'Anular',
-                                  onPressed: () => _anular(m),
+                              : PopupMenuButton<String>(
+                                  onSelected: (accion) {
+                                    if (accion == 'editar') _editar(m);
+                                    if (accion == 'anular') _anular(m);
+                                  },
+                                  itemBuilder: (context) => const [
+                                    PopupMenuItem(value: 'editar', child: Text('✏️ Editar')),
+                                    PopupMenuItem(value: 'anular', child: Text('↩️ Anular')),
+                                  ],
                                 ),
                         ),
                       ),

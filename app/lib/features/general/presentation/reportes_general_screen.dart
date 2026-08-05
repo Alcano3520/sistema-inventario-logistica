@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/app_theme.dart';
 import '../data/pdf_report_service.dart';
@@ -16,6 +17,19 @@ class ReportesGeneralScreen extends ConsumerStatefulWidget {
 
 class _ReportesGeneralScreenState extends ConsumerState<ReportesGeneralScreen> {
   bool _generando = false;
+  DateTimeRange? _rango;
+  final _formatoFecha = DateFormat('dd/MM/yyyy');
+
+  Future<void> _elegirRango() async {
+    final ahora = DateTime.now();
+    final seleccionado = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(ahora.year + 1),
+      initialDateRange: _rango,
+    );
+    if (seleccionado != null) setState(() => _rango = seleccionado);
+  }
 
   Future<void> _generarInventario() async {
     setState(() => _generando = true);
@@ -28,13 +42,18 @@ class _ReportesGeneralScreenState extends ConsumerState<ReportesGeneralScreen> {
     }
   }
 
-  Future<void> _generarMovimientos() async {
+  Future<void> _generarMovimientos({String? tipo, String? titulo}) async {
     setState(() => _generando = true);
     try {
-      final movimientos = await ref.read(movimientosGeneralRepositoryProvider).obtenerHistorial(limite: 500);
+      final movimientos = await ref.read(movimientosGeneralRepositoryProvider).obtenerHistorial(
+            tipoMovimiento: tipo,
+            desde: _rango?.start,
+            hasta: _rango?.end.add(const Duration(hours: 23, minutes: 59)),
+            limite: 1000,
+          );
       final bytes = await ref
           .read(_pdfReportServiceProvider)
-          .generarReporteMovimientos(movimientos, titulo: 'MOVIMIENTOS RECIENTES');
+          .generarReporteMovimientos(movimientos, titulo: titulo ?? 'MOVIMIENTOS');
       await ref.read(_pdfReportServiceProvider).imprimir(bytes, 'movimientos_general.pdf');
     } finally {
       if (mounted) setState(() => _generando = false);
@@ -43,7 +62,7 @@ class _ReportesGeneralScreenState extends ConsumerState<ReportesGeneralScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,6 +70,29 @@ class _ReportesGeneralScreenState extends ConsumerState<ReportesGeneralScreen> {
           const Text(
             '📄 Reportes — Inventario General',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE8F4FD),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _rango == null
+                        ? 'Período: todo el historial'
+                        : 'Período: ${_formatoFecha.format(_rango!.start)} – ${_formatoFecha.format(_rango!.end)}',
+                  ),
+                ),
+                TextButton(onPressed: _elegirRango, child: const Text('Elegir fechas')),
+                if (_rango != null)
+                  TextButton(
+                      onPressed: () => setState(() => _rango = null), child: const Text('Quitar')),
+              ],
+            ),
           ),
           const SizedBox(height: 20),
           _tarjeta(
@@ -60,9 +102,21 @@ class _ReportesGeneralScreenState extends ConsumerState<ReportesGeneralScreen> {
           ),
           const SizedBox(height: 16),
           _tarjeta(
-            titulo: '📜 Movimientos recientes',
-            descripcion: 'PDF de las últimas 500 entregas, devoluciones, entradas y ajustes.',
-            onTap: _generarMovimientos,
+            titulo: '📜 Todos los movimientos',
+            descripcion: 'Entregas, devoluciones, entradas y ajustes del período seleccionado.',
+            onTap: () => _generarMovimientos(titulo: 'MOVIMIENTOS'),
+          ),
+          const SizedBox(height: 16),
+          _tarjeta(
+            titulo: '🧾 Entregas por empleado',
+            descripcion: 'Solo las salidas (entregas) del período, agrupadas por fecha y empleado.',
+            onTap: () => _generarMovimientos(tipo: 'SALIDA', titulo: 'ENTREGAS'),
+          ),
+          const SizedBox(height: 16),
+          _tarjeta(
+            titulo: '↩️ Devoluciones',
+            descripcion: 'Solo las devoluciones del período seleccionado.',
+            onTap: () => _generarMovimientos(tipo: 'DEVOLUCION', titulo: 'DEVOLUCIONES'),
           ),
           if (_generando) ...[
             const SizedBox(height: 20),
