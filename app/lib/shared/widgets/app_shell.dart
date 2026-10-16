@@ -24,14 +24,15 @@ import '../../features/movimientos/presentation/salida_screen.dart';
 import '../../features/perfil/presentation/mi_perfil_screen.dart';
 import '../../features/productos/presentation/inventario_screen.dart';
 import '../../features/productos/presentation/productos_screen.dart';
+import '../../features/taller_motos/presentation/ordenes_trabajo_screen.dart';
 import '../../features/usuarios/presentation/usuarios_screen.dart';
 
 class _TabDef {
-  final String emoji;
+  final IconData icono;
   final String titulo;
   final Widget screen;
 
-  const _TabDef(this.emoji, this.titulo, this.screen);
+  const _TabDef(this.icono, this.titulo, this.screen);
 }
 
 class AppShell extends ConsumerStatefulWidget {
@@ -45,36 +46,53 @@ class _AppShellState extends ConsumerState<AppShell> {
   int _index = 0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<_TabDef> _construirTabsSimple(bool esAdmin) {
+  /// El Mecánico solo puede crear pedidos (OT) y ver su propio historial:
+  /// nada de Entrada/Salida/Inventario/Dashboard/Usuarios.
+  List<_TabDef> _construirTabsMecanico(String claveModulo) {
     return [
-      const _TabDef('📊', 'Dashboard', DashboardScreen()),
-      const _TabDef('📥', 'Entrada', EntradaScreen()),
-      const _TabDef('📤', 'Salida', SalidaScreen()),
-      const _TabDef('📋', 'Inventario', InventarioScreen()),
-      if (esAdmin) const _TabDef('➕', 'Productos', ProductosScreen()),
-      const _TabDef('📜', 'Historial', HistorialScreen()),
-      if (esAdmin) const _TabDef('📂', 'Carga Masiva', CargaMasivaScreen()),
-      if (esAdmin) const _TabDef('🔄', 'Migración', MigracionScreen()),
-      if (esAdmin) const _TabDef('👥', 'Usuarios', UsuariosScreen()),
-      const _TabDef('⚙️', 'Mi Perfil', MiPerfilScreen()),
+      if (_tieneTaller(claveModulo)) const _TabDef(Icons.build_outlined, 'Mis Pedidos', OrdenesTrabajoScreen()),
+      const _TabDef(Icons.person_outline, 'Mi Perfil', MiPerfilScreen()),
     ];
   }
 
-  List<_TabDef> _construirTabsDotacion(bool esAdmin) {
+  /// Taller/repuestos/mantenimiento anti-robo: disponible en Barcos y Motos
+  /// (comparten pantallas, cada uno contra sus propias tablas).
+  bool _tieneTaller(String claveModulo) => claveModulo == 'motos' || claveModulo == 'barcos';
+
+  List<_TabDef> _construirTabsSimple(bool esAdmin, bool mostrarUsuarios, String claveModulo) {
     return [
-      const _TabDef('📊', 'Dashboard', DashboardGeneralScreen()),
-      const _TabDef('🧾', 'Entregas', EntregaGeneralScreen()),
-      const _TabDef('↩️', 'Devoluciones', DevolucionGeneralScreen()),
-      const _TabDef('📋', 'Inventario', InventarioGeneralScreen()),
-      if (esAdmin) const _TabDef('➕', 'Artículos', ArticulosGeneralScreen()),
-      const _TabDef('📜', 'Historial', HistorialGeneralScreen()),
-      if (esAdmin) const _TabDef('⚖️', 'Ajuste Stock', AjusteStockGeneralScreen()),
-      if (esAdmin) const _TabDef('📂', 'Carga Masiva', CargaMasivaGeneralScreen()),
-      if (esAdmin) const _TabDef('🛠️', 'Correcciones', CorreccionesGeneralScreen()),
-      if (esAdmin) const _TabDef('💰', 'Descuentos', DescuentosGeneralScreen()),
-      const _TabDef('📄', 'Reportes', ReportesGeneralScreen()),
-      if (esAdmin) const _TabDef('👥', 'Usuarios', UsuariosScreen()),
-      const _TabDef('⚙️', 'Mi Perfil', MiPerfilScreen()),
+      const _TabDef(Icons.dashboard_outlined, 'Dashboard', DashboardScreen()),
+      const _TabDef(Icons.call_received, 'Entrada', EntradaScreen()),
+      const _TabDef(Icons.call_made, 'Salida', SalidaScreen()),
+      const _TabDef(Icons.inventory_2_outlined, 'Inventario', InventarioScreen()),
+      // Cualquiera puede ingresar/buscar productos (bodeguero incluido) —
+      // el único que no ve esta pestaña es el Mecánico, que ya tiene su
+      // propio menú restringido (_construirTabsMecanico) y nunca llega aquí.
+      const _TabDef(Icons.add_box_outlined, 'Productos', ProductosScreen()),
+      const _TabDef(Icons.history, 'Historial', HistorialScreen()),
+      if (_tieneTaller(claveModulo)) const _TabDef(Icons.build_outlined, 'Taller', OrdenesTrabajoScreen()),
+      if (esAdmin) const _TabDef(Icons.upload_file_outlined, 'Carga Masiva', CargaMasivaScreen()),
+      if (esAdmin) const _TabDef(Icons.sync_alt, 'Migración', MigracionScreen()),
+      if (mostrarUsuarios) const _TabDef(Icons.people_outline, 'Usuarios', UsuariosScreen()),
+      const _TabDef(Icons.person_outline, 'Mi Perfil', MiPerfilScreen()),
+    ];
+  }
+
+  List<_TabDef> _construirTabsDotacion(bool esAdmin, bool mostrarUsuarios) {
+    return [
+      const _TabDef(Icons.dashboard_outlined, 'Dashboard', DashboardGeneralScreen()),
+      const _TabDef(Icons.receipt_long_outlined, 'Entregas', EntregaGeneralScreen()),
+      const _TabDef(Icons.assignment_return_outlined, 'Devoluciones', DevolucionGeneralScreen()),
+      const _TabDef(Icons.inventory_2_outlined, 'Inventario', InventarioGeneralScreen()),
+      if (esAdmin) const _TabDef(Icons.add_box_outlined, 'Artículos', ArticulosGeneralScreen()),
+      const _TabDef(Icons.history, 'Historial', HistorialGeneralScreen()),
+      if (esAdmin) const _TabDef(Icons.tune, 'Ajuste Stock', AjusteStockGeneralScreen()),
+      if (esAdmin) const _TabDef(Icons.upload_file_outlined, 'Carga Masiva', CargaMasivaGeneralScreen()),
+      if (esAdmin) const _TabDef(Icons.build_circle_outlined, 'Correcciones', CorreccionesGeneralScreen()),
+      if (esAdmin) const _TabDef(Icons.payments_outlined, 'Descuentos', DescuentosGeneralScreen()),
+      const _TabDef(Icons.description_outlined, 'Reportes', ReportesGeneralScreen()),
+      if (mostrarUsuarios) const _TabDef(Icons.people_outline, 'Usuarios', UsuariosScreen()),
+      const _TabDef(Icons.person_outline, 'Mi Perfil', MiPerfilScreen()),
     ];
   }
 
@@ -92,9 +110,11 @@ class _AppShellState extends ConsumerState<AppShell> {
       (m) => m.clave == claveModulo,
       orElse: () => modulosDisponibles.first,
     );
-    final tabs = moduloInfo.tipo == TipoModulo.dotacion
-        ? _construirTabsDotacion(perfil.esAdmin)
-        : _construirTabsSimple(perfil.esAdmin);
+    final tabs = perfil.esMecanico && moduloInfo.tipo != TipoModulo.dotacion
+        ? _construirTabsMecanico(claveModulo)
+        : moduloInfo.tipo == TipoModulo.dotacion
+            ? _construirTabsDotacion(perfil.esAdmin, perfil.puedeGestionarUsuarios)
+            : _construirTabsSimple(perfil.esAdmin, perfil.puedeGestionarUsuarios, claveModulo);
     if (_index >= tabs.length) _index = 0;
 
     return Scaffold(
@@ -113,9 +133,9 @@ class _AppShellState extends ConsumerState<AppShell> {
         child: Column(
           children: [
             _Header(
-              nombre: perfil.nombre,
               rol: perfil.rol,
-              tituloSeccion: '${tabs[_index].emoji} ${tabs[_index].titulo}',
+              icono: tabs[_index].icono,
+              tituloSeccion: tabs[_index].titulo,
               onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
             ),
             Expanded(
@@ -155,36 +175,47 @@ class _MenuLateral extends ConsumerWidget {
     );
 
     return Drawer(
+      backgroundColor: AppColors.surface,
       child: Column(
         children: [
           Container(
             width: double.infinity,
-            decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+            color: AppColors.primary,
             padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + 24,
+              top: MediaQuery.of(context).padding.top + 22,
               left: 20,
               right: 20,
-              bottom: 20,
+              bottom: 18,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${modulo.emoji} ${modulo.titulo}',
-                    style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(modulo.icono, color: AppColors.textOnPrimary, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(modulo.titulo,
+                          style: const TextStyle(
+                              color: AppColors.textOnPrimary, fontSize: 16, fontWeight: FontWeight.w700),
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 Text(nombre,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    style: const TextStyle(color: AppColors.textOnPrimary, fontSize: 14),
                     overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 4),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(rol,
                       style: const TextStyle(
-                          color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                          color: AppColors.textOnPrimary, fontSize: 11, fontWeight: FontWeight.w600)),
                 ),
               ],
             ),
@@ -197,13 +228,17 @@ class _MenuLateral extends ConsumerWidget {
                 final t = entry.value;
                 final seleccionado = i == indiceActual;
                 return ListTile(
-                  leading: Text(t.emoji, style: const TextStyle(fontSize: 20)),
+                  leading: Icon(t.icono,
+                      size: 20, color: seleccionado ? AppColors.primary : AppColors.textSecondary),
                   title: Text(t.titulo,
                       style: TextStyle(
+                          fontSize: 14,
                           fontWeight: seleccionado ? FontWeight.w600 : FontWeight.normal,
                           color: seleccionado ? AppColors.primary : AppColors.textPrimary)),
                   selected: seleccionado,
-                  selectedTileColor: AppColors.primary.withValues(alpha: 0.08),
+                  selectedTileColor: AppColors.primarySoft,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   onTap: () => onSeleccionar(i),
                 );
               }).toList(),
@@ -213,8 +248,8 @@ class _MenuLateral extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(8),
             child: ListTile(
-              leading: const Icon(Icons.logout, color: AppColors.error),
-              title: const Text('Salir', style: TextStyle(color: AppColors.error)),
+              leading: const Icon(Icons.logout, color: AppColors.error, size: 20),
+              title: const Text('Salir', style: TextStyle(color: AppColors.error, fontSize: 14)),
               onTap: () => ref.read(authRepositoryProvider).signOut(),
             ),
           ),
@@ -225,14 +260,14 @@ class _MenuLateral extends ConsumerWidget {
 }
 
 class _Header extends StatelessWidget {
-  final String nombre;
   final String rol;
+  final IconData icono;
   final String tituloSeccion;
   final VoidCallback onMenuTap;
 
   const _Header({
-    required this.nombre,
     required this.rol,
+    required this.icono,
     required this.tituloSeccion,
     required this.onMenuTap,
   });
@@ -241,36 +276,41 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      color: AppColors.primary,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Row(
         children: [
           if (Navigator.canPop(context))
             IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              icon: const Icon(Icons.arrow_back, color: AppColors.textOnPrimary),
               tooltip: 'Volver',
               onPressed: () => Navigator.of(context).pop(),
             ),
           IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
+            icon: const Icon(Icons.menu, color: AppColors.textOnPrimary),
             onPressed: onMenuTap,
           ),
+          Icon(icono, color: AppColors.textOnPrimary, size: 19),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
               tituloSeccion,
-              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: AppColors.textOnPrimary, fontSize: 17, fontWeight: FontWeight.w600),
               overflow: TextOverflow.ellipsis,
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
+              color: Colors.white.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Text(rol,
-                style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                style: const TextStyle(
+                    color: AppColors.textOnPrimary, fontSize: 11, fontWeight: FontWeight.w600)),
           ),
+          const SizedBox(width: 4),
         ],
       ),
     );

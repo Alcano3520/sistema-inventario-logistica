@@ -20,18 +20,21 @@ class SelectorScreen extends ConsumerWidget {
           children: [
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              color: AppColors.primary,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               child: Row(
                 children: [
+                  const Icon(Icons.inventory_2_outlined, color: AppColors.textOnPrimary, size: 22),
+                  const SizedBox(width: 10),
                   const Expanded(
                     child: Text(
-                      '📦 Inventario Logística Insevig',
-                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                      'Inventario Logística Insevig',
+                      style: TextStyle(
+                          color: AppColors.textOnPrimary, fontSize: 17, fontWeight: FontWeight.w700),
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.logout, color: Colors.white),
+                    icon: const Icon(Icons.logout, color: AppColors.textOnPrimary),
                     tooltip: 'Salir',
                     onPressed: () => ref.read(authRepositoryProvider).signOut(),
                   ),
@@ -67,7 +70,7 @@ class SelectorScreen extends ConsumerWidget {
                               width: double.infinity,
                               padding: const EdgeInsets.all(15),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFDEAEA),
+                                color: AppColors.errorBg,
                                 borderRadius: BorderRadius.circular(6),
                                 border: const Border(
                                     left: BorderSide(color: AppColors.error, width: 4)),
@@ -136,20 +139,25 @@ class _TarjetaModulo extends StatelessWidget {
       opacity: deshabilitado ? 0.5 : 1,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 8)],
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: AppColors.border),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(modulo.emoji, style: const TextStyle(fontSize: 34)),
-              const SizedBox(height: 10),
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(color: AppColors.primarySoft, shape: BoxShape.circle),
+                child: Icon(modulo.icono, color: AppColors.primary, size: 22),
+              ),
+              const SizedBox(height: 12),
               Text(
                 modulo.titulo,
                 textAlign: TextAlign.center,

@@ -53,15 +53,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+        color: AppColors.background,
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 400),
               child: Card(
-                elevation: 8,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: const BorderSide(color: AppColors.border),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(32),
                   child: Form(
@@ -69,11 +72,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Container(
+                          width: 52,
+                          height: 52,
+                          decoration:
+                              const BoxDecoration(color: AppColors.primarySoft, shape: BoxShape.circle),
+                          child: const Icon(Icons.inventory_2_outlined, color: AppColors.primary, size: 26),
+                        ),
+                        const SizedBox(height: 16),
                         Text(
-                          '📦 Inventario Logística Insevig',
+                          'Inventario Logística Insevig',
                           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 19,
+                                color: AppColors.textPrimary,
                               ),
                           textAlign: TextAlign.center,
                         ),
@@ -137,20 +149,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             width: double.infinity,
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFDEAEA),
+                              color: AppColors.errorBg,
                               borderRadius: BorderRadius.circular(6),
                               border: const Border(
                                   left: BorderSide(color: AppColors.error, width: 4)),
                             ),
                             child: Text(
                               _error!,
-                              style: const TextStyle(color: Color(0xFFC0392B), fontSize: 13),
+                              style: const TextStyle(color: AppColors.error, fontSize: 13),
                             ),
                           ),
                         ],
                         const SizedBox(height: 24),
                         SizedBox(
                           width: double.infinity,
+                          height: 46,
                           child: ElevatedButton(
                             onPressed: _cargando ? null : _iniciarSesion,
                             child: _cargando
@@ -162,16 +175,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       color: Colors.white,
                                     ),
                                   )
-                                : const Text('🔐 Iniciar Sesión'),
+                                : const Text('Iniciar sesión'),
                           ),
-                        ),
-                        const SizedBox(height: 25),
-                        const Divider(height: 1, color: AppColors.border),
-                        const SizedBox(height: 16),
-                        const Text(
-                          '🔒 Sistema seguro con encriptación SHA-256',
-                          style: TextStyle(color: Color(0xFF95A5A6), fontSize: 12),
-                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
