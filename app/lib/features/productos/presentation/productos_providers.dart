@@ -1,12 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/modulos.dart';
+import '../data/barcode_pdf_service.dart';
+import '../data/exportador_inventario.dart';
+import '../data/ficha_pdf_service.dart';
 import '../data/productos_repository.dart';
 import '../domain/producto.dart';
 
 final productosRepositoryProvider = Provider<ProductosRepository>(
   (ref) => ProductosRepository(ref.watch(tablasActivasProvider)),
 );
+
+final barcodePdfServiceProvider = Provider<BarcodePdfService>((ref) => BarcodePdfService());
+
+final fichaPdfServiceProvider = Provider<FichaPdfService>((ref) => FichaPdfService());
+
+final exportadorInventarioProvider = Provider<ExportadorInventario>((ref) => ExportadorInventario());
 
 class ProductosNotifier extends AsyncNotifier<List<Producto>> {
   @override
@@ -34,7 +43,9 @@ final productosFiltradosProvider = Provider<List<Producto>>((ref) {
 
   return productos
       .where((p) =>
-          p.cod.toLowerCase().contains(termino) || p.producto.toLowerCase().contains(termino))
+          p.cod.toLowerCase().contains(termino) ||
+          p.producto.toLowerCase().contains(termino) ||
+          (p.codigoBarras?.toLowerCase().contains(termino) ?? false))
       .toList();
 });
 

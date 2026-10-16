@@ -7,6 +7,12 @@ class Producto {
   final String categoria;
   final String ubicacion;
   final num stockMinimo;
+  final String? fotoUrl;
+
+  /// Código de barras del fabricante/proveedor — independiente de [cod]
+  /// (el código interno con el que el producto se identifica en el
+  /// sistema). Opcional: no todo producto trae uno propio.
+  final String? codigoBarras;
 
   const Producto({
     required this.cod,
@@ -17,6 +23,8 @@ class Producto {
     required this.categoria,
     required this.ubicacion,
     required this.stockMinimo,
+    this.fotoUrl,
+    this.codigoBarras,
   });
 
   bool get sinStock => stock <= 0;
@@ -32,6 +40,8 @@ class Producto {
       categoria: map['categoria'] as String? ?? '',
       ubicacion: map['ubicacion'] as String? ?? '',
       stockMinimo: map['stock_minimo'] as num? ?? 0,
+      fotoUrl: map['foto_url'] as String?,
+      codigoBarras: map['codigo_barras'] as String?,
     );
   }
 }
