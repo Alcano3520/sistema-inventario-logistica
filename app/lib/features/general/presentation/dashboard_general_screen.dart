@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/app_theme.dart';
 import '../../../core/supabase_config.dart';
+import '../../../shared/widgets/kpi_card.dart';
 import '../data/sync_general_service.dart';
 import 'general_providers.dart';
 
@@ -27,25 +28,26 @@ class DashboardGeneralScreen extends ConsumerWidget {
             child: ListView(
               padding: const EdgeInsets.all(20),
               children: [
-                const Text(
-                  '📊 Dashboard — Inventario General',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-                ),
+                const Text('Dashboard — Dotación Empleados', style: AppText.screenTitle),
                 if (pendientesOffline > 0) ...[
                   const SizedBox(height: 16),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFF4E5),
-                      borderRadius: BorderRadius.circular(6),
-                      border: const Border(left: BorderSide(color: AppColors.warning, width: 4)),
+                      color: AppColors.warningBg,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       children: [
+                        const Icon(Icons.cloud_off_outlined, color: AppColors.warning, size: 18),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                              '📴 $pendientesOffline operación(es) guardadas sin conexión, pendientes de sincronizar.'),
+                            '$pendientesOffline operación(es) guardadas sin conexión, pendientes de sincronizar.',
+                            style: AppText.body,
+                          ),
                         ),
                         TextButton(
                           onPressed: () async {
@@ -69,10 +71,10 @@ class DashboardGeneralScreen extends ConsumerWidget {
                     mainAxisExtent: 118,
                   ),
                   children: [
-                    _KpiCard(value: '$total', label: 'Total Artículos'),
-                    _KpiCard(value: '$conStock', label: 'Con Stock'),
-                    _KpiCard(value: '$sinStock', label: 'Sin Stock'),
-                    _KpiCard(value: '${stockBajo.length}', label: '⚠️ Stock Bajo', warning: true),
+                    KpiCard(value: '$total', label: 'Total Artículos'),
+                    KpiCard(value: '$conStock', label: 'Con Stock'),
+                    KpiCard(value: '$sinStock', label: 'Sin Stock'),
+                    KpiCard(value: '${stockBajo.length}', label: 'Stock Bajo', alerta: true),
                   ],
                 ),
                 const SizedBox(height: 25),
@@ -83,21 +85,27 @@ class DashboardGeneralScreen extends ConsumerWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFF4E5),
-                      borderRadius: BorderRadius.circular(6),
-                      border: const Border(left: BorderSide(color: AppColors.warning, width: 4)),
+                      color: AppColors.warningBg,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('⚠️ Artículos con Stock Bajo:',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Row(
+                          children: const [
+                            Icon(Icons.warning_amber_outlined, color: AppColors.warning, size: 18),
+                            SizedBox(width: 8),
+                            Text('Artículos con stock bajo', style: TextStyle(fontWeight: FontWeight.w600)),
+                          ],
+                        ),
                         const SizedBox(height: 8),
                         ...stockBajo.map(
                           (a) => Padding(
-                            padding: const EdgeInsets.only(left: 20, top: 4),
+                            padding: const EdgeInsets.only(left: 26, top: 4),
                             child: Text(
-                              '•  ${a.descripcion} (${a.codigoInterno}) — Disponible: ${a.stockDisponible} / Mínimo: ${a.stockMinimo}',
+                              '${a.descripcion} (${a.codigoInterno}) — Disponible: ${a.stockDisponible} / Mínimo: ${a.stockMinimo}',
+                              style: AppText.bodySecondary,
                             ),
                           ),
                         ),
@@ -155,59 +163,23 @@ class _DescuentosPendientesCardState extends State<_DescuentosPendientesCard> {
       width: double.infinity,
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F4FD),
-        borderRadius: BorderRadius.circular(6),
-        border: const Border(left: BorderSide(color: AppColors.info, width: 4)),
+        color: AppColors.infoBg,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.info.withValues(alpha: 0.3)),
       ),
-      child: Text.rich(
-        TextSpan(children: [
-          const TextSpan(text: '💰 Descuentos pendientes de exportar: ', style: TextStyle(fontWeight: FontWeight.bold)),
-          TextSpan(
-              text: _cantidad == null
-                  ? 'cargando...'
-                  : '$_cantidad (\$${_total!.toStringAsFixed(2)})'),
-        ]),
-        style: const TextStyle(color: AppColors.textPrimary),
-      ),
-    );
-  }
-}
-
-class _KpiCard extends StatelessWidget {
-  final String value;
-  final String label;
-  final bool warning;
-
-  const _KpiCard({required this.value, required this.label, this.warning = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 8)],
-        border: warning ? const Border(left: BorderSide(color: AppColors.warning, width: 4)) : null,
-      ),
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.primary),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label.toUpperCase(),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, letterSpacing: 0.3),
+          const Icon(Icons.payments_outlined, color: AppColors.info, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text.rich(
+              TextSpan(children: [
+                const TextSpan(text: 'Descuentos pendientes de exportar: ', style: TextStyle(fontWeight: FontWeight.w600)),
+                TextSpan(text: _cantidad == null ? 'cargando…' : '$_cantidad (\$${_total!.toStringAsFixed(2)})'),
+              ]),
+              style: AppText.body,
+            ),
           ),
         ],
       ),

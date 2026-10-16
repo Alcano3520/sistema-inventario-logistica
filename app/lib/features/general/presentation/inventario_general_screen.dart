@@ -19,13 +19,13 @@ class InventarioGeneralScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '📋 Inventario General',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Inventario — Dotación Empleados', style: AppText.screenTitle),
           const SizedBox(height: 20),
           TextField(
-            decoration: const InputDecoration(hintText: '🔍 Buscar por código, nombre o categoría...'),
+            decoration: const InputDecoration(
+              hintText: 'Buscar por código, nombre o categoría...',
+              prefixIcon: Icon(Icons.search),
+            ),
             onChanged: (v) => ref.read(busquedaArticulosGeneralProvider.notifier).state = v,
           ),
           const SizedBox(height: 16),
@@ -76,9 +76,9 @@ class _TarjetaArticulo extends StatelessWidget {
             ? AppColors.warning
             : AppColors.success;
     final Color fondoTarjeta = sinStock
-        ? const Color(0xFFFDEAEA)
+        ? AppColors.errorBg
         : articulo.stockBajo
-            ? const Color(0xFFFFF4E5)
+            ? AppColors.warningBg
             : AppColors.surface;
 
     return InkWell(
@@ -93,7 +93,6 @@ class _TarjetaArticulo extends StatelessWidget {
         color: fondoTarjeta,
         borderRadius: BorderRadius.circular(8),
         border: Border(left: BorderSide(color: colorEstado, width: 4)),
-        boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 6)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,12 +166,12 @@ class _TablaInventario extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 8)],
+        border: Border.all(color: AppColors.border),
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
-          headingRowColor: WidgetStateProperty.all(const Color(0xFFF8F9FA)),
+          headingRowColor: WidgetStateProperty.all(AppColors.surfaceAlt),
           columns: const [
             DataColumn(label: Text('Código')),
             DataColumn(label: Text('Descripción')),
@@ -186,9 +185,9 @@ class _TablaInventario extends StatelessWidget {
           rows: articulos.map((a) {
             final sinStock = a.stockDisponible <= 0;
             final Color? rowColor = sinStock
-                ? const Color(0xFFFDEAEA)
+                ? AppColors.errorBg
                 : a.stockBajo
-                    ? const Color(0xFFFFF4E5)
+                    ? AppColors.warningBg
                     : null;
             return DataRow(
               color: rowColor != null ? WidgetStateProperty.all(rowColor) : null,

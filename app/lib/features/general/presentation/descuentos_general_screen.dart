@@ -72,7 +72,7 @@ class _DescuentosGeneralScreenState extends ConsumerState<DescuentosGeneralScree
 
       if (mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('✅ Exportado y guardado en: ${resultado.ruta}')));
+            .showSnackBar(SnackBar(content: Text('Exportado y guardado en: ${resultado.ruta}')));
       }
     } catch (e) {
       if (mounted) {
@@ -90,10 +90,7 @@ class _DescuentosGeneralScreenState extends ConsumerState<DescuentosGeneralScree
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '💰 Descuentos de Nómina',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Descuentos de Nómina', style: AppText.screenTitle),
           const SizedBox(height: 16),
           Wrap(spacing: 10, children: [
             ChoiceChip(
@@ -170,7 +167,7 @@ class _DescuentosGeneralScreenState extends ConsumerState<DescuentosGeneralScree
               child: _exportando
                   ? const SizedBox(
                       height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                  : Text('📗 Exportar seleccionados (${_seleccionados.length})'),
+                  : Text('Exportar seleccionados (${_seleccionados.length})'),
             ),
           ],
         );

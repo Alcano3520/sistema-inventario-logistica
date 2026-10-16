@@ -27,7 +27,27 @@ class _CorreccionesGeneralScreenState extends ConsumerState<CorreccionesGeneralS
     super.dispose();
   }
 
+  static const _plazoCorreccion = Duration(days: 3);
+
+  /// Entradas y Salidas solo se pueden editar/anular hasta 3 días después
+  /// de registradas — pasado ese plazo, cualquier ajuste debe hacerse como
+  /// un movimiento nuevo (por ejemplo un Ajuste de Stock), no reescribiendo
+  /// el historial. Otros tipos de movimiento (Devolución, Baja, Ajuste) no
+  /// tienen este límite.
+  bool _fueraDePlazo(MovimientoGeneral movimiento) {
+    if (movimiento.tipoMovimiento != 'ENTRADA' && movimiento.tipoMovimiento != 'SALIDA') return false;
+    return DateTime.now().difference(movimiento.fechaMovimiento) > _plazoCorreccion;
+  }
+
   Future<bool> _verificarBloqueado(MovimientoGeneral movimiento, {required String accion}) async {
+    if (_fueraDePlazo(movimiento)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                'No se puede $accion: ya pasaron más de 3 días desde este movimiento de ${movimiento.tipoMovimiento == 'ENTRADA' ? 'entrada' : 'salida'}.')));
+      }
+      return true;
+    }
     if (!movimiento.aplicaDescuento) return false;
     final exportado = await ref.read(movimientosGeneralRepositoryProvider).tieneDescuentoExportado(movimiento.id);
     if (exportado && mounted) {
@@ -182,10 +202,7 @@ class _CorreccionesGeneralScreenState extends ConsumerState<CorreccionesGeneralS
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '🛠️ Correcciones — Inventario General',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Correcciones — Dotación Empleados', style: AppText.screenTitle),
           const SizedBox(height: 16),
           TextField(
             controller: _busquedaController,
@@ -221,7 +238,8 @@ class _CorreccionesGeneralScreenState extends ConsumerState<CorreccionesGeneralS
                           subtitle: Text(
                               '${formatoFecha.format(m.fechaMovimiento.toLocal())}'
                               '${m.empleadoNombre != null ? ' · ${m.empleadoNombre}' : ''} · Cant: ${m.cantidad}'
-                              '${m.anulado ? ' · ANULADO' : ''}'),
+                              '${m.anulado ? ' · ANULADO' : ''}'
+                              '${!m.anulado && _fueraDePlazo(m) ? ' · Fuera del plazo de 3 días para corregir' : ''}'),
                           trailing: m.anulado
                               ? null
                               : PopupMenuButton<String>(
@@ -230,8 +248,22 @@ class _CorreccionesGeneralScreenState extends ConsumerState<CorreccionesGeneralS
                                     if (accion == 'anular') _anular(m);
                                   },
                                   itemBuilder: (context) => const [
-                                    PopupMenuItem(value: 'editar', child: Text('✏️ Editar')),
-                                    PopupMenuItem(value: 'anular', child: Text('↩️ Anular')),
+                                    PopupMenuItem(
+                                      value: 'editar',
+                                      child: ListTile(
+                                        leading: Icon(Icons.edit_outlined, size: 20),
+                                        title: Text('Editar'),
+                                        contentPadding: EdgeInsets.zero,
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      value: 'anular',
+                                      child: ListTile(
+                                        leading: Icon(Icons.undo, size: 20),
+                                        title: Text('Anular'),
+                                        contentPadding: EdgeInsets.zero,
+                                      ),
+                                    ),
                                   ],
                                 ),
                         ),

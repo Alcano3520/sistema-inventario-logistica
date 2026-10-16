@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../shared/widgets/nota_banner.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../domain/articulo_general.dart';
 import 'general_providers.dart';
@@ -123,18 +124,15 @@ class _AjusteStockGeneralScreenState extends ConsumerState<AjusteStockGeneralScr
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '⚖️ Ajuste de Inventario',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Ajuste de Inventario', style: AppText.screenTitle),
           const SizedBox(height: 20),
           if (_articulo != null)
             Container(
               padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F4FD),
-                borderRadius: BorderRadius.circular(6),
+                color: AppColors.infoBg,
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 children: [
@@ -149,16 +147,9 @@ class _AjusteStockGeneralScreenState extends ConsumerState<AjusteStockGeneralScr
               ),
             )
           else if (articulos.isEmpty)
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF4E5),
-                borderRadius: BorderRadius.circular(6),
-                border: const Border(left: BorderSide(color: AppColors.warning, width: 4)),
-              ),
-              child: const Text(
-                '⚠️ Todavía no hay artículos registrados. Agrégalos primero en la pestaña "Artículos".',
-              ),
+            NotaBanner.texto(
+              'Todavía no hay artículos registrados. Agrégalos primero en la pestaña "Artículos".',
+              tipo: TipoNota.advertencia,
             )
           else ...[
             TextField(
@@ -207,33 +198,18 @@ class _AjusteStockGeneralScreenState extends ConsumerState<AjusteStockGeneralScr
             controller: _motivoController,
             decoration: const InputDecoration(labelText: 'Motivo'),
           ),
-          if (_error != null) ...[const SizedBox(height: 16), _mensaje(_error!, exito: false)],
-          if (_exito != null) ...[const SizedBox(height: 16), _mensaje(_exito!, exito: true)],
+          if (_error != null) ...[const SizedBox(height: 16), NotaBanner.texto(_error!, tipo: TipoNota.error)],
+          if (_exito != null) ...[const SizedBox(height: 16), NotaBanner.texto(_exito!, tipo: TipoNota.exito)],
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: _guardando ? null : _guardar,
             child: _guardando
                 ? const SizedBox(
                     height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : const Text('💾 Registrar Movimiento'),
+                : const Text('Registrar Movimiento'),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _mensaje(String texto, {required bool exito}) {
-    final color = exito ? AppColors.success : AppColors.error;
-    final bg = exito ? const Color(0xFFE8F8F5) : const Color(0xFFFDEAEA);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(6),
-        border: Border(left: BorderSide(color: color, width: 4)),
-      ),
-      child: Text(texto, style: TextStyle(color: color)),
     );
   }
 }

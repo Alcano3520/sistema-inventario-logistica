@@ -29,24 +29,21 @@ class _CargaMasivaGeneralScreenState extends ConsumerState<CargaMasivaGeneralScr
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '📂 Carga Masiva',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Carga Masiva', style: AppText.screenTitle),
           const SizedBox(height: 16),
           Wrap(spacing: 10, children: [
-            _tabSec('📦 Artículos nuevos', 0),
-            _tabSec('📥 Entradas de stock', 1),
+            _tabSec('Artículos nuevos', 0),
+            _tabSec('Entradas de stock', 1),
           ]),
           const SizedBox(height: 20),
           if (_tab == 0)
             CsvImportPanel(
-              infoTitulo: 'ℹ️ Formato CSV:',
+              infoTitulo: 'Formato CSV:',
               infoTexto:
                   'El archivo debe tener las columnas: CODIGO, DESCRIPCION, CATEGORIA, VALOR_UNITARIO, STOCK_MINIMO',
               hint:
                   'UNI-001,Camisa uniforme M,Uniformes,25.00,5\nUNI-002,Pantalón táctico,Uniformes,30.00,5',
-              botonTexto: '📤 Cargar Artículos',
+              botonTexto: 'Cargar Artículos',
               etiquetaExito: 'Artículos procesados',
               onProcesar: (csv) async {
                 final r = await repo.cargarArticulos(csv);
@@ -56,11 +53,11 @@ class _CargaMasivaGeneralScreenState extends ConsumerState<CargaMasivaGeneralScr
             )
           else
             CsvImportPanel(
-              infoTitulo: 'ℹ️ Formato CSV:',
+              infoTitulo: 'Formato CSV:',
               infoTexto: 'El archivo debe tener las columnas: CODIGO, CANTIDAD, MOTIVO (opcional). '
                   'El código debe corresponder a un artículo ya registrado.',
               hint: 'UNI-001,20,Compra inicial\nUNI-002,15,Reposición proveedor',
-              botonTexto: '📤 Cargar Entradas',
+              botonTexto: 'Cargar Entradas',
               etiquetaExito: 'Entradas procesadas',
               onProcesar: (csv) async {
                 if (perfil == null) throw Exception('Sesión no válida.');
@@ -87,7 +84,7 @@ class _CargaMasivaGeneralScreenState extends ConsumerState<CargaMasivaGeneralScr
           border: Border.all(color: activo ? AppColors.primary : AppColors.border, width: 2),
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Text(texto, style: TextStyle(color: activo ? Colors.white : const Color(0xFF5A6C7D))),
+        child: Text(texto, style: TextStyle(color: activo ? Colors.white : AppColors.textSecondary)),
       ),
     );
   }

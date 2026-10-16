@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:signature/signature.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../shared/widgets/lector_scanner_dialog.dart';
+import '../../../shared/widgets/nota_banner.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../movimientos/presentation/firma_widget.dart';
 import '../domain/articulo_general.dart';
@@ -82,6 +84,35 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
     });
   }
 
+  /// El código de barras es opcional en el Inventario General (son prendas
+  /// de trabajadores, no todas vienen con uno), así que si el artículo
+  /// escaneado no tiene código registrado simplemente no se encuentra.
+  Future<void> _escanearArticulo() async {
+    final codigo = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (_) => const LectorScannerDialog(titulo: 'Escanear código de barras o QR')),
+    );
+    if (codigo == null || !mounted) return;
+
+    final articulos = ref.read(articulosGeneralProvider).valueOrNull ?? [];
+    final encontrado = articulos
+        .where((a) => a.codigoBarras == codigo.trim() || a.codigoInterno.toLowerCase() == codigo.trim().toLowerCase())
+        .firstOrNull;
+
+    if (encontrado == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se encontró ningún artículo con el código "$codigo".')),
+      );
+      return;
+    }
+    if (encontrado.stockDisponible <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('"${encontrado.descripcion}" no tiene stock disponible.')),
+      );
+      return;
+    }
+    _agregarArticulo(encontrado);
+  }
+
   void _limpiarFormulario() {
     setState(() {
       _empleadoSeleccionado = null;
@@ -155,7 +186,7 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
         _limpiarFormulario();
         setState(() => _exito = sincronizado
             ? 'Entrega registrada exitosamente.'
-            : '📴 Sin conexión: la entrega se guardó localmente y se sincronizará automáticamente.');
+            : 'Sin conexión: la entrega se guardó localmente y se sincronizará automáticamente.');
       }
     } catch (e) {
       setState(() => _error = 'Error al registrar la entrega: $e');
@@ -182,13 +213,10 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '🧾 Nueva Entrega de Dotación',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Nueva Entrega de Dotación', style: AppText.screenTitle),
           const SizedBox(height: 20),
           _seccion(
-            titulo: '👤 Receptor',
+            titulo: 'Receptor',
             accion: TextButton(
               onPressed: () => setState(() {
                 _entradaManual = !_entradaManual;
@@ -200,29 +228,30 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
           ),
           const SizedBox(height: 20),
           _seccion(
-            titulo: '📦 Artículos',
+            titulo: 'Artículos',
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (articulos.isEmpty)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF4E5),
-                      borderRadius: BorderRadius.circular(6),
-                      border: const Border(left: BorderSide(color: AppColors.warning, width: 4)),
-                    ),
-                    child: const Text(
-                      '⚠️ Todavía no hay artículos registrados en el Inventario General. '
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: NotaBanner.texto(
+                      'Todavía no hay artículos registrados en Dotación Empleados. '
                       'Un Admin debe agregarlos primero en la pestaña "Artículos".',
+                      tipo: TipoNota.advertencia,
                     ),
                   )
                 else ...[
                   TextField(
                     controller: _busquedaArticuloController,
-                    decoration:
-                        const InputDecoration(hintText: 'Buscar artículo por código o nombre...'),
+                    decoration: InputDecoration(
+                      hintText: 'Buscar artículo por código o nombre...',
+                      suffixIcon: IconButton(
+                        tooltip: 'Escanear código de barras o QR',
+                        icon: const Icon(Icons.qr_code_scanner, color: AppColors.primary),
+                        onPressed: _escanearArticulo,
+                      ),
+                    ),
                     onChanged: (_) => setState(() {}),
                   ),
                   const SizedBox(height: 8),
@@ -264,7 +293,7 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
           ),
           const SizedBox(height: 20),
           _seccion(
-            titulo: '✍️ Firma de Recepción',
+            titulo: 'Firma de Recepción',
             child: FirmaWidget(controller: _firmaController),
           ),
           const SizedBox(height: 16),
@@ -275,8 +304,8 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
             maxLines: 2,
             decoration: const InputDecoration(hintText: 'Observaciones adicionales (opcional)'),
           ),
-          if (_error != null) ...[const SizedBox(height: 16), _mensaje(_error!, exito: false)],
-          if (_exito != null) ...[const SizedBox(height: 16), _mensaje(_exito!, exito: true)],
+          if (_error != null) ...[const SizedBox(height: 16), NotaBanner.texto(_error!, tipo: TipoNota.error)],
+          if (_exito != null) ...[const SizedBox(height: 16), NotaBanner.texto(_exito!, tipo: TipoNota.exito)],
           const SizedBox(height: 20),
           Wrap(
             spacing: 10,
@@ -289,11 +318,11 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
                         height: 16,
                         width: 16,
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('💾 Guardar Entrega'),
+                    : const Text('Guardar Entrega'),
               ),
               OutlinedButton(
                 onPressed: _guardando ? null : _limpiarFormulario,
-                child: const Text('🔄 Limpiar Formulario'),
+                child: const Text('Limpiar Formulario'),
               ),
             ],
           ),
@@ -307,9 +336,9 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
       return Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: const Color(0xFFE8F8F5),
-          borderRadius: BorderRadius.circular(6),
-          border: const Border(left: BorderSide(color: AppColors.success, width: 4)),
+          color: AppColors.successBg,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [
@@ -414,8 +443,8 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 6)],
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -423,11 +452,7 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
-                child: Text(titulo,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
-              ),
+              Flexible(child: Text(titulo, style: AppText.sectionTitle)),
               ?accion,
             ],
           ),
@@ -435,21 +460,6 @@ class _EntregaGeneralScreenState extends ConsumerState<EntregaGeneralScreen> {
           child,
         ],
       ),
-    );
-  }
-
-  Widget _mensaje(String texto, {required bool exito}) {
-    final color = exito ? AppColors.success : AppColors.error;
-    final bg = exito ? const Color(0xFFE8F8F5) : const Color(0xFFFDEAEA);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(6),
-        border: Border(left: BorderSide(color: color, width: 4)),
-      ),
-      child: Text(texto, style: TextStyle(color: color)),
     );
   }
 }
@@ -467,7 +477,7 @@ class _ItemCarritoWidget extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
+        color: AppColors.surfaceAlt,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors.border),
       ),

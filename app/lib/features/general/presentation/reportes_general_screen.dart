@@ -67,16 +67,13 @@ class _ReportesGeneralScreenState extends ConsumerState<ReportesGeneralScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '📄 Reportes — Inventario General',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Reportes — Dotación Empleados', style: AppText.screenTitle),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFE8F4FD),
-              borderRadius: BorderRadius.circular(6),
+              color: AppColors.infoBg,
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
               children: [
@@ -96,25 +93,29 @@ class _ReportesGeneralScreenState extends ConsumerState<ReportesGeneralScreen> {
           ),
           const SizedBox(height: 20),
           _tarjeta(
-            titulo: '📦 Inventario actual',
+            icono: Icons.inventory_2_outlined,
+            titulo: 'Inventario actual',
             descripcion: 'PDF con el estado de stock de todos los artículos, con membrete INSEVIG.',
             onTap: _generarInventario,
           ),
           const SizedBox(height: 16),
           _tarjeta(
-            titulo: '📜 Todos los movimientos',
+            icono: Icons.history,
+            titulo: 'Todos los movimientos',
             descripcion: 'Entregas, devoluciones, entradas y ajustes del período seleccionado.',
             onTap: () => _generarMovimientos(titulo: 'MOVIMIENTOS'),
           ),
           const SizedBox(height: 16),
           _tarjeta(
-            titulo: '🧾 Entregas por empleado',
+            icono: Icons.receipt_long_outlined,
+            titulo: 'Entregas por empleado',
             descripcion: 'Solo las salidas (entregas) del período, agrupadas por fecha y empleado.',
             onTap: () => _generarMovimientos(tipo: 'SALIDA', titulo: 'ENTREGAS'),
           ),
           const SizedBox(height: 16),
           _tarjeta(
-            titulo: '↩️ Devoluciones',
+            icono: Icons.assignment_return_outlined,
+            titulo: 'Devoluciones',
             descripcion: 'Solo las devoluciones del período seleccionado.',
             onTap: () => _generarMovimientos(tipo: 'DEVOLUCION', titulo: 'DEVOLUCIONES'),
           ),
@@ -127,24 +128,43 @@ class _ReportesGeneralScreenState extends ConsumerState<ReportesGeneralScreen> {
     );
   }
 
-  Widget _tarjeta({required String titulo, required String descripcion, required VoidCallback onTap}) {
+  Widget _tarjeta({
+    required IconData icono,
+    required String titulo,
+    required String descripcion,
+    required VoidCallback onTap,
+  }) {
     return InkWell(
       onTap: _generando ? null : onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 6)],
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.border),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text(titulo, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
-            const SizedBox(height: 4),
-            Text(descripcion, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+            Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(color: AppColors.primarySoft, shape: BoxShape.circle),
+              child: Icon(icono, color: AppColors.primary, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(titulo, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                  const SizedBox(height: 4),
+                  Text(descripcion, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                ],
+              ),
+            ),
+            const Icon(Icons.picture_as_pdf_outlined, color: AppColors.textSecondary, size: 18),
           ],
         ),
       ),

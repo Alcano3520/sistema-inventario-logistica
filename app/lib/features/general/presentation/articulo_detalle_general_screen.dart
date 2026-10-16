@@ -36,8 +36,8 @@ class ArticuloDetalleGeneralScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 6)],
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.border),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,14 +60,13 @@ class ArticuloDetalleGeneralScreen extends ConsumerWidget {
                 ),
                 if (articulo.esDescontable) ...[
                   const SizedBox(height: 6),
-                  Text('💰 Descuento por unidad: \$${articulo.valorDescuento}'),
+                  Text('Descuento por unidad: \$${articulo.valorDescuento}'),
                 ],
               ],
             ),
           ),
           const SizedBox(height: 20),
-          const Text('📜 Historial de movimientos',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+          const Text('Historial de movimientos', style: AppText.sectionTitle),
           const SizedBox(height: 12),
           historialAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
@@ -98,8 +97,7 @@ class ArticuloDetalleGeneralScreen extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 20),
-          const Text('🕓 Historial de cambios',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+          const Text('Historial de cambios', style: AppText.sectionTitle),
           const SizedBox(height: 12),
           Consumer(builder: (context, ref, _) {
             final cambiosAsync = ref.watch(_cambiosArticuloProvider(articulo.id));

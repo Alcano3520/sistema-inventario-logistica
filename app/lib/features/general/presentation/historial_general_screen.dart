@@ -40,10 +40,7 @@ class _HistorialGeneralScreenState extends ConsumerState<HistorialGeneralScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '📜 Historial — Inventario General',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Historial — Dotación Empleados', style: AppText.screenTitle),
           const SizedBox(height: 16),
           Wrap(
             spacing: 8,
@@ -107,20 +104,20 @@ class _FilaMovimiento extends StatelessWidget {
     }
   }
 
-  String get _emoji {
+  IconData get _icono {
     switch (movimiento.tipoMovimiento) {
       case 'SALIDA':
-        return '📤';
+        return Icons.call_made;
       case 'DEVOLUCION':
-        return '↩️';
+        return Icons.assignment_return_outlined;
       case 'ENTRADA':
-        return '📥';
+        return Icons.call_received;
       case 'AJUSTE':
-        return '⚖️';
+        return Icons.tune;
       case 'BAJA':
-        return '🗑️';
+        return Icons.delete_outline;
       default:
-        return '•';
+        return Icons.circle;
     }
   }
 
@@ -135,16 +132,18 @@ class _FilaMovimiento extends StatelessWidget {
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(8),
           border: Border(left: BorderSide(color: _color, width: 4)),
-          boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 6)],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Text('$_emoji ${movimiento.articuloDescripcion ?? movimiento.articuloId}',
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
-                const Spacer(),
+                Icon(_icono, size: 16, color: _color),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(movimiento.articuloDescripcion ?? movimiento.articuloId,
+                      style: const TextStyle(fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis),
+                ),
                 Text('${movimiento.cantidad}',
                     style: TextStyle(fontWeight: FontWeight.bold, color: _color)),
                 if (movimiento.anulado)
@@ -161,7 +160,7 @@ class _FilaMovimiento extends StatelessWidget {
               Text('${movimiento.empleadoNombre} · CI: ${movimiento.empleadoCedula ?? '-'}',
                   style: const TextStyle(fontSize: 12)),
             if (movimiento.aplicaDescuento)
-              Text('💰 Descuento: \$${movimiento.valorDescuento}',
+              Text('Descuento: \$${movimiento.valorDescuento}',
                   style: const TextStyle(fontSize: 12, color: AppColors.warning)),
           ],
         ),

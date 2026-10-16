@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:postgrest/postgrest.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../shared/widgets/lector_scanner_dialog.dart';
+import '../../../shared/widgets/nota_banner.dart';
 import '../domain/articulo_general.dart';
 import 'general_providers.dart';
 
@@ -120,10 +122,7 @@ class _ArticulosGeneralScreenState extends ConsumerState<ArticulosGeneralScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              '➕ Agregar Nuevo Artículo',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-            ),
+            const Text('Agregar Nuevo Artículo', style: AppText.screenTitle),
             const SizedBox(height: 20),
             _campo(
               label: 'Código interno:',
@@ -132,7 +131,22 @@ class _ArticulosGeneralScreenState extends ConsumerState<ArticulosGeneralScreen>
               hint: 'Ej: UNI-001',
               validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
             ),
-            _campo(label: 'Código de barras:', controller: _codigoBarrasController, hint: 'Opcional'),
+            _campo(
+              label: 'Código de barras:',
+              controller: _codigoBarrasController,
+              hint: 'Opcional — no todas las prendas traen uno',
+              suffixIcon: IconButton(
+                tooltip: 'Escanear código de barras o QR',
+                icon: const Icon(Icons.qr_code_scanner, color: AppColors.primary),
+                onPressed: () async {
+                  final codigo = await Navigator.of(context).push<String>(
+                    MaterialPageRoute(
+                        builder: (_) => const LectorScannerDialog(titulo: 'Escanear código de barras o QR')),
+                  );
+                  if (codigo != null) _codigoBarrasController.text = codigo;
+                },
+              ),
+            ),
             _campo(
               label: 'Descripción:',
               requerido: true,
@@ -185,49 +199,31 @@ class _ArticulosGeneralScreenState extends ConsumerState<ArticulosGeneralScreen>
                           width: 16,
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : const Text('💾 Agregar Artículo'),
+                      : const Text('Agregar Artículo'),
                 ),
                 OutlinedButton(
                   onPressed: _guardando ? null : _limpiar,
-                  child: const Text('🔄 Limpiar'),
+                  child: const Text('Limpiar'),
                 ),
               ],
             ),
             if (_resultadoExito != null) ...[
               const SizedBox(height: 20),
-              _mensaje(_resultadoExito!, exito: true),
+              NotaBanner.texto(_resultadoExito!, tipo: TipoNota.exito),
             ],
             if (_resultadoError != null) ...[
               const SizedBox(height: 20),
-              _mensaje(_resultadoError!, exito: false),
+              NotaBanner.texto(_resultadoError!, tipo: TipoNota.error),
             ],
             const SizedBox(height: 30),
             const Divider(),
             const SizedBox(height: 10),
-            const Text(
-              '📋 Artículos registrados',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-            ),
+            const Text('Artículos registrados', style: AppText.sectionTitle),
             const SizedBox(height: 12),
             const _ListaArticulos(),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _mensaje(String texto, {required bool exito}) {
-    final color = exito ? AppColors.success : AppColors.error;
-    final bg = exito ? const Color(0xFFE8F8F5) : const Color(0xFFFDEAEA);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(6),
-        border: Border(left: BorderSide(color: color, width: 4)),
-      ),
-      child: Text(texto, style: TextStyle(color: color)),
     );
   }
 
@@ -238,6 +234,7 @@ class _ArticulosGeneralScreenState extends ConsumerState<ArticulosGeneralScreen>
     bool requerido = false,
     TextInputType? keyboardType,
     String? Function(String?)? validator,
+    Widget? suffixIcon,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
@@ -258,7 +255,7 @@ class _ArticulosGeneralScreenState extends ConsumerState<ArticulosGeneralScreen>
           TextFormField(
             controller: controller,
             keyboardType: keyboardType,
-            decoration: InputDecoration(hintText: hint),
+            decoration: InputDecoration(hintText: hint, suffixIcon: suffixIcon),
             validator: validator,
           ),
         ],
