@@ -3,5 +3,8 @@ class ItemMovimiento {
   String producto;
   String cantidad;
 
-  ItemMovimiento({this.cod = '', this.producto = '', this.cantidad = ''});
+  /// Precio de compra por unidad — solo aplica a líneas de Entrada, opcional.
+  String precioUnitario;
+
+  ItemMovimiento({this.cod = '', this.producto = '', this.cantidad = '', this.precioUnitario = ''});
 }

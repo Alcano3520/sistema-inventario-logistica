@@ -23,7 +23,10 @@ class MovimientosRepository {
     required String usuarioNombre,
     required List<ItemMovimiento> items,
     Uint8List? firma,
+    String? claveAccesoSri,
+    Uint8List? fotoFactura,
   }) async {
+    final clave = claveAccesoSri?.trim();
     final transaccion = await supabase
         .from(tablas.transaccionesEntrada)
         .insert({
@@ -33,6 +36,7 @@ class MovimientosRepository {
           'observaciones': observaciones,
           'usuario_id': usuarioId,
           'usuario_nombre': usuarioNombre,
+          'clave_acceso_sri': (clave == null || clave.isEmpty) ? null : clave,
         })
         .select()
         .single();
@@ -45,6 +49,7 @@ class MovimientosRepository {
               'cod': i.cod,
               'producto': i.producto,
               'cantidad': num.parse(i.cantidad),
+              'precio_unitario': num.tryParse(i.precioUnitario),
             })
         .toList());
 
@@ -55,17 +60,33 @@ class MovimientosRepository {
           tabla: tablas.transaccionesEntrada,
           idTransaccion: idTransaccion);
     }
+
+    if (fotoFactura != null) {
+      try {
+        final path = _rutaFirma('entradas_factura', idTransaccion);
+        await supabase.storage.from('inv-firmas').uploadBinary(path, fotoFactura);
+        await supabase
+            .from(tablas.transaccionesEntrada)
+            .update({'foto_factura_url': path}).eq('id_transaccion', idTransaccion);
+      } catch (_) {
+        // La foto de la factura es complementaria; si falla no se bloquea el registro de la entrada.
+      }
+    }
   }
 
   Future<void> registrarSalida({
     required DateTime fecha,
     required String bote,
     required String aQuienEntrega,
+    required String identificacionQuienRecibe,
+    required bool confirmacionRecepcion,
     required String proposito,
     required String usuarioId,
     required String usuarioNombre,
     required List<ItemMovimiento> items,
     Uint8List? firma,
+    String? peticionTexto,
+    Uint8List? bytesFotoPeticion,
   }) async {
     final transaccion = await supabase
         .from(tablas.transaccionesSalida)
@@ -73,9 +94,12 @@ class MovimientosRepository {
           'fecha_hora': fecha.toIso8601String(),
           'bote': bote,
           'a_quien_entrega': aQuienEntrega,
+          'identificacion_quien_recibe': identificacionQuienRecibe,
+          'confirmacion_recepcion': confirmacionRecepcion,
           'proposito': proposito,
           'usuario_id': usuarioId,
           'usuario_nombre': usuarioNombre,
+          'peticion_texto': (peticionTexto == null || peticionTexto.trim().isEmpty) ? null : peticionTexto.trim(),
         })
         .select()
         .single();
@@ -97,6 +121,16 @@ class MovimientosRepository {
           bytes: firma,
           tabla: tablas.transaccionesSalida,
           idTransaccion: idTransaccion);
+    }
+
+    if (bytesFotoPeticion != null) {
+      try {
+        final path = _rutaFirma('salidas_peticion', idTransaccion);
+        await supabase.storage.from('inv-firmas').uploadBinary(path, bytesFotoPeticion);
+        await supabase.from(tablas.transaccionesSalida).update({'peticion_foto_url': path}).eq('id_transaccion', idTransaccion);
+      } catch (_) {
+        // La foto de la petición es complementaria; si falla no se bloquea el registro de la salida.
+      }
     }
   }
 

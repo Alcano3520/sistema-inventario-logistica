@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
+import '../../../core/app_theme.dart';
+
 class FirmaWidget extends StatelessWidget {
   final SignatureController controller;
 
@@ -12,8 +14,8 @@ class FirmaWidget extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFE1E8ED), width: 2),
-            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: AppColors.border, width: 2),
+            borderRadius: BorderRadius.circular(8),
             color: Colors.white,
           ),
           height: 180,
@@ -21,9 +23,10 @@ class FirmaWidget extends StatelessWidget {
           child: Signature(controller: controller, backgroundColor: Colors.white),
         ),
         const SizedBox(height: 10),
-        OutlinedButton(
+        OutlinedButton.icon(
           onPressed: controller.clear,
-          child: const Text('🗑️ Limpiar Firma'),
+          icon: const Icon(Icons.delete_outline, size: 18),
+          label: const Text('Limpiar Firma'),
         ),
       ],
     );

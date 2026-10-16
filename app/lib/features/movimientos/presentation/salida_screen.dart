@@ -1,11 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:postgrest/postgrest.dart';
 import 'package:signature/signature.dart';
 
 import '../../../core/app_theme.dart';
 import '../../../core/modulos.dart';
+import '../../../shared/widgets/campo_sugerido.dart';
+import '../../../shared/widgets/nota_banner.dart';
 import '../../auth/presentation/auth_providers.dart';
+import '../../historial/presentation/historial_providers.dart';
+import '../../productos/data/compresor_imagen.dart';
 import '../../productos/presentation/productos_providers.dart';
 import 'entrada_screen.dart' show movimientosRepositoryProvider;
 import '../domain/item_movimiento.dart';
@@ -21,20 +27,25 @@ class SalidaScreen extends ConsumerStatefulWidget {
 
 class _SalidaScreenState extends ConsumerState<SalidaScreen> {
   DateTime _fecha = DateTime.now();
-  final _boteController = TextEditingController();
-  final _aQuienController = TextEditingController();
+  String _vehiculo = '';
+  String _aQuien = '';
+  final _identificacionController = TextEditingController();
+  bool _confirmacionRecepcion = false;
   final _propositoController = TextEditingController();
+  final _peticionController = TextEditingController();
+  Uint8List? _fotoPeticion;
   final _items = <ItemMovimiento>[];
   final _firmaController = SignatureController(penStrokeWidth: 3, penColor: Colors.black);
   bool _guardando = false;
   String? _error;
   String? _exito;
+  int _formVersion = 0;
 
   @override
   void dispose() {
-    _boteController.dispose();
-    _aQuienController.dispose();
+    _identificacionController.dispose();
     _propositoController.dispose();
+    _peticionController.dispose();
     _firmaController.dispose();
     super.dispose();
   }
@@ -42,14 +53,47 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
   void _limpiarFormulario() {
     setState(() {
       _fecha = DateTime.now();
-      _boteController.clear();
-      _aQuienController.clear();
+      _vehiculo = '';
+      _aQuien = '';
+      _identificacionController.clear();
+      _confirmacionRecepcion = false;
       _propositoController.clear();
+      _peticionController.clear();
+      _fotoPeticion = null;
       _items.clear();
       _firmaController.clear();
       _error = null;
       _exito = null;
+      _formVersion++;
     });
+  }
+
+  Future<void> _elegirFotoPeticion() async {
+    final origen = await showModalBottomSheet<ImageSource>(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Wrap(children: [
+          ListTile(
+            leading: const Icon(Icons.camera_alt_outlined),
+            title: const Text('Tomar foto'),
+            onTap: () => Navigator.pop(context, ImageSource.camera),
+          ),
+          ListTile(
+            leading: const Icon(Icons.photo_library_outlined),
+            title: const Text('Elegir de la galería'),
+            onTap: () => Navigator.pop(context, ImageSource.gallery),
+          ),
+        ]),
+      ),
+    );
+    if (origen == null || !mounted) return;
+
+    final foto = await ImagePicker().pickImage(source: origen, imageQuality: 90);
+    if (foto == null || !mounted) return;
+
+    final bytesOriginales = await foto.readAsBytes();
+    final comprimida = await compute(CompresorImagen.comprimirSustento, bytesOriginales);
+    if (mounted) setState(() => _fotoPeticion = comprimida);
   }
 
   Future<void> _guardar() async {
@@ -59,12 +103,24 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
     });
 
     final tablas = ref.read(tablasActivasProvider);
-    if (_boteController.text.trim().isEmpty) {
+    if (_vehiculo.trim().isEmpty) {
       setState(() => _error = 'Debe especificar el campo "${tablas.etiquetaVehiculo}".');
       return;
     }
-    if (_aQuienController.text.trim().isEmpty) {
+    if (_aQuien.trim().isEmpty) {
       setState(() => _error = 'Debe especificar a quién se entrega.');
+      return;
+    }
+    if (_identificacionController.text.trim().isEmpty) {
+      setState(() => _error = 'Debe especificar la identificación (cédula) de quien recibe.');
+      return;
+    }
+    if (!_confirmacionRecepcion) {
+      setState(() => _error = 'Debe confirmar que la persona recibió los artículos.');
+      return;
+    }
+    if (_fotoPeticion == null) {
+      setState(() => _error = 'Debe adjuntar una foto como sustento de la salida.');
       return;
     }
     if (_items.isEmpty) {
@@ -87,13 +143,17 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
 
       await ref.read(movimientosRepositoryProvider).registrarSalida(
             fecha: _fecha,
-            bote: _boteController.text,
-            aQuienEntrega: _aQuienController.text,
+            bote: _vehiculo,
+            aQuienEntrega: _aQuien,
+            identificacionQuienRecibe: _identificacionController.text.trim(),
+            confirmacionRecepcion: _confirmacionRecepcion,
             proposito: _propositoController.text,
             usuarioId: perfil.id,
             usuarioNombre: perfil.nombre,
             items: _items,
             firma: firmaBytes,
+            peticionTexto: _peticionController.text,
+            bytesFotoPeticion: _fotoPeticion,
           );
 
       await ref.read(productosProvider.notifier).refrescar();
@@ -115,15 +175,45 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
   Widget build(BuildContext context) {
     final productos = ref.watch(productosProvider).valueOrNull ?? [];
     final tablas = ref.watch(tablasActivasProvider);
+    final historialSalidas = ref.watch(historialSalidasProvider).valueOrNull ?? [];
+    final vehiculosPrevios = historialSalidas
+        .map((t) => t.bote)
+        .where((v) => v.isNotEmpty)
+        .toSet()
+        .toList()
+      ..sort();
+    final destinatariosPrevios = historialSalidas
+        .map((t) => t.aQuienEntrega)
+        .where((v) => v.isNotEmpty)
+        .toSet()
+        .toList()
+      ..sort();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '📤 Registro de Salida',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+          const Text('Registro de Salida', style: AppText.screenTitle),
+          const SizedBox(height: 20),
+          _seccion(
+            titulo: 'Productos',
+            accion: TextButton.icon(
+              onPressed: () => setState(() => _items.add(ItemMovimiento())),
+              icon: const Icon(Icons.add, size: 18),
+              label: const Text('Agregar Producto'),
+            ),
+            child: Column(
+              children: _items
+                  .map((item) => ItemRowWidget(
+                        key: ValueKey(item),
+                        item: item,
+                        productos: productos,
+                        onRemove: () => setState(() => _items.remove(item)),
+                        onChanged: () => setState(() {}),
+                      ))
+                  .toList(),
+            ),
           ),
           const SizedBox(height: 20),
           _label('Fecha de Salida:'),
@@ -147,15 +237,31 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
           const SizedBox(height: 16),
           _labelRequerido('${tablas.etiquetaVehiculo}:'),
           const SizedBox(height: 6),
-          TextField(
-              controller: _boteController,
-              decoration: InputDecoration(hintText: tablas.hintVehiculo)),
+          CampoSugerido(
+            key: ValueKey('vehiculo-$_formVersion'),
+            label: tablas.hintVehiculo,
+            initialValue: _vehiculo,
+            opciones: vehiculosPrevios,
+            onChanged: (v) => _vehiculo = v,
+          ),
           const SizedBox(height: 16),
           _labelRequerido('A quién se entrega:'),
           const SizedBox(height: 6),
+          CampoSugerido(
+            key: ValueKey('aquien-$_formVersion'),
+            label: 'Nombre de la persona que recibe',
+            initialValue: _aQuien,
+            opciones: destinatariosPrevios,
+            onChanged: (v) => _aQuien = v,
+          ),
+          const SizedBox(height: 16),
+          _labelRequerido('Identificación (cédula) de quien recibe:'),
+          const SizedBox(height: 6),
           TextField(
-              controller: _aQuienController,
-              decoration: const InputDecoration(hintText: 'Nombre de la persona que recibe')),
+            controller: _identificacionController,
+            keyboardType: TextInputType.text,
+            decoration: const InputDecoration(hintText: 'Número de cédula de la persona que recibe'),
+          ),
           const SizedBox(height: 16),
           _label('Propósito de la salida:'),
           const SizedBox(height: 6),
@@ -165,32 +271,76 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
             decoration: const InputDecoration(
                 hintText: 'Para qué se utilizarán los repuestos (opcional)'),
           ),
+          const SizedBox(height: 16),
+          _label('Petición de salida (opcional):'),
+          const SizedBox(height: 4),
+          const Text(
+            'Si esta salida responde a una petición (por ejemplo, del administrador), puedes anotar quién la pidió.',
+            style: AppText.bodySecondary,
+          ),
+          const SizedBox(height: 6),
+          TextField(
+            controller: _peticionController,
+            maxLines: 2,
+            decoration: const InputDecoration(hintText: 'Quién pidió y para qué (opcional)'),
+          ),
           const SizedBox(height: 20),
-          _seccion(
-            titulo: '📦 Productos',
-            accion: TextButton(
-              onPressed: () => setState(() => _items.add(ItemMovimiento())),
-              child: const Text('➕ Agregar Producto'),
-            ),
-            child: Column(
-              children: _items
-                  .map((item) => ItemRowWidget(
-                        key: ValueKey(item),
-                        item: item,
-                        productos: productos,
-                        onRemove: () => setState(() => _items.remove(item)),
-                        onChanged: () => setState(() {}),
-                      ))
-                  .toList(),
-            ),
+          _labelRequerido('Foto de sustento de la salida:'),
+          const SizedBox(height: 4),
+          const Text(
+            'Obligatoria en toda salida — es la evidencia de que el despacho realmente ocurrió.',
+            style: AppText.bodySecondary,
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              if (_fotoPeticion != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.memory(_fotoPeticion!, width: 48, height: 48, fit: BoxFit.cover),
+                ),
+              if (_fotoPeticion != null) const SizedBox(width: 10),
+              OutlinedButton.icon(
+                onPressed: _elegirFotoPeticion,
+                icon: const Icon(Icons.camera_alt_outlined, size: 18),
+                label: Text(_fotoPeticion == null ? 'Tomar foto de sustento' : 'Cambiar foto'),
+              ),
+              if (_fotoPeticion != null)
+                IconButton(
+                  onPressed: () => setState(() => _fotoPeticion = null),
+                  icon: const Icon(Icons.close, size: 18),
+                ),
+            ],
           ),
           const SizedBox(height: 20),
           _seccion(
-            titulo: '✍️ Firma de Recepción',
+            titulo: 'Firma de Recepción',
             child: FirmaWidget(controller: _firmaController),
           ),
-          if (_error != null) ...[const SizedBox(height: 16), _mensaje(_error!, exito: false)],
-          if (_exito != null) ...[const SizedBox(height: 16), _mensaje(_exito!, exito: true)],
+          const SizedBox(height: 16),
+          InkWell(
+            onTap: () => setState(() => _confirmacionRecepcion = !_confirmacionRecepcion),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Checkbox(
+                  value: _confirmacionRecepcion,
+                  onChanged: (v) => setState(() => _confirmacionRecepcion = v ?? false),
+                ),
+                const Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 14),
+                    child: Text(
+                      'Confirmo que la persona indicada arriba recibió los artículos de esta salida.',
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: AppColors.textPrimary),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_error != null) ...[const SizedBox(height: 16), NotaBanner.texto(_error!, tipo: TipoNota.error)],
+          if (_exito != null) ...[const SizedBox(height: 16), NotaBanner.texto(_exito!, tipo: TipoNota.exito)],
           const SizedBox(height: 20),
           Wrap(
             spacing: 10,
@@ -203,11 +353,11 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
                         height: 16,
                         width: 16,
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('💾 Guardar Salida'),
+                    : const Text('Guardar Salida'),
               ),
               OutlinedButton(
                 onPressed: _guardando ? null : _limpiarFormulario,
-                child: const Text('🔄 Limpiar Formulario'),
+                child: const Text('Limpiar Formulario'),
               ),
             ],
           ),
@@ -233,8 +383,8 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 6)],
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,11 +392,7 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
-                child: Text(titulo,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
-              ),
+              Flexible(child: Text(titulo, style: AppText.sectionTitle)),
               ?accion,
             ],
           ),
@@ -254,21 +400,6 @@ class _SalidaScreenState extends ConsumerState<SalidaScreen> {
           child,
         ],
       ),
-    );
-  }
-
-  Widget _mensaje(String texto, {required bool exito}) {
-    final color = exito ? AppColors.success : AppColors.error;
-    final bg = exito ? const Color(0xFFE8F8F5) : const Color(0xFFFDEAEA);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(6),
-        border: Border(left: BorderSide(color: color, width: 4)),
-      ),
-      child: Text(texto, style: TextStyle(color: color)),
     );
   }
 }
