@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/app_theme.dart';
 import '../../../core/modulos.dart';
+import '../../../shared/widgets/nota_banner.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../productos/presentation/productos_providers.dart';
 import 'carga_masiva_screen.dart' show cargaMasivaRepositoryProvider;
@@ -29,37 +30,25 @@ class _MigracionScreenState extends ConsumerState<MigracionScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '🔄 Migración de Datos Históricos',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Migración de Datos Históricos', style: AppText.screenTitle),
           const SizedBox(height: 16),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF4E5),
-              borderRadius: BorderRadius.circular(6),
-              border: const Border(left: BorderSide(color: AppColors.warning, width: 4)),
-            ),
-            child: const Text(
-              '⚠️ IMPORTANTE: Esta función es solo para administradores. Úsala una sola vez para migrar '
-              'datos del sistema anterior. Las transacciones se crearán con las fechas originales.',
-              style: TextStyle(color: AppColors.textPrimary),
-            ),
+          NotaBanner.texto(
+            'IMPORTANTE: Esta función es solo para administradores. Úsala una sola vez para migrar '
+            'datos del sistema anterior. Las transacciones se crearán con las fechas originales.',
+            tipo: TipoNota.advertencia,
           ),
           const SizedBox(height: 16),
           Wrap(spacing: 10, children: [
-            _tabSec('📥 Entradas', 0),
-            _tabSec('📤 Salidas', 1),
+            _tabSec('Entradas', 0),
+            _tabSec('Salidas', 1),
           ]),
           const SizedBox(height: 20),
           if (_tab == 0)
             CsvImportPanel(
-              infoTitulo: '📋 Formato de Entradas:',
+              infoTitulo: 'Formato de Entradas:',
               infoTexto: 'COD, PRODUCTO, FECHA, CANTIDAD  (fecha dd/mm/yyyy)',
               hint: '8M0057703,GASKET ADP PLATE,24/10/2025,2\n8M6000366,HEAD GASKET,24/10/2025,3',
-              botonTexto: '📤 Migrar Entradas',
+              botonTexto: 'Migrar Entradas',
               etiquetaExito: 'Ítems de entrada migrados',
               onProcesar: (csv) async {
                 if (perfil == null) throw Exception('Sesión no válida.');
@@ -71,11 +60,11 @@ class _MigracionScreenState extends ConsumerState<MigracionScreen> {
             )
           else
             CsvImportPanel(
-              infoTitulo: '📋 Formato de Salidas:',
+              infoTitulo: 'Formato de Salidas:',
               infoTexto:
                   'COD, PRODUCTO, FECHA, CANTIDAD, ${tablas.etiquetaVehiculo.toUpperCase()}  (fecha dd/mm/yyyy)',
               hint: '8M0142673,SOPORTE ALTERNADOR,10/01/2025,1,${tablas.ejemploVehiculo}',
-              botonTexto: '📤 Migrar Salidas',
+              botonTexto: 'Migrar Salidas',
               etiquetaExito: 'Ítems de salida migrados',
               onProcesar: (csv) async {
                 if (perfil == null) throw Exception('Sesión no válida.');
@@ -102,7 +91,7 @@ class _MigracionScreenState extends ConsumerState<MigracionScreen> {
           border: Border.all(color: activo ? AppColors.primary : AppColors.border, width: 2),
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Text(texto, style: TextStyle(color: activo ? Colors.white : const Color(0xFF5A6C7D))),
+        child: Text(texto, style: TextStyle(color: activo ? Colors.white : AppColors.textSecondary)),
       ),
     );
   }

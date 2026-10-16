@@ -38,14 +38,12 @@ class UsuariosScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '👥 Gestión de Usuarios',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Gestión de Usuarios', style: AppText.screenTitle),
           const SizedBox(height: 16),
-          ElevatedButton(
+          ElevatedButton.icon(
             onPressed: () => _mostrarFormularioNuevoUsuario(context, ref),
-            child: const Text('➕ Nuevo Usuario'),
+            icon: const Icon(Icons.person_add_alt_outlined, size: 18),
+            label: const Text('Nuevo Usuario'),
           ),
           const SizedBox(height: 20),
           Expanded(
@@ -162,7 +160,8 @@ class _TablaUsuarios extends ConsumerWidget {
               children: modulosDisponibles
                   .map((m) => CheckboxListTile(
                         value: seleccion.contains(m.clave),
-                        title: Text('${m.emoji} ${m.titulo}'),
+                        secondary: Icon(m.icono, size: 20),
+                        title: Text(m.titulo),
                         subtitle: m.disponible ? null : const Text('Próximamente'),
                         controlAffinity: ListTileControlAffinity.leading,
                         onChanged: (v) => setState(() {
@@ -217,7 +216,7 @@ class _TablaUsuarios extends ConsumerWidget {
     final confirmado2 = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('⚠️ Confirmación final'),
+        title: const Text('Confirmación final'),
         content: const Text('Esta acción NO se puede deshacer. ¿Continuar?'),
         actions: [
           TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancelar')),
@@ -267,12 +266,12 @@ class _TablaUsuarios extends ConsumerWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 8)],
+        border: Border.all(color: AppColors.border),
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
-          headingRowColor: WidgetStateProperty.all(const Color(0xFFF8F9FA)),
+          headingRowColor: WidgetStateProperty.all(AppColors.surfaceAlt),
           columns: const [
             DataColumn(label: Text('Email')),
             DataColumn(label: Text('Nombre')),
@@ -286,7 +285,7 @@ class _TablaUsuarios extends ConsumerWidget {
               DataCell(Text(u.email)),
               DataCell(Text(u.nombre)),
               DataCell(Text(u.usuario)),
-              DataCell(Text(u.rol)),
+              DataCell(Text(u.rolMostrado)),
               DataCell(Text(
                 u.activo ? 'Activo' : 'Inactivo',
                 style: TextStyle(
@@ -353,7 +352,7 @@ class _TarjetaUsuario extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 6)],
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,7 +398,7 @@ class _TarjetaUsuario extends StatelessWidget {
             children: [
               Text('Usuario: ${usuario.usuario}',
                   style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-              Text('Rol: ${usuario.rol}',
+              Text('Rol: ${usuario.rolMostrado}',
                   style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
               Text(
                 'Acceso: ${usuario.modulos.isEmpty ? "ninguno" : usuario.modulos.join(", ")}',
@@ -454,6 +453,7 @@ class _NuevoUsuarioDialogState extends ConsumerState<_NuevoUsuarioDialog> {
   final _usuarioController = TextEditingController();
   final _passwordController = TextEditingController();
   String _rol = 'Operador';
+  String? _oficio;
   final Set<String> _modulos = {'barcos'};
   bool _guardando = false;
   String? _error;
@@ -465,6 +465,13 @@ class _NuevoUsuarioDialogState extends ConsumerState<_NuevoUsuarioDialog> {
     _usuarioController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final perfil = ref.read(perfilActualProvider).valueOrNull;
+    if (perfil != null && perfil.esLogistica) _rol = 'Operador';
   }
 
   Future<void> _crear() async {
@@ -479,6 +486,7 @@ class _NuevoUsuarioDialogState extends ConsumerState<_NuevoUsuarioDialog> {
             usuario: _usuarioController.text.trim(),
             password: _passwordController.text,
             rol: _rol,
+            oficio: _rol == 'Operador' ? _oficio : null,
             modulos: _modulos.toList(),
           );
       await ref.read(usuariosListaProvider.notifier).refrescar();
@@ -492,6 +500,9 @@ class _NuevoUsuarioDialogState extends ConsumerState<_NuevoUsuarioDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final perfil = ref.watch(perfilActualProvider).valueOrNull;
+    final puedeElegirRol = perfil?.esAdmin ?? false;
+
     return AlertDialog(
       title: const Text('Crear Nuevo Usuario'),
       content: SingleChildScrollView(
@@ -519,15 +530,35 @@ class _NuevoUsuarioDialogState extends ConsumerState<_NuevoUsuarioDialog> {
               decoration: const InputDecoration(labelText: 'Contraseña *', hintText: 'Mínimo 6 caracteres'),
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _rol,
-              decoration: const InputDecoration(labelText: 'Rol *'),
-              items: const [
-                DropdownMenuItem(value: 'Operador', child: Text('Operador')),
-                DropdownMenuItem(value: 'Admin', child: Text('Admin')),
-              ],
-              onChanged: (v) => setState(() => _rol = v ?? 'Operador'),
-            ),
+            if (puedeElegirRol)
+              DropdownButtonFormField<String>(
+                initialValue: _rol,
+                decoration: const InputDecoration(labelText: 'Rol *'),
+                items: const [
+                  DropdownMenuItem(value: 'Operador', child: Text('Operador')),
+                  DropdownMenuItem(value: 'Encargado de Logística', child: Text('Encargado de Logística')),
+                  DropdownMenuItem(value: 'Admin', child: Text('Admin')),
+                ],
+                onChanged: (v) => setState(() => _rol = v ?? 'Operador'),
+              )
+            else
+              const InputDecorator(
+                decoration: InputDecoration(labelText: 'Rol'),
+                child: Text('Operador (un encargado de logística solo puede crear operadores)'),
+              ),
+            if (_rol == 'Operador') ...[
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String?>(
+                initialValue: _oficio,
+                decoration: const InputDecoration(labelText: 'Función (opcional)'),
+                items: const [
+                  DropdownMenuItem(value: null, child: Text('Operador (genérico)')),
+                  DropdownMenuItem(value: 'Mecánico', child: Text('Mecánico')),
+                  DropdownMenuItem(value: 'Bodeguero', child: Text('Bodeguero')),
+                ],
+                onChanged: (v) => setState(() => _oficio = v),
+              ),
+            ],
             const SizedBox(height: 12),
             Align(
               alignment: Alignment.centerLeft,
@@ -536,7 +567,8 @@ class _NuevoUsuarioDialogState extends ConsumerState<_NuevoUsuarioDialog> {
             ),
             ...modulosDisponibles.map((m) => CheckboxListTile(
                   value: _modulos.contains(m.clave),
-                  title: Text('${m.emoji} ${m.titulo}'),
+                  secondary: Icon(m.icono, size: 20),
+                  title: Text(m.titulo),
                   subtitle: m.disponible ? null : const Text('Próximamente'),
                   controlAffinity: ListTileControlAffinity.leading,
                   contentPadding: EdgeInsets.zero,
@@ -558,14 +590,14 @@ class _NuevoUsuarioDialogState extends ConsumerState<_NuevoUsuarioDialog> {
       actions: [
         TextButton(
           onPressed: _guardando ? null : () => Navigator.of(context).pop(),
-          child: const Text('❌ Cancelar'),
+          child: const Text('Cancelar'),
         ),
         ElevatedButton(
           onPressed: _guardando ? null : _crear,
           child: _guardando
               ? const SizedBox(
                   height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
-              : const Text('💾 Crear Usuario'),
+              : const Text('Crear Usuario'),
         ),
       ],
     );

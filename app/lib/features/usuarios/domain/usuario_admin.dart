@@ -4,6 +4,7 @@ class UsuarioAdmin {
   final String nombre;
   final String usuario;
   final String rol;
+  final String? oficio;
   final bool activo;
   final List<String> modulos;
 
@@ -13,9 +14,14 @@ class UsuarioAdmin {
     required this.nombre,
     required this.usuario,
     required this.rol,
+    this.oficio,
     required this.activo,
     required this.modulos,
   });
+
+  /// Etiqueta a mostrar en la lista: el oficio (Mecánico/Bodeguero) si lo
+  /// tiene, o el rol genérico.
+  String get rolMostrado => oficio ?? rol;
 
   factory UsuarioAdmin.fromMap(Map<String, dynamic> map) {
     return UsuarioAdmin(
@@ -24,6 +30,7 @@ class UsuarioAdmin {
       nombre: map['nombre'] as String? ?? '',
       usuario: map['usuario'] as String? ?? '',
       rol: map['rol'] as String? ?? 'Operador',
+      oficio: map['oficio'] as String?,
       activo: map['activo'] as bool? ?? true,
       modulos: ((map['modulos'] as List?) ?? const []).map((e) => e.toString()).toList(),
     );

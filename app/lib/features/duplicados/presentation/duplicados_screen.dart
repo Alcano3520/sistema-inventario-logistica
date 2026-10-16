@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/app_theme.dart';
 import '../../../core/modulos.dart';
+import '../../../shared/widgets/nota_banner.dart';
 import '../../productos/presentation/productos_providers.dart';
 import '../data/duplicados_repository.dart';
 
@@ -51,7 +52,7 @@ class _DuplicadosScreenState extends ConsumerState<DuplicadosScreen> {
     final c1 = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('⚠️ PELIGRO'),
+        title: const Text('Atención'),
         content: const Text(
             'Esta acción eliminará permanentemente las transacciones duplicadas y recalculará todos los stocks.\n\nNO SE PUEDE DESHACER.'),
         actions: [
@@ -118,24 +119,16 @@ class _DuplicadosScreenState extends ConsumerState<DuplicadosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('🔄 Gestión de Duplicados')),
+      appBar: AppBar(title: const Text('Gestión de Duplicados')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF4E5),
-                borderRadius: BorderRadius.circular(6),
-                border: const Border(left: BorderSide(color: AppColors.warning, width: 4)),
-              ),
-              child: const Text(
-                '⚠️ ADVERTENCIA: Detecta y elimina transacciones duplicadas (mismo proveedor/destinatario, '
-                'fecha y N° de factura o bote). Mantiene solo la primera de cada grupo y recalcula todos los stocks.',
-              ),
+            NotaBanner.texto(
+              'Detecta y elimina transacciones duplicadas (mismo proveedor/destinatario, '
+              'fecha y N° de factura o bote). Mantiene solo la primera de cada grupo y recalcula todos los stocks.',
+              tipo: TipoNota.advertencia,
             ),
             const SizedBox(height: 20),
             _seccion(
@@ -145,15 +138,16 @@ class _DuplicadosScreenState extends ConsumerState<DuplicadosScreen> {
                 children: [
                   const Text('Analiza las transacciones para encontrar posibles duplicados.'),
                   const SizedBox(height: 10),
-                  OutlinedButton(
+                  OutlinedButton.icon(
                     onPressed: _cargando ? null : _detectar,
-                    child: const Text('🔍 Detectar Duplicados'),
+                    icon: const Icon(Icons.search, size: 18),
+                    label: const Text('Detectar Duplicados'),
                   ),
                   if (_deteccion != null) ...[
                     const SizedBox(height: 12),
                     Text(_totalDuplicados == 0
-                        ? '✅ No se encontraron duplicados.'
-                        : '⚠️ Se encontraron $_totalDuplicados grupo(s) con transacciones duplicadas.'),
+                        ? 'No se encontraron duplicados.'
+                        : 'Se encontraron $_totalDuplicados grupo(s) con transacciones duplicadas.'),
                   ],
                 ],
               ),
@@ -165,17 +159,18 @@ class _DuplicadosScreenState extends ConsumerState<DuplicadosScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    '⚠️ PELIGRO: Esta acción eliminará permanentemente las transacciones duplicadas y '
-                    'recalculará todos los stocks. NO SE PUEDE DESHACER.',
+                    'Esta acción eliminará permanentemente las transacciones duplicadas y '
+                    'recalculará todos los stocks. No se puede deshacer.',
                     style: TextStyle(color: AppColors.error),
                   ),
                   const SizedBox(height: 10),
-                  ElevatedButton(
+                  ElevatedButton.icon(
                     onPressed: (_cargando || _deteccion == null || _totalDuplicados == 0)
                         ? null
                         : _confirmarEliminar,
                     style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-                    child: const Text('🗑️ ELIMINAR DUPLICADOS Y RECALCULAR STOCKS'),
+                    icon: const Icon(Icons.delete_forever_outlined, size: 18),
+                    label: const Text('Eliminar Duplicados y Recalcular Stocks'),
                   ),
                   if (_resultadoEliminacion != null) ...[
                     const SizedBox(height: 12),
@@ -193,10 +188,11 @@ class _DuplicadosScreenState extends ConsumerState<DuplicadosScreen> {
                   const Text(
                       'Si no desea eliminar duplicados pero necesita recalcular los stocks desde las transacciones existentes:'),
                   const SizedBox(height: 10),
-                  OutlinedButton(
+                  OutlinedButton.icon(
                     onPressed: _cargando ? null : _recalcular,
                     style: OutlinedButton.styleFrom(foregroundColor: AppColors.warning),
-                    child: const Text('🔢 Recalcular Todos los Stocks'),
+                    icon: const Icon(Icons.calculate_outlined, size: 18),
+                    label: const Text('Recalcular Todos los Stocks'),
                   ),
                   if (_resultadoRecalculo != null) ...[
                     const SizedBox(height: 12),
@@ -207,15 +203,7 @@ class _DuplicadosScreenState extends ConsumerState<DuplicadosScreen> {
             ),
             if (_error != null) ...[
               const SizedBox(height: 20),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFDEAEA),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(_error!, style: const TextStyle(color: AppColors.error)),
-              ),
+              NotaBanner.texto(_error!, tipo: TipoNota.error),
             ],
             if (_cargando) ...[
               const SizedBox(height: 20),
@@ -233,14 +221,13 @@ class _DuplicadosScreenState extends ConsumerState<DuplicadosScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 6)],
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(titulo,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+          Text(titulo, style: AppText.sectionTitle),
           const SizedBox(height: 12),
           child,
         ],

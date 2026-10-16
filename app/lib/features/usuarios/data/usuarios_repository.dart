@@ -33,6 +33,7 @@ class UsuariosRepository {
     required String usuario,
     required String password,
     required String rol,
+    String? oficio,
     required List<String> modulos,
   }) {
     return _invocar({
@@ -42,6 +43,7 @@ class UsuariosRepository {
       'usuario': usuario,
       'password': password,
       'rol': rol,
+      'oficio': ?oficio,
       'modulos': modulos,
     });
   }
@@ -50,6 +52,7 @@ class UsuariosRepository {
     required String id,
     String? nombre,
     String? rol,
+    String? oficio,
     bool? activo,
     List<String>? modulos,
   }) {
@@ -58,6 +61,7 @@ class UsuariosRepository {
       'id': id,
       'nombre': ?nombre,
       'rol': ?rol,
+      'oficio': ?oficio,
       'activo': ?activo,
       'modulos': ?modulos,
     });

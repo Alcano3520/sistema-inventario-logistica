@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../shared/widgets/nota_banner.dart';
 import '../domain/resultado_carga.dart';
 
 class CsvImportPanel extends StatefulWidget {
@@ -65,20 +66,17 @@ class _CsvImportPanelState extends State<CsvImportPanel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(15),
-          margin: const EdgeInsets.only(bottom: 16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFE8F4FD),
-            borderRadius: BorderRadius.circular(6),
-            border: const Border(left: BorderSide(color: AppColors.info, width: 4)),
-          ),
-          child: Text.rich(
-            TextSpan(children: [
-              TextSpan(text: '${widget.infoTitulo}\n', style: const TextStyle(fontWeight: FontWeight.bold)),
-              TextSpan(text: widget.infoTexto),
-            ]),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: NotaBanner(
+            tipo: TipoNota.info,
+            child: Text.rich(
+              TextSpan(children: [
+                TextSpan(text: '${widget.infoTitulo}\n', style: const TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: widget.infoTexto),
+              ]),
+              style: AppText.body,
+            ),
           ),
         ),
         const Text('Datos (CSV):',
@@ -111,21 +109,20 @@ class _CsvImportPanelState extends State<CsvImportPanel> {
                         _resultado = null;
                         _error = null;
                       }),
-              child: const Text('🔄 Limpiar'),
+              child: const Text('Limpiar'),
             ),
           ],
         ),
         if (_error != null) ...[
           const SizedBox(height: 16),
-          _mensaje(_error!, color: AppColors.error, bg: const Color(0xFFFDEAEA)),
+          NotaBanner.texto(_error!, tipo: TipoNota.error),
         ],
         if (_resultado != null) ...[
           const SizedBox(height: 16),
-          _mensaje(
-            '✅ ${widget.etiquetaExito}: ${_resultado!.agregados}'
-            '${_resultado!.tieneErrores ? '\n⚠️ ${_resultado!.errores.length} fila(s) con errores' : ''}',
-            color: AppColors.success,
-            bg: const Color(0xFFE8F8F5),
+          NotaBanner.texto(
+            '${widget.etiquetaExito}: ${_resultado!.agregados}'
+            '${_resultado!.tieneErrores ? '\n${_resultado!.errores.length} fila(s) con errores' : ''}',
+            tipo: TipoNota.exito,
           ),
           if (_resultado!.tieneErrores)
             Padding(
@@ -134,8 +131,8 @@ class _CsvImportPanelState extends State<CsvImportPanel> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF4E5),
-                  borderRadius: BorderRadius.circular(6),
+                  color: AppColors.warningBg,
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,19 +145,6 @@ class _CsvImportPanelState extends State<CsvImportPanel> {
             ),
         ],
       ],
-    );
-  }
-
-  Widget _mensaje(String texto, {required Color color, required Color bg}) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(6),
-        border: Border(left: BorderSide(color: color, width: 4)),
-      ),
-      child: Text(texto, style: TextStyle(color: color)),
     );
   }
 }

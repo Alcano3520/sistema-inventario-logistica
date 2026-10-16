@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/app_theme.dart';
+import '../../../shared/widgets/nota_banner.dart';
 import '../../auth/presentation/auth_providers.dart';
 
 class MiPerfilScreen extends ConsumerStatefulWidget {
@@ -76,10 +77,7 @@ class _MiPerfilScreenState extends ConsumerState<MiPerfilScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '⚙️ Mi Perfil',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-          ),
+          const Text('Mi Perfil', style: AppText.screenTitle),
           const SizedBox(height: 20),
           _FormSection(
             titulo: 'Información Personal',
@@ -103,8 +101,14 @@ class _MiPerfilScreenState extends ConsumerState<MiPerfilScreen> {
                     const SizedBox(height: 16),
                     _campo('Confirmar Nueva Contraseña:', _confirmarController),
                     const SizedBox(height: 16),
-                    if (_error != null) _mensaje(_error!, exito: false),
-                    if (_exito != null) _mensaje(_exito!, exito: true),
+                    if (_error != null) ...[
+                      NotaBanner.texto(_error!, tipo: TipoNota.error),
+                      const SizedBox(height: 10),
+                    ],
+                    if (_exito != null) ...[
+                      NotaBanner.texto(_exito!, tipo: TipoNota.exito),
+                      const SizedBox(height: 10),
+                    ],
                     const SizedBox(height: 8),
                     Align(
                       alignment: Alignment.centerLeft,
@@ -116,7 +120,7 @@ class _MiPerfilScreenState extends ConsumerState<MiPerfilScreen> {
                                 width: 16,
                                 child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                               )
-                            : const Text('🔐 Cambiar Contraseña'),
+                            : const Text('Cambiar Contraseña'),
                       ),
                     ),
                   ],
@@ -140,24 +144,6 @@ class _MiPerfilScreenState extends ConsumerState<MiPerfilScreen> {
       ],
     );
   }
-
-  Widget _mensaje(String texto, {required bool exito}) {
-    final color = exito ? AppColors.success : AppColors.error;
-    final bg = exito ? const Color(0xFFE8F8F5) : const Color(0xFFFDEAEA);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(6),
-          border: Border(left: BorderSide(color: color, width: 4)),
-        ),
-        child: Text(texto, style: TextStyle(color: color, fontSize: 13)),
-      ),
-    );
-  }
 }
 
 class _FormSection extends StatelessWidget {
@@ -173,14 +159,13 @@ class _FormSection extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 6)],
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(titulo,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+          Text(titulo, style: AppText.sectionTitle),
           const SizedBox(height: 15),
           ...children,
         ],
@@ -202,7 +187,7 @@ class _InfoField extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
+        color: AppColors.surfaceAlt,
         borderRadius: BorderRadius.circular(6),
         border: const Border(left: BorderSide(color: AppColors.primary, width: 3)),
       ),
@@ -211,7 +196,7 @@ class _InfoField extends StatelessWidget {
           TextSpan(
               text: '$label ',
               style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-          TextSpan(text: valor, style: const TextStyle(color: Color(0xFF5A6C7D))),
+          TextSpan(text: valor, style: const TextStyle(color: AppColors.textSecondary)),
         ]),
       ),
     );
