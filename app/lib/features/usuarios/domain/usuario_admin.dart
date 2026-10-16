@@ -7,6 +7,7 @@ class UsuarioAdmin {
   final String? oficio;
   final bool activo;
   final List<String> modulos;
+  final bool puedeEditarFacturas;
 
   const UsuarioAdmin({
     required this.id,
@@ -17,6 +18,7 @@ class UsuarioAdmin {
     this.oficio,
     required this.activo,
     required this.modulos,
+    this.puedeEditarFacturas = false,
   });
 
   /// Etiqueta a mostrar en la lista: el oficio (Mecánico/Bodeguero) si lo
@@ -33,6 +35,7 @@ class UsuarioAdmin {
       oficio: map['oficio'] as String?,
       activo: map['activo'] as bool? ?? true,
       modulos: ((map['modulos'] as List?) ?? const []).map((e) => e.toString()).toList(),
+      puedeEditarFacturas: map['puede_editar_facturas'] as bool? ?? false,
     );
   }
 }

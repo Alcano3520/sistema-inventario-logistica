@@ -1,15 +1,29 @@
 class DetalleItem {
+  /// `id` de la fila en `inv_detalle_entradas`/`inv_detalle_salidas` — null
+  /// si este detalle no vino de una consulta directa a esa tabla (p.ej. en
+  /// el kardex por producto, que no lo necesita). Se usa para poder editar
+  /// una línea puntual de una factura ya registrada.
+  final int? id;
   final String cod;
   final String producto;
   final num cantidad;
+  final num? precioUnitario;
 
-  const DetalleItem({required this.cod, required this.producto, required this.cantidad});
+  const DetalleItem({
+    this.id,
+    required this.cod,
+    required this.producto,
+    required this.cantidad,
+    this.precioUnitario,
+  });
 
   factory DetalleItem.fromMap(Map<String, dynamic> map) {
     return DetalleItem(
+      id: map['id'] as int?,
       cod: map['cod'] as String? ?? '',
       producto: map['producto'] as String? ?? '',
       cantidad: map['cantidad'] as num? ?? 0,
+      precioUnitario: map['precio_unitario'] as num?,
     );
   }
 }

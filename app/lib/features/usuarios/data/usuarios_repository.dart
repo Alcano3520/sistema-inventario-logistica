@@ -55,6 +55,7 @@ class UsuariosRepository {
     String? oficio,
     bool? activo,
     List<String>? modulos,
+    bool? puedeEditarFacturas,
   }) {
     return _invocar({
       'action': 'update',
@@ -64,6 +65,7 @@ class UsuariosRepository {
       'oficio': ?oficio,
       'activo': ?activo,
       'modulos': ?modulos,
+      'puede_editar_facturas': ?puedeEditarFacturas,
     });
   }
 

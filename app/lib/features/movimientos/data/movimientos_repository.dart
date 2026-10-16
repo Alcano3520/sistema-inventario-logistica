@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import '../../../core/modulos.dart';
 import '../../../core/supabase_config.dart';
+import '../../historial/domain/transaccion.dart';
 import '../domain/item_movimiento.dart';
 
 class MovimientosRepository {
@@ -72,6 +73,44 @@ class MovimientosRepository {
         // La foto de la factura es complementaria; si falla no se bloquea el registro de la entrada.
       }
     }
+  }
+
+  /// Corrige los datos de una Entrada/factura ya registrada — solo para
+  /// Admin (gatillado por RLS, no solo por la UI) y sin límite de tiempo.
+  /// [observaciones] queda como constancia de qué se corrigió y por qué: la
+  /// pantalla exige que no venga vacío. Si cambia alguna `cantidad`, el
+  /// stock queda desactualizado hasta el recálculo final de este método
+  /// (no hay trigger de UPDATE, solo de INSERT), así que siempre se
+  /// recalcula al terminar, haya cambiado una cantidad o no.
+  Future<void> editarEntrada({
+    required String idTransaccion,
+    required DateTime fecha,
+    required String proveedor,
+    required String numFactura,
+    required String observaciones,
+    String? claveAccesoSri,
+    required List<DetalleItem> items,
+  }) async {
+    final clave = claveAccesoSri?.trim();
+    await supabase.from(tablas.transaccionesEntrada).update({
+      'fecha_hora': fecha.toIso8601String(),
+      'proveedor': proveedor,
+      'num_factura': numFactura,
+      'observaciones': observaciones,
+      'clave_acceso_sri': (clave == null || clave.isEmpty) ? null : clave,
+    }).eq('id_transaccion', idTransaccion);
+
+    for (final item in items) {
+      if (item.id == null) continue;
+      await supabase.from(tablas.detalleEntradas).update({
+        'cod': item.cod,
+        'producto': item.producto,
+        'cantidad': item.cantidad,
+        'precio_unitario': item.precioUnitario,
+      }).eq('id', item.id!);
+    }
+
+    await supabase.rpc(tablas.rpcRecalcularStocks);
   }
 
   Future<void> registrarSalida({

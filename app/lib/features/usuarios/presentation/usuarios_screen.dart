@@ -199,6 +199,30 @@ class _TablaUsuarios extends ConsumerWidget {
     }
   }
 
+  /// Otorga/quita el permiso de corregir una Entrada/factura ya registrada
+  /// — a propósito más angosto que "ser Admin" (pensado para el
+  /// super-admin y para contabilidad/auditoría). Solo lo puede cambiar el
+  /// super-admin, por eso solo se muestra el control a esa cuenta — el
+  /// Edge Function `admin-users` lo exige igual del lado del servidor.
+  Future<void> _togglePuedeEditarFacturas(BuildContext context, WidgetRef ref, UsuarioAdmin u) async {
+    try {
+      await ref
+          .read(usuariosRepositoryProvider)
+          .actualizar(id: u.id, puedeEditarFacturas: !u.puedeEditarFacturas);
+      await ref.read(usuariosListaProvider.notifier).refrescar();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(u.puedeEditarFacturas
+                ? 'Se quitó a ${u.nombre} el permiso de editar facturas.'
+                : 'Se le dio a ${u.nombre} el permiso de editar facturas.')));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
+  }
+
   Future<void> _eliminar(BuildContext context, WidgetRef ref, UsuarioAdmin u) async {
     final confirmado1 = await showDialog<bool>(
       context: context,
@@ -240,6 +264,7 @@ class _TablaUsuarios extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final esSuperAdmin = ref.watch(perfilActualProvider).valueOrNull?.esSuperAdmin ?? false;
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth < 640) {
@@ -252,16 +277,19 @@ class _TablaUsuarios extends ConsumerWidget {
                       onRestablecerPassword: () => _restablecerPassword(context, ref, u),
                       onEditarModulos: () => _editarModulos(context, ref, u),
                       onEliminar: () => _eliminar(context, ref, u),
+                      onTogglePuedeEditarFacturas: esSuperAdmin
+                          ? () => _togglePuedeEditarFacturas(context, ref, u)
+                          : null,
                     ))
                 .toList(),
           );
         }
-        return _tabla(context, ref);
+        return _tabla(context, ref, esSuperAdmin);
       },
     );
   }
 
-  Widget _tabla(BuildContext context, WidgetRef ref) {
+  Widget _tabla(BuildContext context, WidgetRef ref, bool esSuperAdmin) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
@@ -311,6 +339,15 @@ class _TablaUsuarios extends ConsumerWidget {
                     icon: const Icon(Icons.apps, color: AppColors.primary),
                     onPressed: () => _editarModulos(context, ref, u),
                   ),
+                  if (esSuperAdmin)
+                    IconButton(
+                      tooltip: u.puedeEditarFacturas
+                          ? 'Quitar permiso de editar facturas'
+                          : 'Dar permiso de editar facturas',
+                      icon: Icon(Icons.receipt_long,
+                          color: u.puedeEditarFacturas ? AppColors.success : AppColors.textSecondary),
+                      onPressed: () => _togglePuedeEditarFacturas(context, ref, u),
+                    ),
                   if (u.id != miId)
                     IconButton(
                       tooltip: 'Eliminar',
@@ -334,6 +371,7 @@ class _TarjetaUsuario extends StatelessWidget {
   final VoidCallback onRestablecerPassword;
   final VoidCallback onEditarModulos;
   final VoidCallback onEliminar;
+  final VoidCallback? onTogglePuedeEditarFacturas;
 
   const _TarjetaUsuario({
     required this.usuario,
@@ -342,6 +380,7 @@ class _TarjetaUsuario extends StatelessWidget {
     required this.onRestablecerPassword,
     required this.onEditarModulos,
     required this.onEliminar,
+    this.onTogglePuedeEditarFacturas,
   });
 
   @override
@@ -426,6 +465,13 @@ class _TarjetaUsuario extends StatelessWidget {
                 icon: const Icon(Icons.apps, color: AppColors.primary),
                 label: const Text('Accesos'),
               ),
+              if (onTogglePuedeEditarFacturas != null)
+                TextButton.icon(
+                  onPressed: onTogglePuedeEditarFacturas,
+                  icon: Icon(Icons.receipt_long,
+                      color: usuario.puedeEditarFacturas ? AppColors.success : AppColors.textSecondary),
+                  label: Text(usuario.puedeEditarFacturas ? 'Quitar editar facturas' : 'Dar editar facturas'),
+                ),
               if (!esUno)
                 TextButton.icon(
                   onPressed: onEliminar,

@@ -7,6 +7,12 @@ class Perfil {
   final bool activo;
   final List<String> modulos;
 
+  /// Permiso aparte del rol: puede corregir una Entrada/factura ya
+  /// registrada (datos de encabezado e ítems), con observación obligatoria.
+  /// No todo Admin lo tiene — es deliberadamente más angosto que `esAdmin`,
+  /// pensado para el super-admin y para contabilidad/auditoría.
+  final bool puedeEditarFacturas;
+
   const Perfil({
     required this.id,
     required this.email,
@@ -15,9 +21,17 @@ class Perfil {
     this.oficio,
     required this.activo,
     required this.modulos,
+    this.puedeEditarFacturas = false,
   });
 
   bool get esAdmin => rol == 'Admin';
+
+  /// Única cuenta que puede modificar a OTRO Admin, y la única que puede
+  /// otorgar/quitar `puedeEditarFacturas` — mismo id que `SUPER_ADMIN_ID`
+  /// en el Edge Function `admin-users` (la autoridad real de este permiso,
+  /// no esto: esto solo decide si mostrar el control en la UI).
+  static const _superAdminId = '3bd84c78-7a09-4e2b-9c7f-096e92d6c1a3';
+  bool get esSuperAdmin => id == _superAdminId;
 
   /// Jefe de logística o sus asistentes: pueden crear/gestionar cuentas de
   /// Operador (bodeguero, mecánico) y registrar entradas/salidas, pero nunca
@@ -51,6 +65,7 @@ class Perfil {
       modulos: ((map['modulos'] as List?) ?? const ['barcos'])
           .map((e) => e.toString())
           .toList(),
+      puedeEditarFacturas: map['puede_editar_facturas'] as bool? ?? false,
     );
   }
 }
