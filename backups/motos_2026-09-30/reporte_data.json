@@ -1,0 +1,2231 @@
+{
+  "por_cod": {
+    "003": {
+      "producto": "BOLLA DE TANQUE",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "CASA DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "004": {
+      "producto": "FORRO DE MONTURA",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "CASA DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "006": {
+      "producto": "MANDO DE LUCES",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "CASA DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "007": {
+      "producto": "MANDO DE ENCENDIDO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "CASA DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "014": {
+      "producto": "SIMBRAS",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "017": {
+      "producto": "CARTONES DE PARCHE",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "020": {
+      "producto": "ARO DELANTERO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "021": {
+      "producto": "ARO TRASERO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "022": {
+      "producto": "CAÑA DE ACELERADOR",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "023": {
+      "producto": "POMA DE LIQUIDO DE FRENO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "025": {
+      "producto": "EJE TRASERO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "026": {
+      "producto": "EJE DELANTERO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "027": {
+      "producto": "EJE DE CAMBIO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "028": {
+      "producto": "POSA PIE TRASERO (PARES)",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "029": {
+      "producto": "PORTA ZAPATA",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "033": {
+      "producto": "RECTIFICADOR",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "035": {
+      "producto": "MANGUERA DE FRENO DELANTERO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "036": {
+      "producto": "CABLE DE REVOLUCION",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "038": {
+      "producto": "CABLE DE EMBRAGUE",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "039": {
+      "producto": "FOCO LEX",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "040": {
+      "producto": "SUICHES",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "042": {
+      "producto": "CAJA DE CAMBIO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "049": {
+      "producto": "POSA PIE DELANTERO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "050": {
+      "producto": "PISTA DE TIMON",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "051": {
+      "producto": "RECTIFICADOR",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "052": {
+      "producto": "RULIMAN 6204",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "054": {
+      "producto": "RULIMAN 6203",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "055": {
+      "producto": "RULIMAN 6301",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "057": {
+      "producto": "BOMBA DE FRENO DELANTERO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "061": {
+      "producto": "MORDAZA",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "063": {
+      "producto": "RELAY",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "064": {
+      "producto": "FOCO DE BUJIAS",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "065": {
+      "producto": "DOBLE PATA",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "066": {
+      "producto": "PASTILLAS",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [],
+      "salidas": []
+    },
+    "075": {
+      "producto": "BOBIN CENTRAL GN 125",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [],
+      "salidas": []
+    },
+    "069": {
+      "producto": "ARO POST GN 125 REFORZADO",
+      "stock": 15,
+      "entrada": 15,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:51:54.264+00:00",
+          "cantidad": 8,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919215308-6e4c09"
+        },
+        {
+          "fecha": "2026-09-19T16:53:08.888+00:00",
+          "cantidad": 3,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919215327-9b1d13"
+        },
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 4,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260925184417-e656b6"
+        }
+      ],
+      "salidas": []
+    },
+    "056": {
+      "producto": "MANIJA DE EMBRAGUE",
+      "stock": 34,
+      "entrada": 34,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:16:37.061+00:00",
+          "cantidad": 34,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919182009-7b0614"
+        }
+      ],
+      "salidas": []
+    },
+    "067": {
+      "producto": "ACCESORIO BOTÓN PRENDE Y APAGA 2CABLE",
+      "stock": 70,
+      "entrada": 70,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:20:11.065+00:00",
+          "cantidad": 70,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919182310-aabef2"
+        }
+      ],
+      "salidas": []
+    },
+    "062": {
+      "producto": "BUJIAS",
+      "stock": 100,
+      "entrada": 100,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:28:36.387+00:00",
+          "cantidad": 100,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919183321-718e24"
+        }
+      ],
+      "salidas": []
+    },
+    "071": {
+      "producto": "AUTOMÁTICO GN 125 SIN CABLE",
+      "stock": 35,
+      "entrada": 35,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:33:22.154+00:00",
+          "cantidad": 35,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919183625-92fb00"
+        }
+      ],
+      "salidas": []
+    },
+    "010": {
+      "producto": "TUBOS DELANTEROS",
+      "stock": 145,
+      "entrada": 145,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "CASA DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T11:29:34.273+00:00",
+          "cantidad": 45,
+          "proveedor": "Colón Moto",
+          "factura": "",
+          "id_transaccion": "ENT-20260919164038-1eec24"
+        },
+        {
+          "fecha": "2026-09-19T18:06:35.281+00:00",
+          "cantidad": 100,
+          "proveedor": "",
+          "factura": "321",
+          "id_transaccion": "ENT-20260919231556-a4af11"
+        }
+      ],
+      "salidas": []
+    },
+    "060": {
+      "producto": "MORDAZA",
+      "stock": 40,
+      "entrada": 40,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T14:42:23.053+00:00",
+          "cantidad": 40,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919195312-306ade"
+        }
+      ],
+      "salidas": []
+    },
+    "009": {
+      "producto": "ESCAPE",
+      "stock": 29,
+      "entrada": 29,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "CASA DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:47:42.32+00:00",
+          "cantidad": 25,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919194210-92c39f"
+        },
+        {
+          "fecha": "2026-09-19T14:42:11.77+00:00",
+          "cantidad": 4,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919194222-38f6e5"
+        }
+      ],
+      "salidas": []
+    },
+    "082": {
+      "producto": "CABEZOTE COMPLETO GN125",
+      "stock": 13,
+      "entrada": 13,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T14:53:13.493+00:00",
+          "cantidad": 13,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919195644-1d630b"
+        }
+      ],
+      "salidas": []
+    },
+    "043": {
+      "producto": "MOTOR DE ARRANQUE",
+      "stock": 3,
+      "entrada": 3,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 3,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260926005648-98eef5"
+        }
+      ],
+      "salidas": []
+    },
+    "080": {
+      "producto": "CADENA 428H-132L",
+      "stock": 70,
+      "entrada": 73,
+      "salida": 3,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T15:36:27.118+00:00",
+          "cantidad": 73,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919204332-705718"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 3,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        }
+      ]
+    },
+    "019": {
+      "producto": "PIÑON DE MOTRIZ",
+      "stock": 148,
+      "entrada": 151,
+      "salida": 3,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T15:24:36.396+00:00",
+          "cantidad": 73,
+          "proveedor": "371",
+          "factura": "",
+          "id_transaccion": "ENT-20260919202709-4955ce"
+        },
+        {
+          "fecha": "2026-09-19T16:10:01.494+00:00",
+          "cantidad": 73,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919211451-59e1c1"
+        },
+        {
+          "fecha": "2026-09-22T00:00:00+00:00",
+          "cantidad": 5,
+          "proveedor": "colon moto",
+          "factura": "371",
+          "id_transaccion": "ENT-20260923145737-3d3b85"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 3,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        }
+      ]
+    },
+    "058": {
+      "producto": "ESPEJOS (PARES)",
+      "stock": 44,
+      "entrada": 50,
+      "salida": 6,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:15:49.278+00:00",
+          "cantidad": 50,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919222612-29cdff"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-24T00:00:00+00:00",
+          "cantidad": 6,
+          "a_quien": "Coordinador Ronald Mayorga ",
+          "vehiculo": "Cachugran ",
+          "id_transaccion": "SAL-20260926011309-f50adf"
+        }
+      ]
+    },
+    "030": {
+      "producto": "PATA DE CAMBIO",
+      "stock": 50,
+      "entrada": 50,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T15:59:15.273+00:00",
+          "cantidad": 50,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919210151-98deaa"
+        }
+      ],
+      "salidas": []
+    },
+    "0075": {
+      "producto": "BOCÍN CENTRAL GN125",
+      "stock": 80,
+      "entrada": 80,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:05:48.367+00:00",
+          "cantidad": 80,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919211000-32335e"
+        }
+      ],
+      "salidas": []
+    },
+    "070": {
+      "producto": "CAUCHO DE TANQUE GN",
+      "stock": 50,
+      "entrada": 50,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:40:38.499+00:00",
+          "cantidad": 50,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919214058-a3afca"
+        }
+      ],
+      "salidas": []
+    },
+    "076": {
+      "producto": "BATERIA",
+      "stock": 29,
+      "entrada": 29,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:53:28.45+00:00",
+          "cantidad": 29,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919220046-ba352b"
+        }
+      ],
+      "salidas": []
+    },
+    "053": {
+      "producto": "RULIMAN 6302",
+      "stock": 72,
+      "entrada": 72,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:40:59.606+00:00",
+          "cantidad": 50,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919214521-749204"
+        },
+        {
+          "fecha": "2026-09-19T16:45:22.107+00:00",
+          "cantidad": 22,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919214537-9d226d"
+        }
+      ],
+      "salidas": []
+    },
+    "041": {
+      "producto": "ANILLO DE FUEGO",
+      "stock": 99,
+      "entrada": 104,
+      "salida": 5,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 104,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260926190542-34a154"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-26T00:00:00+00:00",
+          "cantidad": 5,
+          "a_quien": "Coordinador Bone ",
+          "vehiculo": "Taura c",
+          "id_transaccion": "SAL-20260926191157-f62bfb"
+        }
+      ]
+    },
+    "068": {
+      "producto": "AMORTIGUADOR GN125 POSTERIOR",
+      "stock": 29,
+      "entrada": 29,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:09:32.691+00:00",
+          "cantidad": 29,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919221307-13080a"
+        }
+      ],
+      "salidas": []
+    },
+    "015": {
+      "producto": "TENSOR DE CADENILLA",
+      "stock": 50,
+      "entrada": 53,
+      "salida": 3,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:30:14.164+00:00",
+          "cantidad": 53,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919233200-b71231"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-26T00:00:00+00:00",
+          "cantidad": 3,
+          "a_quien": "Coordinador Bone ",
+          "vehiculo": "Taura c",
+          "id_transaccion": "SAL-20260926191157-f62bfb"
+        }
+      ]
+    },
+    "046": {
+      "producto": "CADENILLA DE MOTOR",
+      "stock": 23,
+      "entrada": 30,
+      "salida": 7,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 30,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260921161520-5491d5"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 5,
+          "a_quien": "Coordinador Ronald Mayorga",
+          "vehiculo": "Asia y Africa ",
+          "id_transaccion": "SAL-20260923185608-db4d34"
+        },
+        {
+          "fecha": "2026-09-26T00:00:00+00:00",
+          "cantidad": 2,
+          "a_quien": "Coordinador Bone ",
+          "vehiculo": "Taura c",
+          "id_transaccion": "SAL-20260926191157-f62bfb"
+        }
+      ]
+    },
+    "045": {
+      "producto": "BOBINA DE BUJIA",
+      "stock": 25,
+      "entrada": 25,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:39:32.622+00:00",
+          "cantidad": 25,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919225050-ae6509"
+        }
+      ],
+      "salidas": []
+    },
+    "048": {
+      "producto": "FILTRO DE ACEITE",
+      "stock": 124,
+      "entrada": 124,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:27:05.193+00:00",
+          "cantidad": 100,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919223218-ce8fec"
+        },
+        {
+          "fecha": "2026-09-19T17:32:19.439+00:00",
+          "cantidad": 24,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919223331-6fedc3"
+        }
+      ],
+      "salidas": []
+    },
+    "032": {
+      "producto": "CDI",
+      "stock": 20,
+      "entrada": 20,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:50:51.624+00:00",
+          "cantidad": 20,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919225153-89e121"
+        }
+      ],
+      "salidas": []
+    },
+    "074": {
+      "producto": "BENDIX",
+      "stock": 30,
+      "entrada": 30,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:51:54.646+00:00",
+          "cantidad": 30,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919225542-16efe5"
+        }
+      ],
+      "salidas": []
+    },
+    "073": {
+      "producto": "BARRA TELESCÓPICA GN125 NOVA",
+      "stock": 27,
+      "entrada": 27,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:40:46.753+00:00",
+          "cantidad": 4,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919184741-13574a"
+        },
+        {
+          "fecha": "2026-09-19T18:03:19.629+00:00",
+          "cantidad": 23,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919230634-e318cd"
+        }
+      ],
+      "salidas": []
+    },
+    "024": {
+      "producto": "PASE DE GASOLINA",
+      "stock": 17,
+      "entrada": 17,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:25:49.034+00:00",
+          "cantidad": 17,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919232939-85fbae"
+        }
+      ],
+      "salidas": []
+    },
+    "005": {
+      "producto": "TANQUE DE GASOLINA",
+      "stock": 2,
+      "entrada": 2,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "BODEGA DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:29:40.388+00:00",
+          "cantidad": 2,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919233000-bf9851"
+        }
+      ],
+      "salidas": []
+    },
+    "012": {
+      "producto": "FILTRO DE AIRE",
+      "stock": 23,
+      "entrada": 23,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:30:01.437+00:00",
+          "cantidad": 23,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919233013-71aa9b"
+        }
+      ],
+      "salidas": []
+    },
+    "037": {
+      "producto": "CABLE DE VELOCIDAD",
+      "stock": 30,
+      "entrada": 30,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:32:01.185+00:00",
+          "cantidad": 30,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919233431-558390"
+        }
+      ],
+      "salidas": []
+    },
+    "008": {
+      "producto": "TIMON",
+      "stock": 8,
+      "entrada": 8,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "CASA DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:34:32.553+00:00",
+          "cantidad": 8,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919233635-722375"
+        }
+      ],
+      "salidas": []
+    },
+    "031": {
+      "producto": "BOBINA DE CAMPO",
+      "stock": 33,
+      "entrada": 35,
+      "salida": 2,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:49:11.447+00:00",
+          "cantidad": 25,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919215139-fece16"
+        },
+        {
+          "fecha": "2026-09-19T16:51:40.414+00:00",
+          "cantidad": 10,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919215152-b6821d"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-26T00:00:00+00:00",
+          "cantidad": 2,
+          "a_quien": "Coordinador Bone ",
+          "vehiculo": "Taura c",
+          "id_transaccion": "SAL-20260926191157-f62bfb"
+        }
+      ]
+    },
+    "072": {
+      "producto": "CINTA AISLANTE",
+      "stock": 48,
+      "entrada": 50,
+      "salida": 2,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:13:08.403+00:00",
+          "cantidad": 50,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919221322-daac94"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 2,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        }
+      ]
+    },
+    "002": {
+      "producto": "LLANTAS TRASERAS",
+      "stock": 10,
+      "entrada": 10,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "CASA DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 10,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260922143413-a03a48"
+        }
+      ],
+      "salidas": []
+    },
+    "001": {
+      "producto": "LLANTAS DELANTERAS",
+      "stock": 11,
+      "entrada": 11,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "BODEGA DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 11,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260922143436-1a37fa"
+        }
+      ],
+      "salidas": []
+    },
+    "083": {
+      "producto": "CILINDRO GN125",
+      "stock": 7,
+      "entrada": 13,
+      "salida": 6,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:26:28.167+00:00",
+          "cantidad": 13,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919213431-27ea56"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 1,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        },
+        {
+          "fecha": "2026-09-24T00:00:00+00:00",
+          "cantidad": 3,
+          "a_quien": "Coordinador Ronald Mayorga ",
+          "vehiculo": "Cachugran ",
+          "id_transaccion": "SAL-20260926011309-f50adf"
+        },
+        {
+          "fecha": "2026-09-26T00:00:00+00:00",
+          "cantidad": 2,
+          "a_quien": "Coordinador Bone ",
+          "vehiculo": "Taura c",
+          "id_transaccion": "SAL-20260926191157-f62bfb"
+        }
+      ]
+    },
+    "018": {
+      "producto": "TARRO DE GOMA",
+      "stock": 329,
+      "entrada": 331,
+      "salida": 2,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:36:38.352+00:00",
+          "cantidad": 331,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919234515-f3c153"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 2,
+          "a_quien": "Coordinador Ronald Mayorga",
+          "vehiculo": "Asia y Africa ",
+          "id_transaccion": "SAL-20260923185608-db4d34"
+        }
+      ]
+    },
+    "081": {
+      "producto": "CATALINA ACERO PULIDO GN125",
+      "stock": 70,
+      "entrada": 73,
+      "salida": 3,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T15:27:10.79+00:00",
+          "cantidad": 73,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919203625-bcb3b8"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 3,
+          "a_quien": "Coordinador Ronald Mayorga",
+          "vehiculo": "Asia y Africa ",
+          "id_transaccion": "SAL-20260923185608-db4d34"
+        }
+      ]
+    },
+    "013": {
+      "producto": "TARRO DE GRASA",
+      "stock": 49,
+      "entrada": 50,
+      "salida": 1,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:22:00.082+00:00",
+          "cantidad": 50,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919212424-1cfd91"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 1,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        }
+      ]
+    },
+    "092": {
+      "producto": "MANIJA DE EMBRAGUE COMPLETA",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [],
+      "salidas": []
+    },
+    "094": {
+      "producto": "MORDAZA DE FRENO DELANTERO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [],
+      "salidas": []
+    },
+    "097": {
+      "producto": "PIÑON DE MOTRIZ ACERO PULIDO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [],
+      "salidas": []
+    },
+    "0104": {
+      "producto": "RULIMAN 6302",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [],
+      "salidas": []
+    },
+    "0105": {
+      "producto": "STOP",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [],
+      "salidas": []
+    },
+    "0108": {
+      "producto": "TAPA CAMBIO DE ACEITE TRIANGULO",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [],
+      "salidas": []
+    },
+    "0113": {
+      "producto": "ESPEJO GN NOVA",
+      "stock": 0,
+      "entrada": 0,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [],
+      "salidas": []
+    },
+    "085": {
+      "producto": "ESTRIBO POSTERIOR GN125",
+      "stock": 40,
+      "entrada": 40,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:09:44.097+00:00",
+          "cantidad": 40,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919180959-3b5618"
+        }
+      ],
+      "salidas": []
+    },
+    "088": {
+      "producto": "GALLETA DE FRENO GN125",
+      "stock": 117,
+      "entrada": 117,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:10:02.174+00:00",
+          "cantidad": 117,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919181410-a1dbcc"
+        }
+      ],
+      "salidas": []
+    },
+    "01101": {
+      "producto": "PITO 12V PEQUEÑO",
+      "stock": 40,
+      "entrada": 40,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:14:11.121+00:00",
+          "cantidad": 40,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919181636-0afec0"
+        }
+      ],
+      "salidas": []
+    },
+    "098": {
+      "producto": "PIÑON DE VELOCÍMETRO",
+      "stock": 40,
+      "entrada": 40,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:23:11.441+00:00",
+          "cantidad": 40,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919182506-294e3a"
+        }
+      ],
+      "salidas": []
+    },
+    "0107": {
+      "producto": "SET DE SWITCH SUZUKI",
+      "stock": 20,
+      "entrada": 20,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:25:07.289+00:00",
+          "cantidad": 20,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919182835-c6f9af"
+        }
+      ],
+      "salidas": []
+    },
+    "084": {
+      "producto": "ESTRIBO DELANTERO GN125",
+      "stock": 40,
+      "entrada": 40,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T13:40:22.85+00:00",
+          "cantidad": 40,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919184045-48ac84"
+        }
+      ],
+      "salidas": []
+    },
+    "0111": {
+      "producto": "VÁLVULAS GN",
+      "stock": 35,
+      "entrada": 40,
+      "salida": 5,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T15:05:56.569+00:00",
+          "cantidad": 40,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919200656-c2111a"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-26T00:00:00+00:00",
+          "cantidad": 5,
+          "a_quien": "Coordinador Bone ",
+          "vehiculo": "Taura c",
+          "id_transaccion": "SAL-20260926191157-f62bfb"
+        }
+      ]
+    },
+    "0103": {
+      "producto": "RULIMAN 6301",
+      "stock": 100,
+      "entrada": 100,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T15:43:33.353+00:00",
+          "cantidad": 100,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919205223-ce77b4"
+        }
+      ],
+      "salidas": []
+    },
+    "044": {
+      "producto": "JUEGO DE EMPAQUE",
+      "stock": 17,
+      "entrada": 23,
+      "salida": 6,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 23,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260923192921-b2f314"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 1,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        },
+        {
+          "fecha": "2026-09-26T00:00:00+00:00",
+          "cantidad": 5,
+          "a_quien": "Coordinador Bone ",
+          "vehiculo": "Taura c",
+          "id_transaccion": "SAL-20260926191157-f62bfb"
+        }
+      ]
+    },
+    "099": {
+      "producto": "PORTA CATALINA",
+      "stock": 40,
+      "entrada": 40,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T15:52:25.116+00:00",
+          "cantidad": 40,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919205914-7a08c2"
+        }
+      ],
+      "salidas": []
+    },
+    "0115": {
+      "producto": "TAPA LATERAL GN NOVA NEGRO",
+      "stock": 35,
+      "entrada": 40,
+      "salida": 5,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:00:47.24+00:00",
+          "cantidad": 40,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919220931-b9b94d"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-26T00:00:00+00:00",
+          "cantidad": 5,
+          "a_quien": "Coordinador Bone ",
+          "vehiculo": "Taura c",
+          "id_transaccion": "SAL-20260926191157-f62bfb"
+        }
+      ]
+    },
+    "095": {
+      "producto": "PATA DE APOYO",
+      "stock": 36,
+      "entrada": 36,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:01:54.003+00:00",
+          "cantidad": 30,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919210535-0df384"
+        },
+        {
+          "fecha": "2026-09-19T16:05:36.243+00:00",
+          "cantidad": 6,
+          "proveedor": "",
+          "factura": "bodega",
+          "id_transaccion": "ENT-20260919210547-ab16d1"
+        }
+      ],
+      "salidas": []
+    },
+    "093": {
+      "producto": "MAYA PARA MONTURA",
+      "stock": 50,
+      "entrada": 50,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:14:52.71+00:00",
+          "cantidad": 50,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919212158-5de64c"
+        }
+      ],
+      "salidas": []
+    },
+    "9MQ8606S50393": {
+      "producto": "producto de prueba borra",
+      "stock": 1,
+      "entrada": 1,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-29T17:06:50.099397+00:00",
+          "cantidad": 1,
+          "proveedor": "Conteo físico",
+          "factura": "",
+          "id_transaccion": "ENT-20260929220649-6584be"
+        }
+      ],
+      "salidas": []
+    },
+    "0110": {
+      "producto": "INSTALACIÓN ELÉCTRICA",
+      "stock": 15,
+      "entrada": 15,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:34:33.969+00:00",
+          "cantidad": 15,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919214037-cf3673"
+        }
+      ],
+      "salidas": []
+    },
+    "0100": {
+      "producto": "PORTA ZAPATA",
+      "stock": 15,
+      "entrada": 15,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:45:38.406+00:00",
+          "cantidad": 15,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919214910-7bfe7a"
+        }
+      ],
+      "salidas": []
+    },
+    "089": {
+      "producto": "GUÍA DIRECCIONAL POSTERIOR GN125",
+      "stock": 43,
+      "entrada": 43,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:13:23.276+00:00",
+          "cantidad": 43,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919221548-200e23"
+        }
+      ],
+      "salidas": []
+    },
+    "7862110202551": {
+      "producto": "producto de prueba crema",
+      "stock": 5,
+      "entrada": 5,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-29T17:29:04.635644+00:00",
+          "cantidad": 5,
+          "proveedor": "Conteo físico",
+          "factura": "",
+          "id_transaccion": "ENT-20260929222903-b25c24"
+        }
+      ],
+      "salidas": []
+    },
+    "0106": {
+      "producto": "SELECTOR DE CAMBIOS",
+      "stock": 35,
+      "entrada": 35,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:59:21.882+00:00",
+          "cantidad": 35,
+          "proveedor": "",
+          "factura": "321",
+          "id_transaccion": "ENT-20260919230318-4fa8e9"
+        }
+      ],
+      "salidas": []
+    },
+    "011": {
+      "producto": "TUBOS TRASEROS",
+      "stock": 150,
+      "entrada": 150,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T11:28:49.267+00:00",
+          "cantidad": 50,
+          "proveedor": "Colón Moto",
+          "factura": "",
+          "id_transaccion": "ENT-20260919162932-684a4e"
+        },
+        {
+          "fecha": "2026-09-19T18:15:57.991+00:00",
+          "cantidad": 100,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919232447-4fa8f3"
+        }
+      ],
+      "salidas": []
+    },
+    "034": {
+      "producto": "DISCO DE FRENO DELANTERO",
+      "stock": 20,
+      "entrada": 20,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:32:01.185+00:00",
+          "cantidad": 20,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919233431-558390"
+        }
+      ],
+      "salidas": []
+    },
+    "016": {
+      "producto": "MONTURAS",
+      "stock": 9,
+      "entrada": 9,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:32:01.185+00:00",
+          "cantidad": 9,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919233431-558390"
+        }
+      ],
+      "salidas": []
+    },
+    "047": {
+      "producto": "TABLERO",
+      "stock": 6,
+      "entrada": 6,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:32:01.185+00:00",
+          "cantidad": 6,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260919233431-558390"
+        }
+      ],
+      "salidas": []
+    },
+    "091": {
+      "producto": "KIT DE PISTÓN GN125",
+      "stock": 25,
+      "entrada": 25,
+      "salida": 0,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:24:49.023+00:00",
+          "cantidad": 10,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919232512-ce805a"
+        },
+        {
+          "fecha": "2026-09-22T00:00:00+00:00",
+          "cantidad": 15,
+          "proveedor": "colon moto",
+          "factura": "371",
+          "id_transaccion": "ENT-20260923145737-3d3b85"
+        }
+      ],
+      "salidas": []
+    },
+    "730143313377": {
+      "producto": "borrar amd",
+      "stock": 3,
+      "entrada": 3,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-29T21:13:17.358659+00:00",
+          "cantidad": 3,
+          "proveedor": "Conteo físico",
+          "factura": "",
+          "id_transaccion": "ENT-20260930021317-2b090a"
+        }
+      ],
+      "salidas": []
+    },
+    "0109": {
+      "producto": "TEMPLADOR DE CADENA",
+      "stock": 93,
+      "entrada": 93,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:24:25.996+00:00",
+          "cantidad": 88,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919212627-e08e37"
+        },
+        {
+          "fecha": "2026-09-22T00:00:00+00:00",
+          "cantidad": 5,
+          "proveedor": "colon moto",
+          "factura": "371",
+          "id_transaccion": "ENT-20260923145737-3d3b85"
+        }
+      ],
+      "salidas": []
+    },
+    "078": {
+      "producto": "CABLE DE EMBRAGUE GN125",
+      "stock": 119,
+      "entrada": 122,
+      "salida": 3,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T15:21:20.537+00:00",
+          "cantidad": 100,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919202411-610459"
+        },
+        {
+          "fecha": "2026-09-19T15:24:12.492+00:00",
+          "cantidad": 22,
+          "proveedor": "bodeg",
+          "factura": "",
+          "id_transaccion": "ENT-20260919202435-270815"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 3,
+          "a_quien": "Coordinador Ronald Mayorga",
+          "vehiculo": "Asia y Africa ",
+          "id_transaccion": "SAL-20260923185608-db4d34"
+        }
+      ]
+    },
+    "077": {
+      "producto": "CACHIMBA SOLA CG125",
+      "stock": 48,
+      "entrada": 50,
+      "salida": 2,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T18:25:12.691+00:00",
+          "cantidad": 50,
+          "proveedor": "",
+          "factura": "731",
+          "id_transaccion": "ENT-20260919232546-4821ae"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 2,
+          "a_quien": "Coordinador Ronald Mayorga",
+          "vehiculo": "Asia y Africa ",
+          "id_transaccion": "SAL-20260923185608-db4d34"
+        }
+      ]
+    },
+    "6935364085476": {
+      "producto": "borrar tplink",
+      "stock": 5,
+      "entrada": 5,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-30T11:32:22.30603+00:00",
+          "cantidad": 5,
+          "proveedor": "Conteo físico",
+          "factura": "",
+          "id_transaccion": "ENT-20260930163221-49f031"
+        }
+      ],
+      "salidas": []
+    },
+    "813002010089": {
+      "producto": "borrar pilas",
+      "stock": 5,
+      "entrada": 5,
+      "salida": 0,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-30T12:01:43.44152+00:00",
+          "cantidad": 5,
+          "proveedor": "Conteo físico",
+          "factura": "",
+          "id_transaccion": "ENT-20260930170142-248d20"
+        }
+      ],
+      "salidas": []
+    },
+    "0112": {
+      "producto": "ZAPATA GN",
+      "stock": 77,
+      "entrada": 80,
+      "salida": 3,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T16:10:01.494+00:00",
+          "cantidad": 80,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919211451-59e1c1"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 3,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        }
+      ]
+    },
+    "096": {
+      "producto": "PERNO DE CATALINA",
+      "stock": 90,
+      "entrada": 93,
+      "salida": 3,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T15:06:57.51+00:00",
+          "cantidad": 92,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919202119-72de9c"
+        },
+        {
+          "fecha": "2026-09-22T00:00:00+00:00",
+          "cantidad": 1,
+          "proveedor": "colon moto",
+          "factura": "371",
+          "id_transaccion": "ENT-20260923145737-3d3b85"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 3,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        }
+      ]
+    },
+    "0102": {
+      "producto": "RULIMAN 6204",
+      "stock": 44,
+      "entrada": 50,
+      "salida": 6,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T15:43:33.353+00:00",
+          "cantidad": 50,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919205223-ce77b4"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 1,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        },
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 5,
+          "a_quien": "Coordinador Ronald Mayorga",
+          "vehiculo": "Asia y Africa ",
+          "id_transaccion": "SAL-20260923185608-db4d34"
+        }
+      ]
+    },
+    "059": {
+      "producto": "STOP",
+      "stock": 29,
+      "entrada": 31,
+      "salida": 2,
+      "categoria": "SUZUKI",
+      "ubicacion": "DURAN",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T14:56:44.906+00:00",
+          "cantidad": 31,
+          "proveedor": "",
+          "factura": "371",
+          "id_transaccion": "ENT-20260919200251-1b1cf2"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 2,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        }
+      ]
+    },
+    "0114": {
+      "producto": "PISTA DE TIMÓN GN125 CON RULIMAN",
+      "stock": 70,
+      "entrada": 74,
+      "salida": 4,
+      "categoria": "",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-18T00:00:00+00:00",
+          "cantidad": 74,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260923192709-851356"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 4,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        }
+      ]
+    },
+    "086": {
+      "producto": "FARO GN125 NOVA",
+      "stock": 30,
+      "entrada": 37,
+      "salida": 7,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:33:33.88+00:00",
+          "cantidad": 37,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919223931-4647cb"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 2,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        },
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 2,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        },
+        {
+          "fecha": "2026-09-24T00:00:00+00:00",
+          "cantidad": 3,
+          "a_quien": "Coordinador Ronald Mayorga ",
+          "vehiculo": "Cachugran ",
+          "id_transaccion": "SAL-20260926011309-f50adf"
+        }
+      ]
+    },
+    "087": {
+      "producto": "FOCO 2 PUNTOS LED BLANCO",
+      "stock": 70,
+      "entrada": 80,
+      "salida": 10,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:26:13.199+00:00",
+          "cantidad": 80,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919222704-5976f2"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 5,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        },
+        {
+          "fecha": "2026-09-24T00:00:00+00:00",
+          "cantidad": 5,
+          "a_quien": "Coordinador Ronald Mayorga ",
+          "vehiculo": "Cachugran ",
+          "id_transaccion": "SAL-20260926011309-f50adf"
+        }
+      ]
+    },
+    "090": {
+      "producto": "GUÍA DIRECCIONAL DELANTEROA GN125",
+      "stock": 17,
+      "entrada": 25,
+      "salida": 8,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-18T00:00:00+00:00",
+          "cantidad": 25,
+          "proveedor": "",
+          "factura": "",
+          "id_transaccion": "ENT-20260923192822-b85438"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-19T00:00:00+00:00",
+          "cantidad": 2,
+          "a_quien": "Coor Mayorga/Tecnico Toala",
+          "vehiculo": "Corvinero",
+          "id_transaccion": "SAL-20260923192926-8e2bb1"
+        },
+        {
+          "fecha": "2026-09-24T00:00:00+00:00",
+          "cantidad": 6,
+          "a_quien": "Coordinador Ronald Mayorga ",
+          "vehiculo": "Cachugran ",
+          "id_transaccion": "SAL-20260926011309-f50adf"
+        }
+      ]
+    },
+    "079": {
+      "producto": "CAUCHO DE VALVULAS",
+      "stock": 25,
+      "entrada": 30,
+      "salida": 5,
+      "categoria": "SUZUKI",
+      "ubicacion": "",
+      "entradas": [
+        {
+          "fecha": "2026-09-19T17:55:42.795+00:00",
+          "cantidad": 30,
+          "proveedor": "",
+          "factura": "431",
+          "id_transaccion": "ENT-20260919225921-7d9c4d"
+        }
+      ],
+      "salidas": [
+        {
+          "fecha": "2026-09-26T00:00:00+00:00",
+          "cantidad": 5,
+          "a_quien": "Coordinador Bone ",
+          "vehiculo": "Taura c",
+          "id_transaccion": "SAL-20260926191157-f62bfb"
+        }
+      ]
+    }
+  },
+  "huerfanos_ent": [],
+  "huerfanos_sal": []
+}

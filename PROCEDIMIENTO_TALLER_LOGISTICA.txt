@@ -1,0 +1,109 @@
+PROCEDIMIENTO DEL TALLER DE MOTOS Y CONTROL DE LOGÍSTICA
+Insevig - Sistema de Inventario/Logística
+Actualizado: 30/09/2026
+
+============================================================
+1. ROLES DEL SISTEMA
+============================================================
+
+ADMIN
+  - Control total de la app: usuarios, productos, carga masiva, migración.
+  - Puede crear cuentas de cualquier rol (Operador, Encargado de Logística, Admin).
+  - Un Admin normal NO puede modificar (contraseña, rol, módulos, activar/
+    desactivar, eliminar) la cuenta de OTRO Admin.
+  - Excepción: la cuenta de Daniel (super-admin) sí puede modificar a
+    cualquier otro Admin. Esto existe para que, si el jefe de logística u
+    otro administrador se retira de la empresa, no pueda inutilizar las
+    demás cuentas de Admin antes de irse.
+
+ENCARGADO DE LOGÍSTICA (jefe de logística o sus asistentes)
+  - Es quien, en la práctica, registra las Entradas (ingresos de mercadería/
+    repuestos) y las Salidas de inventario.
+  - Puede crear y gestionar cuentas de Operador (bodeguero, mecánico):
+    crearlas, resetear su contraseña, activarlas/desactivarlas, cambiar sus
+    módulos de acceso, eliminarlas.
+  - NO puede crear ni tocar de ninguna forma una cuenta de Admin ni la
+    cuenta de otro Encargado de Logística. Esta restricción está aplicada
+    en el servidor (Edge Function `admin-users`), no solo en la pantalla,
+    así que no depende de qué versión del APK tenga instalada cada celular.
+  - En el listado de Usuarios, un Encargado de Logística solo ve las
+    cuentas de Operador y la suya propia; no ve ni puede ver los Admins.
+
+OPERADOR (bodeguero, mecánico)
+  - Nombre técnico único en el sistema: "Operador". "Bodeguero" y
+    "Mecánico" son funciones/oficios dentro de ese mismo rol, no roles
+    separados en la base de datos.
+  - Accede a Entrada, Salida, Inventario, Historial y (en el módulo Motos)
+    Taller, según los módulos que se le hayan asignado.
+
+============================================================
+2. FLUJO DE UNA REPARACIÓN EN EL TALLER DE MOTOS
+============================================================
+
+PASO 1 - El mecánico reporta la falla (crea la Orden de Trabajo/OT)
+  - Abre "Taller de Motos" > "Nueva OT".
+  - Elige la moto, ingresa el kilometraje actual y describe la falla.
+  - Puede adjuntar, de forma OPCIONAL:
+      a) Foto del repuesto/pieza dañada (evidencia de la falla).
+      b) Foto del repuesto nuevo, si ya lo tiene en mano.
+  - La OT queda en estado ABIERTA.
+
+PASO 2 - Logística/Administración gestiona el repuesto
+  - El Encargado de Logística (jefe o asistente) es quien resuelve cómo se
+    consigue el repuesto: si hay que comprarlo (Entrada con factura u otro
+    motivo) o si ya hay stock en bodega.
+  - Aquí NO hay un paso de aprobación aparte: la persona que cumple el rol
+    de "administrador/logística" en este flujo ES quien gestiona el
+    pedido; no existe una cola de aprobación adicional antes de bodega.
+
+PASO 3 - El bodeguero despacha el repuesto contra la OT
+  - Escanea el código de barras/QR del repuesto.
+  - El sistema verifica automáticamente, en el servidor:
+      * Que haya stock suficiente (si no, RECHAZA el despacho).
+      * Que la OT esté ABIERTA o EN_PROCESO (no CERRADA ni CANCELADA).
+      * Que el bodeguero que despacha NO sea el mismo mecánico que pidió
+        la OT (separación de funciones, control anti-fraude).
+  - Si el repuesto lo requiere, es OBLIGATORIO fotografiar la pieza usada/
+    dañada que se retira antes de completar el despacho.
+  - El bodeguero puede ver, en esta misma pantalla, la evidencia que dejó
+    el mecánico al crear la OT (descripción de la falla + sus fotos).
+
+PASO 4 - Custodia de la pieza retirada (control anti-robo)
+  - La pieza reemplazada NUNCA se descarta directamente: queda registrada
+    en "Piezas Retiradas (Chatarra)" con su foto, en estado EN_CUSTODIA.
+
+PASO 5 - Baja formal de la pieza
+  - Un supervisor revisa las piezas en custodia, selecciona las que ya se
+    revisaron y las da de baja formalmente: ingresa el motivo, firma en la
+    pantalla, y el sistema genera un acta en PDF (con firma) y marca cada
+    pieza como DADO_DE_BAJA.
+
+PASO 6 - Cierre de la OT
+  - Cuando el trabajo está terminado, se marca la OT como COMPLETADA.
+
+============================================================
+3. SALIDAS DE INVENTARIO FUERA DEL FLUJO DE TALLER
+============================================================
+
+Cuando el Encargado de Logística (o un Admin) registra una Salida
+DIRECTAMENTE, sin pasar por una OT de Taller (por ejemplo, por otra
+eventualidad distinta a un repuesto de moto), la pantalla de Salida
+permite anexar, de forma OPCIONAL:
+  - Un texto: quién hizo la petición y para qué.
+  - Una foto de esa petición (papel, mensaje, etc.).
+Esto queda guardado en el historial de esa salida, para trazabilidad,
+sin ser un requisito obligatorio.
+
+============================================================
+4. RESUMEN DE PROTECCIONES DE SEGURIDAD (aplicadas en el servidor)
+============================================================
+
+  - No se puede despachar más stock del que existe.
+  - No se puede despachar contra una OT que no esté ABIERTA/EN_PROCESO.
+  - El mecánico que pide un repuesto no puede ser quien lo despacha.
+  - Un Admin no puede tocar la cuenta de otro Admin (salvo el super-admin).
+  - Un Encargado de Logística no puede tocar cuentas de Admin ni de otro
+    Encargado de Logística; solo puede gestionar Operadores.
+  - Todas estas reglas viven en la base de datos / Edge Functions del
+    servidor, así que aplican sin importar qué versión de la app (APK)
+    esté usando cada celular.

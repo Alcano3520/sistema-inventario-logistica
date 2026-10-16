@@ -1,0 +1,20 @@
+PENDIENTE - WEB
+================
+Fecha: 06/10/2026
+
+Se creó un repositorio de GitHub APARTE, solo para pruebas, para no tocar
+la web que está en producción (la que ya usa la gente de la empresa):
+
+  Repo de pruebas:   https://github.com/Alcano3520/sistema-inventario-logistica-pruebas
+  Link de pruebas:   https://alcano3520.github.io/sistema-inventario-logistica-pruebas/
+
+  Repo de PRODUCCIÓN (NO TOCAR sin avisar): https://github.com/Alcano3520/sistema-inventario-logistica
+  Link de PRODUCCIÓN (el que ya usan, desactualizado desde agosto):
+                      https://alcano3520.github.io/sistema-inventario-logistica/
+
+PENDIENTE: cuando ya se haya probado todo lo nuevo y Daniel confirme que
+está listo, hay que actualizar la web de PRODUCCIÓN con el código actual
+(está varios meses atrasada: no tiene Taller de Motos, roles nuevos,
+rediseño, nada de lo que se hizo en estas sesiones). Esto SÍ afecta a la
+gente que ya usa ese link, así que solo se hace cuando Daniel lo pida
+explícitamente.
