@@ -1,6 +1,6 @@
 PENDIENTE - WEB
 ================
-Fecha: 06/10/2026
+Fecha: 06/10/2026 (actualizado 21/10/2026)
 
 Se creó un repositorio de GitHub APARTE, solo para pruebas, para no tocar
 la web que está en producción (la que ya usa la gente de la empresa):
@@ -9,12 +9,16 @@ la web que está en producción (la que ya usa la gente de la empresa):
   Link de pruebas:   https://alcano3520.github.io/sistema-inventario-logistica-pruebas/
 
   Repo de PRODUCCIÓN (NO TOCAR sin avisar): https://github.com/Alcano3520/sistema-inventario-logistica
-  Link de PRODUCCIÓN (el que ya usan, desactualizado desde agosto):
-                      https://alcano3520.github.io/sistema-inventario-logistica/
+  Link de PRODUCCIÓN: https://alcano3520.github.io/sistema-inventario-logistica/
 
-PENDIENTE: cuando ya se haya probado todo lo nuevo y Daniel confirme que
-está listo, hay que actualizar la web de PRODUCCIÓN con el código actual
-(está varios meses atrasada: no tiene Taller de Motos, roles nuevos,
-rediseño, nada de lo que se hizo en estas sesiones). Esto SÍ afecta a la
-gente que ya usa ese link, así que solo se hace cuando Daniel lo pida
-explícitamente.
+21/10/2026: Daniel pidió explícitamente actualizar también la web de
+PRODUCCIÓN (no solo pruebas). Se desplegó el código actual (commit
+96c26b3 del repo principal) a la rama gh-pages de producción — incluye
+Taller de Motos, módulo Pruebas, lectura de facturas (PDF y foto/OCR),
+corrección de facturas con auditoría/acta PDF, rediseño de tema y roles,
+y las mejoras de Dotación Empleados. Producción y pruebas quedan
+sincronizadas a partir de este punto.
+
+De ahora en adelante, cualquier redeploy a producción sigue requiriendo
+pedido explícito de Daniel cada vez — esta autorización fue puntual para
+esta actualización, no una autorización permanente para futuros cambios.
