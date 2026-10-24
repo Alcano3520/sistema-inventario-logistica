@@ -146279,9 +146279,7 @@ if(s==="motos"||s==="barcos")q.push(B.bp2)
 q.push(B.yo)
 p=q}else{q=i==="Admin"
 if(r.e===B.xE){o=q||i===j
-n=A.b([B.bp3,B.boV,B.boW,B.boZ],t.KF)
-if(q)n.push(B.bp1)
-n.push(B.boO)
+n=A.b([B.bp3,B.boV,B.boW,B.boZ,B.bp1,B.boO],t.KF)
 if(q)n.push(B.boQ)
 if(q)n.push(B.bp4)
 if(q)n.push(B.bp6)
