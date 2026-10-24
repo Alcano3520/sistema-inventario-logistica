@@ -1,0 +1,422 @@
+[
+  {
+    "id": 303,
+    "cod": "INTMUR82TEDZ9",
+    "cantidad": 5,
+    "producto": "MALLA DE ASIENTO",
+    "id_transaccion": "SAL-20261012144654-3fc04e"
+  },
+  {
+    "id": 304,
+    "cod": "INTMUR84NNXT0",
+    "cantidad": 6,
+    "producto": "ESPEJO",
+    "id_transaccion": "SAL-20261012144751-262de9"
+  },
+  {
+    "id": 305,
+    "cod": "INTMUR7J05A3Q",
+    "cantidad": 5,
+    "producto": "PATA DE APOYO",
+    "id_transaccion": "SAL-20261012144833-16bb2d"
+  },
+  {
+    "id": 306,
+    "cod": "INTMUR81G5095",
+    "cantidad": 10,
+    "producto": "CABLE DE VELOCÍMETRO",
+    "id_transaccion": "SAL-20261012144907-fd11d4"
+  },
+  {
+    "id": 307,
+    "cod": "INTMUR7J2Y2MV",
+    "cantidad": 10,
+    "producto": "CAUCHO DE BARRA",
+    "id_transaccion": "SAL-20261012145006-7cf2dd"
+  },
+  {
+    "id": 308,
+    "cod": "INTMUR7XOP6Z4",
+    "cantidad": 3,
+    "producto": "CINTA",
+    "id_transaccion": "SAL-20261012145050-cf92e6"
+  },
+  {
+    "id": 309,
+    "cod": "INTMUR7FZX39J",
+    "cantidad": 10,
+    "producto": "ZAPATA",
+    "id_transaccion": "SAL-20261012145131-70ba6c"
+  },
+  {
+    "id": 310,
+    "cod": "INTMUR6ET2S6X",
+    "cantidad": 2,
+    "producto": "BOBINA BUJIA",
+    "id_transaccion": "SAL-20261012145207-67ab86"
+  },
+  {
+    "id": 311,
+    "cod": "INTMUR7PL65J9",
+    "cantidad": 2,
+    "producto": "CDI",
+    "id_transaccion": "SAL-20261012145236-59e60e"
+  },
+  {
+    "id": 312,
+    "cod": "INTMUR75GL041",
+    "cantidad": 2,
+    "producto": "BOBINA DE CAMPO",
+    "id_transaccion": "SAL-20261012145328-3b564a"
+  },
+  {
+    "id": 313,
+    "cod": "INTMUR6GS62JC",
+    "cantidad": 5,
+    "producto": "GUIA CON BASE",
+    "id_transaccion": "SAL-20261012145401-d84c43"
+  },
+  {
+    "id": 314,
+    "cod": "INTMUR74482GH",
+    "cantidad": 10,
+    "producto": "MANILLA DE EMBRAGUE",
+    "id_transaccion": "SAL-20261012145456-249da5"
+  },
+  {
+    "id": 315,
+    "cod": "INTMUR7I6L5ZB",
+    "cantidad": 10,
+    "producto": "TEMPLADOR DE CADENA",
+    "id_transaccion": "SAL-20261012145545-1c59e0"
+  },
+  {
+    "id": 316,
+    "cod": "INTMUR7P7ZXKT",
+    "cantidad": 10,
+    "producto": "BUJIA",
+    "id_transaccion": "SAL-20261012145637-a37fb2"
+  },
+  {
+    "id": 317,
+    "cod": "INTMUR7GIFU52",
+    "cantidad": 10,
+    "producto": "PIÑON DE VELOCÍMETRO",
+    "id_transaccion": "SAL-20261012145723-3c82ec"
+  },
+  {
+    "id": 318,
+    "cod": "INTMUR7QAZSK6",
+    "cantidad": 25,
+    "producto": "FILTRO DE ACEITE",
+    "id_transaccion": "SAL-20261012145754-4f9eec"
+  },
+  {
+    "id": 319,
+    "cod": "INTMUR7506ZJG",
+    "cantidad": 5,
+    "producto": "AUTOMÁTICO",
+    "id_transaccion": "SAL-20261012145820-946bdc"
+  },
+  {
+    "id": 320,
+    "cod": "INTMUR7TCW617",
+    "cantidad": 1,
+    "producto": "SHICHE",
+    "id_transaccion": "SAL-20261012145843-2a2a5d"
+  },
+  {
+    "id": 321,
+    "cod": "INTMUR86ZUZLI",
+    "cantidad": 2,
+    "producto": "COMANDO DE LUZ",
+    "id_transaccion": "SAL-20261012145920-975897"
+  },
+  {
+    "id": 322,
+    "cod": "INTMUR87C52CL",
+    "cantidad": 2,
+    "producto": "EMPAQUE",
+    "id_transaccion": "SAL-20261012145947-c342b6"
+  },
+  {
+    "id": 323,
+    "cod": "INTMUR7NPK0NF",
+    "cantidad": 2,
+    "producto": "CILINDRO",
+    "id_transaccion": "SAL-20261012150128-9a3366"
+  },
+  {
+    "id": 324,
+    "cod": "INTMUR7O0JV18",
+    "cantidad": 3,
+    "producto": "VALVULA",
+    "id_transaccion": "SAL-20261012150148-5613c9"
+  },
+  {
+    "id": 325,
+    "cod": "INTMUR7OI4SFT",
+    "cantidad": 3,
+    "producto": "CAUCHO DE VALVULA",
+    "id_transaccion": "SAL-20261012150234-71a8d6"
+  },
+  {
+    "id": 326,
+    "cod": "INTMUWUAQ5AIV",
+    "cantidad": 5,
+    "producto": "LLAVE DE GASOLINA",
+    "id_transaccion": "SAL-20261012150315-f86fab"
+  },
+  {
+    "id": 327,
+    "cod": "INTMUR84NNXT0",
+    "cantidad": 5,
+    "producto": "ESPEJO",
+    "id_transaccion": "SAL-20261012150407-382650"
+  },
+  {
+    "id": 328,
+    "cod": "INTMUR83JIS0S",
+    "cantidad": 10,
+    "producto": "CABLE DE EMBRAGUE",
+    "id_transaccion": "SAL-20261012150456-b710d0"
+  },
+  {
+    "id": 329,
+    "cod": "INTMUR8693X5W",
+    "cantidad": 2,
+    "producto": "TABLERO",
+    "id_transaccion": "SAL-20261012150530-33d23b"
+  },
+  {
+    "id": 330,
+    "cod": "INTMUWU9UYQ75",
+    "cantidad": 2,
+    "producto": "EJE POSTERIOR",
+    "id_transaccion": "SAL-20261012150631-57f2a6"
+  },
+  {
+    "id": 331,
+    "cod": "INTMUWUAG0EKQ",
+    "cantidad": 2,
+    "producto": "Eje DELANTERO",
+    "id_transaccion": "SAL-20261012150710-17029e"
+  },
+  {
+    "id": 332,
+    "cod": "INTMUR82H7ODJ",
+    "cantidad": 2,
+    "producto": "LIQUIDO DE FRENO",
+    "id_transaccion": "SAL-20261012150732-5fdcfc"
+  },
+  {
+    "id": 333,
+    "cod": "INTMUR6DWR3B4",
+    "cantidad": 10,
+    "producto": "PIÑOÑ",
+    "id_transaccion": "SAL-20261012151235-99612b"
+  },
+  {
+    "id": 334,
+    "cod": "INTMUR88B7PQK",
+    "cantidad": 10,
+    "producto": "CATALINA",
+    "id_transaccion": "SAL-20261012151322-003c3e"
+  },
+  {
+    "id": 335,
+    "cod": "INTMUR7X2YW10",
+    "cantidad": 2,
+    "producto": "TUBO DE ESCAPE",
+    "id_transaccion": "SAL-20261012151355-e4f1ef"
+  },
+  {
+    "id": 336,
+    "cod": "INTMUR8220Q8C",
+    "cantidad": 2,
+    "producto": "AMORTIGUADORES",
+    "id_transaccion": "SAL-20261012151430-1c0988"
+  },
+  {
+    "id": 337,
+    "cod": "INTMUR8DE0Z74",
+    "cantidad": 7,
+    "producto": "ANILLO",
+    "id_transaccion": "SAL-20261012151503-6f83b8"
+  },
+  {
+    "id": 338,
+    "cod": "INTMUR7SB7B6X",
+    "cantidad": 10,
+    "producto": "CADENA",
+    "id_transaccion": "SAL-20261012151709-6916d8"
+  },
+  {
+    "id": 339,
+    "cod": "INTMUR89T9974",
+    "cantidad": 10,
+    "producto": "LLANTAS",
+    "id_transaccion": "SAL-20261012151807-48af24"
+  },
+  {
+    "id": 340,
+    "cod": "INTMV1IRC7HB5",
+    "cantidad": 5,
+    "producto": "GUARDAFANGOS",
+    "id_transaccion": "SAL-20261012151911-731a37"
+  },
+  {
+    "id": 341,
+    "cod": "INTMUR6DWR3B4",
+    "cantidad": 10,
+    "producto": "PIÑOÑ",
+    "id_transaccion": "SAL-20261012154408-9a1812"
+  },
+  {
+    "id": 342,
+    "cod": "INTMUR7SB7B6X",
+    "cantidad": 10,
+    "producto": "CADENA",
+    "id_transaccion": "SAL-20261012154408-9a1812"
+  },
+  {
+    "id": 343,
+    "cod": "INTMUR88B7PQK",
+    "cantidad": 10,
+    "producto": "CATALINA",
+    "id_transaccion": "SAL-20261012154408-9a1812"
+  },
+  {
+    "id": 344,
+    "cod": "INTMUR89FVKWC",
+    "cantidad": 10,
+    "producto": "Tubo",
+    "id_transaccion": "SAL-20261012154408-9a1812"
+  },
+  {
+    "id": 345,
+    "cod": "INTMV5F6THW71",
+    "cantidad": 5,
+    "producto": "rectificadores de corriente",
+    "id_transaccion": "SAL-20261012154408-9a1812"
+  },
+  {
+    "id": 346,
+    "cod": "INTMV5F5Z5ZL3",
+    "cantidad": 2,
+    "producto": "Oscilantes",
+    "id_transaccion": "SAL-20261012154408-9a1812"
+  },
+  {
+    "id": 347,
+    "cod": "INTMUR7SB7B6X",
+    "cantidad": 15,
+    "producto": "CADENA",
+    "id_transaccion": "SAL-20261014162155-88cde2"
+  },
+  {
+    "id": 348,
+    "cod": "INTMUR7P7ZXKT",
+    "cantidad": 10,
+    "producto": "BUJIA",
+    "id_transaccion": "SAL-20261014162225-8e335c"
+  },
+  {
+    "id": 352,
+    "cod": "INTMUR6DWR3B4",
+    "cantidad": 15,
+    "producto": "PIÑOÑ",
+    "id_transaccion": "SAL-20261014162347-1375f7"
+  },
+  {
+    "id": 353,
+    "cod": "INTMUR7QAZSK6",
+    "cantidad": 13,
+    "producto": "FILTRO DE ACEITE",
+    "id_transaccion": "SAL-20261014162347-1375f7"
+  },
+  {
+    "id": 354,
+    "cod": "INTMUR7VI1W4M",
+    "cantidad": 2,
+    "producto": "DISCO DE FRENO DELANTERO",
+    "id_transaccion": "SAL-20261014162446-fbe507"
+  },
+  {
+    "id": 355,
+    "cod": "INTMUR7O0JV18",
+    "cantidad": 4,
+    "producto": "VALVULA",
+    "id_transaccion": "SAL-20261014162515-4fa927"
+  },
+  {
+    "id": 356,
+    "cod": "INTMUREX66H65",
+    "cantidad": 6,
+    "producto": "BUJES DE ORQUIDEA",
+    "id_transaccion": "SAL-20261014162632-6b790b"
+  },
+  {
+    "id": 357,
+    "cod": "INTMUR7FZX39J",
+    "cantidad": 7,
+    "producto": "ZAPATA",
+    "id_transaccion": "SAL-20261014162632-6b790b"
+  },
+  {
+    "id": 358,
+    "cod": "INTMUR8DE0Z74",
+    "cantidad": 7,
+    "producto": "ANILLO",
+    "id_transaccion": "SAL-20261014162632-6b790b"
+  },
+  {
+    "id": 359,
+    "cod": "INTMUR7GIFU52",
+    "cantidad": 4,
+    "producto": "PIÑON DE VELOCÍMETRO",
+    "id_transaccion": "SAL-20261014162632-6b790b"
+  },
+  {
+    "id": 360,
+    "cod": "INTMUR7W8WZGN",
+    "cantidad": 5,
+    "producto": "GRASA",
+    "id_transaccion": "SAL-20261014162825-2b881e"
+  },
+  {
+    "id": 361,
+    "cod": "INTMUR7XOP6Z4",
+    "cantidad": 6,
+    "producto": "CINTA",
+    "id_transaccion": "SAL-20261014162825-2b881e"
+  },
+  {
+    "id": 362,
+    "cod": "INTMUR7XZGFWO",
+    "cantidad": 6,
+    "producto": "PISTA DE DIRECCIÓN",
+    "id_transaccion": "SAL-20261014162825-2b881e"
+  },
+  {
+    "id": 363,
+    "cod": "INTMV5F5Z5ZL3",
+    "cantidad": 2,
+    "producto": "Oscilantes",
+    "id_transaccion": "SAL-20261014162918-f1934b"
+  },
+  {
+    "id": 364,
+    "cod": "INTMUR7J2Y2MV",
+    "cantidad": 4,
+    "producto": "CAUCHO DE BARRA",
+    "id_transaccion": "SAL-20261014163031-cbed57"
+  },
+  {
+    "id": 366,
+    "cod": "INTMUR7J2Y2MV",
+    "cantidad": 2,
+    "producto": "CAUCHO DE BARRA",
+    "id_transaccion": "SAL-20261014163226-6724e3"
+  }
+]

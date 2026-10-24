@@ -1,0 +1,1066 @@
+[
+  {
+    "id": 97,
+    "cod": "INTMUR6CGIKOQ",
+    "cantidad": 32,
+    "producto": "Blendis",
+    "id_transaccion": "ENT-20261002162617-185dfd",
+    "precio_unitario": null
+  },
+  {
+    "id": 98,
+    "cod": "INTMUR6DWR3B4",
+    "cantidad": 65,
+    "producto": "piñoñ",
+    "id_transaccion": "ENT-20261002162659-bb11fe",
+    "precio_unitario": null
+  },
+  {
+    "id": 99,
+    "cod": "INTMUR6ET2S6X",
+    "cantidad": 26,
+    "producto": "bobina BUJIA",
+    "id_transaccion": "ENT-20261002162739-fbd221",
+    "precio_unitario": null
+  },
+  {
+    "id": 100,
+    "cod": "INTMUR6FQ6KDZ",
+    "cantidad": 8,
+    "producto": "depurador",
+    "id_transaccion": "ENT-20261002162810-91990c",
+    "precio_unitario": null
+  },
+  {
+    "id": 101,
+    "cod": "INTMUR6GS62JC",
+    "cantidad": 34,
+    "producto": "guía con base",
+    "id_transaccion": "ENT-20261002162928-8dd091",
+    "precio_unitario": null
+  },
+  {
+    "id": 102,
+    "cod": "INTMUR732T5B9",
+    "cantidad": 11,
+    "producto": "PLATO DE EMBRAGUE",
+    "id_transaccion": "ENT-20261002164632-835502",
+    "precio_unitario": null
+  },
+  {
+    "id": 103,
+    "cod": "INTMUR73NHKYJ",
+    "cantidad": 5,
+    "producto": "DOBLE PATA",
+    "id_transaccion": "ENT-20261002164654-a055ed",
+    "precio_unitario": null
+  },
+  {
+    "id": 104,
+    "cod": "INTMUR74482GH",
+    "cantidad": 29,
+    "producto": "MANILLA DE EMBRAGUE",
+    "id_transaccion": "ENT-20261002164713-a20a3b",
+    "precio_unitario": null
+  },
+  {
+    "id": 105,
+    "cod": "INTMUR74JFKA3",
+    "cantidad": 109,
+    "producto": "PATILLA DE FRENO",
+    "id_transaccion": "ENT-20261002164729-7c4fb4",
+    "precio_unitario": null
+  },
+  {
+    "id": 106,
+    "cod": "INTMUR7506ZJG",
+    "cantidad": 33,
+    "producto": "AUTOMÁTICO",
+    "id_transaccion": "ENT-20261002164757-1ac6d3",
+    "precio_unitario": null
+  },
+  {
+    "id": 107,
+    "cod": "INTMUR75GL041",
+    "cantidad": 1,
+    "producto": "BOBINA DE CAMPO",
+    "id_transaccion": "ENT-20261002164808-9b4ccb",
+    "precio_unitario": null
+  },
+  {
+    "id": 108,
+    "cod": "INTMUR7FAZ1ZT",
+    "cantidad": 40,
+    "producto": "RULIMAN -6204",
+    "id_transaccion": "ENT-20261002165609-db9b69",
+    "precio_unitario": null
+  },
+  {
+    "id": 109,
+    "cod": "INTMUR7FZX39J",
+    "cantidad": 72,
+    "producto": "ZAPATA",
+    "id_transaccion": "ENT-20261002165632-1c2795",
+    "precio_unitario": null
+  },
+  {
+    "id": 110,
+    "cod": "INTMUR7GIFU52",
+    "cantidad": 45,
+    "producto": "PIÑON DE VELOCÍMETRO",
+    "id_transaccion": "ENT-20261002165706-5861ea",
+    "precio_unitario": null
+  },
+  {
+    "id": 111,
+    "cod": "INTMUR7H8IR7G",
+    "cantidad": 15,
+    "producto": "PORTA ZAPATA",
+    "id_transaccion": "ENT-20261002165730-9eaeac",
+    "precio_unitario": null
+  },
+  {
+    "id": 112,
+    "cod": "INTMUR7HUQMM5",
+    "cantidad": 13,
+    "producto": "CABEZOTE",
+    "id_transaccion": "ENT-20261002165749-1a6556",
+    "precio_unitario": null
+  },
+  {
+    "id": 113,
+    "cod": "INTMUR7I6L5ZB",
+    "cantidad": 95,
+    "producto": "TEMPLADOR DE CADENA",
+    "id_transaccion": "ENT-20261002165819-bff164",
+    "precio_unitario": null
+  },
+  {
+    "id": 114,
+    "cod": "INTMUR7J2Y2MV",
+    "cantidad": 16,
+    "producto": "CAUCHO DE BARRA",
+    "id_transaccion": "ENT-20261002165903-012f50",
+    "precio_unitario": null
+  },
+  {
+    "id": 115,
+    "cod": "INTMUR7J05A3Q",
+    "cantidad": 34,
+    "producto": "PATA DE APOYO",
+    "id_transaccion": "ENT-20261002165958-7038cd",
+    "precio_unitario": null
+  },
+  {
+    "id": 116,
+    "cod": "INTMUR7KYJYGE",
+    "cantidad": 3,
+    "producto": "PEDAL DE FRENO",
+    "id_transaccion": "ENT-20261002170026-0f7618",
+    "precio_unitario": null
+  },
+  {
+    "id": 117,
+    "cod": "INTMUR7LQ52QT",
+    "cantidad": 37,
+    "producto": "CADENILLA DE DISTRIBUCIÓN",
+    "id_transaccion": "ENT-20261002170108-b18d54",
+    "precio_unitario": null
+  },
+  {
+    "id": 118,
+    "cod": "INTMUR7METY7D",
+    "cantidad": 18,
+    "producto": "BATERIA",
+    "id_transaccion": "ENT-20261002170118-f4bb14",
+    "precio_unitario": null
+  },
+  {
+    "id": 119,
+    "cod": "INTMUR7MMADKX",
+    "cantidad": 23,
+    "producto": "PISTON",
+    "id_transaccion": "ENT-20261002170201-aaed3d",
+    "precio_unitario": null
+  },
+  {
+    "id": 120,
+    "cod": "INTMUR7NPK0NF",
+    "cantidad": 6,
+    "producto": "CILINDRO",
+    "id_transaccion": "ENT-20261002170223-e86428",
+    "precio_unitario": null
+  },
+  {
+    "id": 121,
+    "cod": "INTMUR7O0JV18",
+    "cantidad": 35,
+    "producto": "VALVULA",
+    "id_transaccion": "ENT-20261002170241-d343c4",
+    "precio_unitario": null
+  },
+  {
+    "id": 122,
+    "cod": "INTMUR7OI4SFT",
+    "cantidad": 22,
+    "producto": "CAUCHO DE VALVULA",
+    "id_transaccion": "ENT-20261002170303-6478ab",
+    "precio_unitario": null
+  },
+  {
+    "id": 123,
+    "cod": "INTMUR7OVSQP1",
+    "cantidad": 36,
+    "producto": "MORDAZA",
+    "id_transaccion": "ENT-20261002170314-655d5f",
+    "precio_unitario": null
+  },
+  {
+    "id": 124,
+    "cod": "INTMUR7P7ZXKT",
+    "cantidad": 93,
+    "producto": "BUJIA",
+    "id_transaccion": "ENT-20261002170336-83d471",
+    "precio_unitario": null
+  },
+  {
+    "id": 125,
+    "cod": "INTMUR7PL65J9",
+    "cantidad": 15,
+    "producto": "CDI",
+    "id_transaccion": "ENT-20261002170410-cd1bfa",
+    "precio_unitario": null
+  },
+  {
+    "id": 126,
+    "cod": "INTMUR7QAZSK6",
+    "cantidad": 110,
+    "producto": "FILTRO DE ACEITE",
+    "id_transaccion": "ENT-20261002170447-c56187",
+    "precio_unitario": null
+  },
+  {
+    "id": 127,
+    "cod": "INTMUR7SB7B6X",
+    "cantidad": 62,
+    "producto": "CADENA",
+    "id_transaccion": "ENT-20261002170611-d40c4b",
+    "precio_unitario": null
+  },
+  {
+    "id": 128,
+    "cod": "INTMUR7SY509P",
+    "cantidad": 12,
+    "producto": "MAGNETO",
+    "id_transaccion": "ENT-20261002170626-a52f35",
+    "precio_unitario": null
+  },
+  {
+    "id": 129,
+    "cod": "INTMUR7TCW617",
+    "cantidad": 2,
+    "producto": "SHICHE",
+    "id_transaccion": "ENT-20261002170655-0d493e",
+    "precio_unitario": null
+  },
+  {
+    "id": 130,
+    "cod": "INTMUR7TUL3HW",
+    "cantidad": 19,
+    "producto": "JUEGO DE SHICHE",
+    "id_transaccion": "ENT-20261002170711-dfc051",
+    "precio_unitario": null
+  },
+  {
+    "id": 131,
+    "cod": "INTMUR7USTJEU",
+    "cantidad": 20,
+    "producto": "CAJA DE CAMBIO",
+    "id_transaccion": "ENT-20261002170759-2917df",
+    "precio_unitario": null
+  },
+  {
+    "id": 132,
+    "cod": "INTMUR7VI1W4M",
+    "cantidad": 48,
+    "producto": "DISCO DE FRENO DELANTERO",
+    "id_transaccion": "ENT-20261002170824-dc6b1a",
+    "precio_unitario": null
+  },
+  {
+    "id": 133,
+    "cod": "INTMUR7VRD29L",
+    "cantidad": 300,
+    "producto": "Goma",
+    "id_transaccion": "ENT-20261002170847-88de2f",
+    "precio_unitario": null
+  },
+  {
+    "id": 134,
+    "cod": "INTMUR7W8WZGN",
+    "cantidad": 46,
+    "producto": "GRASA",
+    "id_transaccion": "ENT-20261002170902-4f574d",
+    "precio_unitario": null
+  },
+  {
+    "id": 135,
+    "cod": "INTMUR7WLFUTW",
+    "cantidad": 33,
+    "producto": "TAPA LATERAL GN125",
+    "id_transaccion": "ENT-20261002170926-9ead71",
+    "precio_unitario": null
+  },
+  {
+    "id": 136,
+    "cod": "INTMUR7X2YW10",
+    "cantidad": 12,
+    "producto": "TUBO DE ESCAPE",
+    "id_transaccion": "ENT-20261002170954-26035c",
+    "precio_unitario": null
+  },
+  {
+    "id": 137,
+    "cod": "INTMUR7XOP6Z4",
+    "cantidad": 46,
+    "producto": "CINTA",
+    "id_transaccion": "ENT-20261002171005-0f377e",
+    "precio_unitario": null
+  },
+  {
+    "id": 138,
+    "cod": "INTMUR7XZGFWO",
+    "cantidad": 54,
+    "producto": "PISTA DE DIRECCIÓN",
+    "id_transaccion": "ENT-20261002171027-84daed",
+    "precio_unitario": null
+  },
+  {
+    "id": 139,
+    "cod": "INTMUR7YIDCYE",
+    "cantidad": 40,
+    "producto": "TENSON DE CADENILLA",
+    "id_transaccion": "ENT-20261002171049-3bb8c3",
+    "precio_unitario": null
+  },
+  {
+    "id": 140,
+    "cod": "INTMUR7YVEV3I",
+    "cantidad": 60,
+    "producto": "FOCO LED",
+    "id_transaccion": "ENT-20261002171100-e304e0",
+    "precio_unitario": null
+  },
+  {
+    "id": 141,
+    "cod": "INTMUR7ZJPNWD",
+    "cantidad": 45,
+    "producto": "CAUCHO TANQUE GN125",
+    "id_transaccion": "ENT-20261002171137-947c63",
+    "precio_unitario": null
+  },
+  {
+    "id": 142,
+    "cod": "INTMUR7ZW06JI",
+    "cantidad": 125,
+    "producto": "RULIMAN 6301",
+    "id_transaccion": "ENT-20261002171158-26747c",
+    "precio_unitario": null
+  },
+  {
+    "id": 143,
+    "cod": "INTMUR80FGDDK",
+    "cantidad": 58,
+    "producto": "RULIMAN 6302",
+    "id_transaccion": "ENT-20261002171229-958bdc",
+    "precio_unitario": null
+  },
+  {
+    "id": 144,
+    "cod": "INTMUR813H8QA",
+    "cantidad": 12,
+    "producto": "PISTA DE TIMÓN",
+    "id_transaccion": "ENT-20261002171248-bf5e7e",
+    "precio_unitario": null
+  },
+  {
+    "id": 145,
+    "cod": "INTMUR81G5095",
+    "cantidad": 43,
+    "producto": "CABLE DE VELOCÍMETRO",
+    "id_transaccion": "ENT-20261002171307-ac5509",
+    "precio_unitario": null
+  },
+  {
+    "id": 146,
+    "cod": "INTMUR8220Q8C",
+    "cantidad": 14,
+    "producto": "AMORTIGUADORES",
+    "id_transaccion": "ENT-20261002171338-761501",
+    "precio_unitario": null
+  },
+  {
+    "id": 147,
+    "cod": "INTMUR82H7ODJ",
+    "cantidad": 10,
+    "producto": "LIQUIDO DE FRENO",
+    "id_transaccion": "ENT-20261002171354-22ba21",
+    "precio_unitario": null
+  },
+  {
+    "id": 148,
+    "cod": "INTMUR82TEDZ9",
+    "cantidad": 45,
+    "producto": "MALLA DE ASIENTO",
+    "id_transaccion": "ENT-20261002171409-f13f79",
+    "precio_unitario": null
+  },
+  {
+    "id": 149,
+    "cod": "INTMUR838GUDV",
+    "cantidad": 15,
+    "producto": "BARA TELESCÓPICA",
+    "id_transaccion": "ENT-20261002171427-923170",
+    "precio_unitario": null
+  },
+  {
+    "id": 150,
+    "cod": "INTMUR83JIS0S",
+    "cantidad": 84,
+    "producto": "CABLE DE EMBRAGUE",
+    "id_transaccion": "ENT-20261002171454-2658cb",
+    "precio_unitario": null
+  },
+  {
+    "id": 151,
+    "cod": "INTMUR84NNXT0",
+    "cantidad": 39,
+    "producto": "ESPEJO",
+    "id_transaccion": "ENT-20261002171545-ae099a",
+    "precio_unitario": null
+  },
+  {
+    "id": 152,
+    "cod": "INTMUR85810ID",
+    "cantidad": 14,
+    "producto": "INSTALACION ELECTRICA",
+    "id_transaccion": "ENT-20261002171610-3aa08a",
+    "precio_unitario": null
+  },
+  {
+    "id": 153,
+    "cod": "INTMUR85SOCQ4",
+    "cantidad": 36,
+    "producto": "PISADERO TRASERA",
+    "id_transaccion": "ENT-20261002171634-c308e3",
+    "precio_unitario": null
+  },
+  {
+    "id": 154,
+    "cod": "INTMUR8693X5W",
+    "cantidad": 9,
+    "producto": "TABLERO",
+    "id_transaccion": "ENT-20261002171645-7cd9b0",
+    "precio_unitario": null
+  },
+  {
+    "id": 155,
+    "cod": "INTMUR86PL0CA",
+    "cantidad": 9,
+    "producto": "ASIENTO",
+    "id_transaccion": "ENT-20261002171709-71825f",
+    "precio_unitario": null
+  },
+  {
+    "id": 156,
+    "cod": "INTMUR86ZUZLI",
+    "cantidad": 6,
+    "producto": "COMANDO DE LUZ",
+    "id_transaccion": "ENT-20261002171724-72a1b4",
+    "precio_unitario": null
+  },
+  {
+    "id": 157,
+    "cod": "INTMUR87C52CL",
+    "cantidad": 5,
+    "producto": "EMPAQUE",
+    "id_transaccion": "ENT-20261002171734-f30193",
+    "precio_unitario": null
+  },
+  {
+    "id": 158,
+    "cod": "INTMUR87JB7DY",
+    "cantidad": 35,
+    "producto": "TROMPO DE CAMBIO",
+    "id_transaccion": "ENT-20261002171748-7e02c0",
+    "precio_unitario": null
+  },
+  {
+    "id": 159,
+    "cod": "INTMUR88B7PQK",
+    "cantidad": 40,
+    "producto": "CATALINA",
+    "id_transaccion": "ENT-20261002171837-c1c2bc",
+    "precio_unitario": null
+  },
+  {
+    "id": 160,
+    "cod": "INTMUR88WJP37",
+    "cantidad": 52,
+    "producto": "Tela negra",
+    "id_transaccion": "ENT-20261002171856-177069",
+    "precio_unitario": null
+  },
+  {
+    "id": 161,
+    "cod": "INTMUR89FVKWC",
+    "cantidad": 38,
+    "producto": "Tubo",
+    "id_transaccion": "ENT-20261002171919-147be4",
+    "precio_unitario": null
+  },
+  {
+    "id": 162,
+    "cod": "INTMUR89T9974",
+    "cantidad": 10,
+    "producto": "LLANTAS",
+    "id_transaccion": "ENT-20261002171939-7a6037",
+    "precio_unitario": null
+  },
+  {
+    "id": 163,
+    "cod": "INTMUR8DE0Z74",
+    "cantidad": 104,
+    "producto": "ANILLO",
+    "id_transaccion": "ENT-20261002172224-a032f4",
+    "precio_unitario": null
+  },
+  {
+    "id": 164,
+    "cod": "INTMUREX66H65",
+    "cantidad": 66,
+    "producto": "BUJES DE ORQUIDEA",
+    "id_transaccion": "ENT-20261002202650-d5ccf8",
+    "precio_unitario": null
+  },
+  {
+    "id": 165,
+    "cod": "INTMURF2B68PN",
+    "cantidad": 33,
+    "producto": "MANGUERA CAUCHO HIDRÁULICA",
+    "id_transaccion": "ENT-20261002203023-91fb97",
+    "precio_unitario": null
+  },
+  {
+    "id": 166,
+    "cod": "6920868900011",
+    "cantidad": 648,
+    "producto": "PARCHES",
+    "id_transaccion": "ENT-20261002203254-c0988d",
+    "precio_unitario": null
+  },
+  {
+    "id": 167,
+    "cod": "PH06430-0023",
+    "cantidad": 4,
+    "producto": "zapata de Freno",
+    "id_transaccion": "ENT-20261002203351-22b780",
+    "precio_unitario": null
+  },
+  {
+    "id": 168,
+    "cod": "INTMUWU9UYQ75",
+    "cantidad": 15,
+    "producto": "EJE POSTERIOR",
+    "id_transaccion": "ENT-20261006153431-02fed7",
+    "precio_unitario": null
+  },
+  {
+    "id": 169,
+    "cod": "INTMUWUAG0EKQ",
+    "cantidad": 17,
+    "producto": "Eje DELANTERO",
+    "id_transaccion": "ENT-20261006153445-337c5d",
+    "precio_unitario": null
+  },
+  {
+    "id": 170,
+    "cod": "INTMUWUAQ5AIV",
+    "cantidad": 13,
+    "producto": "LLAVE DE GASOLINA",
+    "id_transaccion": "ENT-20261006153501-bd11fc",
+    "precio_unitario": null
+  },
+  {
+    "id": 171,
+    "cod": "INTMUR7NPK0NF",
+    "cantidad": 3,
+    "producto": "CILINDRO",
+    "id_transaccion": "ENT-20261009203243-84050d",
+    "precio_unitario": null
+  },
+  {
+    "id": 172,
+    "cod": "INTMV1IRC7HB5",
+    "cantidad": 5,
+    "producto": "GUARDAFANGOS",
+    "id_transaccion": "ENT-20261009221050-e3f47e",
+    "precio_unitario": null
+  },
+  {
+    "id": 173,
+    "cod": "INTMUR75GL041",
+    "cantidad": 2,
+    "producto": "BOBINA DE CAMPO",
+    "id_transaccion": "ENT-20261009222128-a1bbdf",
+    "precio_unitario": null
+  },
+  {
+    "id": 174,
+    "cod": "INTMUWUAG0EKQ",
+    "cantidad": 2,
+    "producto": "Eje DELANTERO",
+    "id_transaccion": "ENT-20261009222148-09004b",
+    "precio_unitario": null
+  },
+  {
+    "id": 175,
+    "cod": "INTMUR7PL65J9",
+    "cantidad": 1,
+    "producto": "CDI",
+    "id_transaccion": "ENT-20261009222213-827bd5",
+    "precio_unitario": null
+  },
+  {
+    "id": 176,
+    "cod": "INTMUR81G5095",
+    "cantidad": 5,
+    "producto": "CABLE DE VELOCÍMETRO",
+    "id_transaccion": "ENT-20261009222311-406223",
+    "precio_unitario": null
+  },
+  {
+    "id": 177,
+    "cod": "6920868900011",
+    "cantidad": 53,
+    "producto": "PARCHES",
+    "id_transaccion": "ENT-20261009222334-c36131",
+    "precio_unitario": null
+  },
+  {
+    "id": 178,
+    "cod": "INTMUR7VI1W4M",
+    "cantidad": 7,
+    "producto": "DISCO DE FRENO DELANTERO",
+    "id_transaccion": "ENT-20261009222446-43c9c2",
+    "precio_unitario": null
+  },
+  {
+    "id": 179,
+    "cod": "INTMUR6ET2S6X",
+    "cantidad": 2,
+    "producto": "BOBINA BUJIA",
+    "id_transaccion": "ENT-20261009222519-291238",
+    "precio_unitario": null
+  },
+  {
+    "id": 180,
+    "cod": "INTMUR87JB7DY",
+    "cantidad": 1,
+    "producto": "TROMPO DE CAMBIO",
+    "id_transaccion": "ENT-20261009222548-af73a6",
+    "precio_unitario": null
+  },
+  {
+    "id": 181,
+    "cod": "INTMUR7I6L5ZB",
+    "cantidad": 1,
+    "producto": "TEMPLADOR DE CADENA",
+    "id_transaccion": "ENT-20261009222602-1ca852",
+    "precio_unitario": null
+  },
+  {
+    "id": 182,
+    "cod": "INTMUR87C52CL",
+    "cantidad": 5,
+    "producto": "EMPAQUE",
+    "id_transaccion": "ENT-20261009222624-af0a5b",
+    "precio_unitario": null
+  },
+  {
+    "id": 183,
+    "cod": "INTMV1IRC7HB5",
+    "cantidad": 6,
+    "producto": "GUARDAFANGOS",
+    "id_transaccion": "ENT-20261009222709-2a39d1",
+    "precio_unitario": null
+  },
+  {
+    "id": 184,
+    "cod": "INTMUR7NPK0NF",
+    "cantidad": 3,
+    "producto": "CILINDRO",
+    "id_transaccion": "ENT-20261009222739-dde20d",
+    "precio_unitario": null
+  },
+  {
+    "id": 185,
+    "cod": "INTMUREX66H65",
+    "cantidad": 11,
+    "producto": "BUJES DE ORQUIDEA",
+    "id_transaccion": "ENT-20261009222756-bef1fe",
+    "precio_unitario": null
+  },
+  {
+    "id": 186,
+    "cod": "INTMUR7VRD29L",
+    "cantidad": 4,
+    "producto": "Goma",
+    "id_transaccion": "ENT-20261009222810-5be05b",
+    "precio_unitario": null
+  },
+  {
+    "id": 187,
+    "cod": "INTMUR8DE0Z74",
+    "cantidad": 10,
+    "producto": "ANILLO",
+    "id_transaccion": "ENT-20261009222907-1fba2c",
+    "precio_unitario": null
+  },
+  {
+    "id": 188,
+    "cod": "INTMUR7P7ZXKT",
+    "cantidad": 5,
+    "producto": "BUJIA",
+    "id_transaccion": "ENT-20261009222923-d5578a",
+    "precio_unitario": null
+  },
+  {
+    "id": 189,
+    "cod": "INTMUR7LQ52QT",
+    "cantidad": 22,
+    "producto": "CADENILLA DE DISTRIBUCIÓN",
+    "id_transaccion": "ENT-20261009223008-4a1ecd",
+    "precio_unitario": null
+  },
+  {
+    "id": 190,
+    "cod": "INTMUR7YIDCYE",
+    "cantidad": 21,
+    "producto": "TENSON DE CADENILLA",
+    "id_transaccion": "ENT-20261009223039-584539",
+    "precio_unitario": null
+  },
+  {
+    "id": 191,
+    "cod": "INTMV1KHFNVAP",
+    "cantidad": 5,
+    "producto": "TAPA DE BOBINA",
+    "id_transaccion": "ENT-20261009225918-4e688e",
+    "precio_unitario": null
+  },
+  {
+    "id": 192,
+    "cod": "INTMV1KIFNBHW",
+    "cantidad": 16,
+    "producto": "RESORTES DOBLE PATA",
+    "id_transaccion": "ENT-20261009230016-905311",
+    "precio_unitario": null
+  },
+  {
+    "id": 193,
+    "cod": "INTMV1KJEWKJZ",
+    "cantidad": 2,
+    "producto": "INSTALACIONES COMPLETA",
+    "id_transaccion": "ENT-20261009230041-115047",
+    "precio_unitario": null
+  },
+  {
+    "id": 194,
+    "cod": "INTMV1KJQIMPK",
+    "cantidad": 3,
+    "producto": "CABLE DE ACELERACION",
+    "id_transaccion": "ENT-20261009230057-a05ee6",
+    "precio_unitario": null
+  },
+  {
+    "id": 195,
+    "cod": "INTMV1KK3EA9N",
+    "cantidad": 2,
+    "producto": "CABLE DE TACOMETRI",
+    "id_transaccion": "ENT-20261009230110-1ddd7d",
+    "precio_unitario": null
+  },
+  {
+    "id": 196,
+    "cod": "INTMV1KKDKP5W",
+    "cantidad": 3,
+    "producto": "ARBOL DE LEVA",
+    "id_transaccion": "ENT-20261009230127-395098",
+    "precio_unitario": null
+  },
+  {
+    "id": 197,
+    "cod": "INTMV1KKSWT28",
+    "cantidad": 4,
+    "producto": "BOBINA COR",
+    "id_transaccion": "ENT-20261009230155-80885e",
+    "precio_unitario": null
+  },
+  {
+    "id": 198,
+    "cod": "INTMV1KLDHGAI",
+    "cantidad": 1,
+    "producto": "sockets",
+    "id_transaccion": "ENT-20261009230219-72bfe1",
+    "precio_unitario": null
+  },
+  {
+    "id": 199,
+    "cod": "INTMV1KLX0Z18",
+    "cantidad": 12,
+    "producto": "KIT DE ESTOPERA",
+    "id_transaccion": "ENT-20261009230308-e94594",
+    "precio_unitario": null
+  },
+  {
+    "id": 200,
+    "cod": "INTMV1KMVXFR5",
+    "cantidad": 8,
+    "producto": "ARANDELAS",
+    "id_transaccion": "ENT-20261009230343-26f4bb",
+    "precio_unitario": null
+  },
+  {
+    "id": 201,
+    "cod": "INTMV1KNVNW5U",
+    "cantidad": 1,
+    "producto": "INTERRUPTOR ENCENDIDO",
+    "id_transaccion": "ENT-20261009230410-f1342f",
+    "precio_unitario": null
+  },
+  {
+    "id": 202,
+    "cod": "INTMV5F5Z5ZL3",
+    "cantidad": 8,
+    "producto": "Oscilantes",
+    "id_transaccion": "ENT-20261012154144-9cc9b2",
+    "precio_unitario": null
+  },
+  {
+    "id": 203,
+    "cod": "INTMV5F6THW71",
+    "cantidad": 37,
+    "producto": "rectificadores de corriente",
+    "id_transaccion": "ENT-20261012154219-079284",
+    "precio_unitario": null
+  },
+  {
+    "id": 204,
+    "cod": "INTMUR7P7ZXKT",
+    "cantidad": 6,
+    "producto": "BUJIA",
+    "id_transaccion": "ENT-20261013213012-f37ebd",
+    "precio_unitario": null
+  },
+  {
+    "id": 205,
+    "cod": "INTMUR7QAZSK6",
+    "cantidad": 2,
+    "producto": "FILTRO DE ACEITE",
+    "id_transaccion": "ENT-20261013213030-5fc550",
+    "precio_unitario": null
+  },
+  {
+    "id": 206,
+    "cod": "INTMUR6ET2S6X",
+    "cantidad": 5,
+    "producto": "BOBINA BUJIA",
+    "id_transaccion": "ENT-20261013213047-e88a43",
+    "precio_unitario": null
+  },
+  {
+    "id": 207,
+    "cod": "INTMUR7PL65J9",
+    "cantidad": 4,
+    "producto": "CDI",
+    "id_transaccion": "ENT-20261013213106-b8929a",
+    "precio_unitario": null
+  },
+  {
+    "id": 208,
+    "cod": "INTMV5F6THW71",
+    "cantidad": 23,
+    "producto": "rectificadores de corriente",
+    "id_transaccion": "ENT-20261013213126-6e40ec",
+    "precio_unitario": null
+  },
+  {
+    "id": 209,
+    "cod": "INTMUR7XZGFWO",
+    "cantidad": 3,
+    "producto": "PISTA DE DIRECCIÓN",
+    "id_transaccion": "ENT-20261013213329-058d39",
+    "precio_unitario": null
+  },
+  {
+    "id": 210,
+    "cod": "INTMUR7I6L5ZB",
+    "cantidad": 1,
+    "producto": "TEMPLADOR DE CADENA",
+    "id_transaccion": "ENT-20261013213352-2d3cc3",
+    "precio_unitario": null
+  },
+  {
+    "id": 211,
+    "cod": "INTMUR87C52CL",
+    "cantidad": 3,
+    "producto": "EMPAQUE",
+    "id_transaccion": "ENT-20261013213406-737e7e",
+    "precio_unitario": null
+  },
+  {
+    "id": 212,
+    "cod": "INTMUR8DE0Z74",
+    "cantidad": 1,
+    "producto": "ANILLO",
+    "id_transaccion": "ENT-20261013213428-11cff2",
+    "precio_unitario": null
+  },
+  {
+    "id": 213,
+    "cod": "INTMV5F5Z5ZL3",
+    "cantidad": 1,
+    "producto": "Oscilantes",
+    "id_transaccion": "ENT-20261013213537-bc77b8",
+    "precio_unitario": null
+  },
+  {
+    "id": 214,
+    "cod": "INTMUR7FZX39J",
+    "cantidad": 5,
+    "producto": "ZAPATA",
+    "id_transaccion": "ENT-20261013213550-587e46",
+    "precio_unitario": null
+  },
+  {
+    "id": 215,
+    "cod": "INTMUR7O0JV18",
+    "cantidad": 1,
+    "producto": "VALVULA",
+    "id_transaccion": "ENT-20261013213559-06dc23",
+    "precio_unitario": null
+  },
+  {
+    "id": 216,
+    "cod": "INTMUR6ET2S6X",
+    "cantidad": 1,
+    "producto": "BOBINA BUJIA",
+    "id_transaccion": "ENT-20261013213616-96407b",
+    "precio_unitario": null
+  },
+  {
+    "id": 217,
+    "cod": "INTMUR7OVSQP1",
+    "cantidad": 2,
+    "producto": "MORDAZA",
+    "id_transaccion": "ENT-20261013213631-fe06db",
+    "precio_unitario": null
+  },
+  {
+    "id": 218,
+    "cod": "INTMUR74482GH",
+    "cantidad": 2,
+    "producto": "MANILLA DE EMBRAGUE",
+    "id_transaccion": "ENT-20261013213701-ead993",
+    "precio_unitario": null
+  },
+  {
+    "id": 219,
+    "cod": "INTMUR7W8WZGN",
+    "cantidad": 1,
+    "producto": "GRASA",
+    "id_transaccion": "ENT-20261013213714-65cce6",
+    "precio_unitario": null
+  },
+  {
+    "id": 220,
+    "cod": "INTMUR7TCW617",
+    "cantidad": 2,
+    "producto": "SHICHE",
+    "id_transaccion": "ENT-20261013213726-a91a5b",
+    "precio_unitario": null
+  },
+  {
+    "id": 221,
+    "cod": "INTMUREX66H65",
+    "cantidad": 4,
+    "producto": "BUJES DE ORQUIDEA",
+    "id_transaccion": "ENT-20261013213743-f725c0",
+    "precio_unitario": null
+  },
+  {
+    "id": 222,
+    "cod": "INTMV1KIFNBHW",
+    "cantidad": 7,
+    "producto": "RESORTES DOBLE PATA",
+    "id_transaccion": "ENT-20261013213831-24941f",
+    "precio_unitario": null
+  },
+  {
+    "id": 223,
+    "cod": "INTMV1IRC7HB5",
+    "cantidad": 2,
+    "producto": "GUARDAFANGOS",
+    "id_transaccion": "ENT-20261013213853-05def7",
+    "precio_unitario": null
+  },
+  {
+    "id": 224,
+    "cod": "INTMUWU9UYQ75",
+    "cantidad": 1,
+    "producto": "EJE POSTERIOR",
+    "id_transaccion": "ENT-20261013213908-56ad41",
+    "precio_unitario": null
+  },
+  {
+    "id": 225,
+    "cod": "INTMUR74JFKA3",
+    "cantidad": 3,
+    "producto": "PATILLA DE FRENO",
+    "id_transaccion": "ENT-20261013213934-b426f1",
+    "precio_unitario": null
+  },
+  {
+    "id": 226,
+    "cod": "INTMUR7J05A3Q",
+    "cantidad": 2,
+    "producto": "PATA DE APOYO",
+    "id_transaccion": "ENT-20261013214004-da48d1",
+    "precio_unitario": null
+  },
+  {
+    "id": 227,
+    "cod": "INTMUR83JIS0S",
+    "cantidad": 5,
+    "producto": "CABLE DE EMBRAGUE",
+    "id_transaccion": "ENT-20261013214040-84f3b6",
+    "precio_unitario": null
+  },
+  {
+    "id": 228,
+    "cod": "INTMUR81G5095",
+    "cantidad": 5,
+    "producto": "CABLE DE VELOCÍMETRO",
+    "id_transaccion": "ENT-20261013214054-2c764f",
+    "precio_unitario": null
+  },
+  {
+    "id": 229,
+    "cod": "INTMV849SU9JU",
+    "cantidad": 19,
+    "producto": "STOP",
+    "id_transaccion": "ENT-20261014125944-46539b",
+    "precio_unitario": null
+  }
+]
