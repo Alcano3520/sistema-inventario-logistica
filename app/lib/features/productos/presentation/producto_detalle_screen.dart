@@ -7,6 +7,7 @@ import '../../../core/app_theme.dart';
 import '../../../shared/widgets/visor_foto.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../historial/domain/transaccion.dart';
+import '../../historial/presentation/editar_entrada_dialog.dart';
 import '../../historial/presentation/historial_providers.dart';
 import '../domain/producto.dart';
 import 'producto_editar_screen.dart';
@@ -97,6 +98,29 @@ class _ProductoDetalleScreenState extends ConsumerState<ProductoDetalleScreen> {
     } finally {
       if (mounted) setState(() => _exportandoExcel = false);
     }
+  }
+
+  /// Abre la corrección de la factura/Entrada de la que vino este
+  /// movimiento del kardex — reutiliza el mismo flujo de Historial (nota
+  /// obligatoria, acta PDF, recálculo de stock). Al terminar, refresca el
+  /// kardex y el stock mostrado arriba, por si la cantidad cambió.
+  Future<void> _editarMovimiento(MovimientoProducto m) async {
+    final transaccion = await ref.read(historialRepositoryProvider).obtenerEntradaPorId(m.idTransaccion);
+    if (transaccion == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('No se encontró la factura de este movimiento.')));
+      }
+      return;
+    }
+    if (!mounted) return;
+    await editarEntradaDialog(context, ref, transaccion);
+    if (!mounted) return;
+    final actualizado = ref.read(productosProvider).valueOrNull?.where((p) => p.cod == _producto.cod).firstOrNull;
+    setState(() {
+      if (actualizado != null) _producto = actualizado;
+      _historialFuture = _cargarHistorial();
+    });
   }
 
   void _verFoto() {
@@ -264,6 +288,7 @@ class _ProductoDetalleScreenState extends ConsumerState<ProductoDetalleScreen> {
 
   Widget _seccionHistorial() {
     final formatoFecha = DateFormat('dd/MM/yyyy HH:mm');
+    final puedeEditarFacturas = ref.watch(perfilActualProvider).valueOrNull?.puedeEditarFacturas ?? false;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -354,6 +379,17 @@ class _ProductoDetalleScreenState extends ConsumerState<ProductoDetalleScreen> {
                               '${esEntrada ? '+' : '−'}${m.cantidad}',
                               style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 16),
                             ),
+                            if (esEntrada && puedeEditarFacturas) ...[
+                              const SizedBox(width: 6),
+                              InkWell(
+                                onTap: () => _editarMovimiento(m),
+                                borderRadius: BorderRadius.circular(6),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(4),
+                                  child: Icon(Icons.edit_outlined, size: 18, color: AppColors.textSecondary),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                         const SizedBox(height: 6),

@@ -79,6 +79,10 @@ class MovimientoProducto {
   final String tipo; // 'Entrada' | 'Salida'
   final num cantidad;
 
+  /// `id_transaccion` de la Entrada/Salida de la que vino este movimiento —
+  /// para poder abrir "Editar factura" directo desde la ficha del producto.
+  final String idTransaccion;
+
   // Entrada:
   final String? proveedor;
   final String? numFactura;
@@ -104,6 +108,7 @@ class MovimientoProducto {
     required this.fecha,
     required this.tipo,
     required this.cantidad,
+    required this.idTransaccion,
     this.proveedor,
     this.numFactura,
     this.aQuien,

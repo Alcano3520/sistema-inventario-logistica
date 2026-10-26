@@ -84,7 +84,7 @@ class _AppShellState extends ConsumerState<AppShell> {
       const _TabDef(Icons.receipt_long_outlined, 'Entregas', EntregaGeneralScreen()),
       const _TabDef(Icons.assignment_return_outlined, 'Devoluciones', DevolucionGeneralScreen()),
       const _TabDef(Icons.inventory_2_outlined, 'Inventario', InventarioGeneralScreen()),
-      if (esAdmin) const _TabDef(Icons.add_box_outlined, 'Artículos', ArticulosGeneralScreen()),
+      const _TabDef(Icons.add_box_outlined, 'Artículos', ArticulosGeneralScreen()),
       const _TabDef(Icons.history, 'Historial', HistorialGeneralScreen()),
       if (esAdmin) const _TabDef(Icons.tune, 'Ajuste Stock', AjusteStockGeneralScreen()),
       if (esAdmin) const _TabDef(Icons.upload_file_outlined, 'Carga Masiva', CargaMasivaGeneralScreen()),
