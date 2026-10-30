@@ -47,14 +47,20 @@ class _LectorScannerDialogState extends State<LectorScannerDialog> {
     }
     if (codigos.isEmpty) return;
 
-    if (codigos.length == 1) {
-      if (mounted) Navigator.pop(context, codigos.first.rawValue);
-      return;
-    }
-
+    // Siempre se detiene la cámara ANTES de hacer cualquier otra cosa (sea
+    // cerrar la pantalla con un solo código, o mostrar la hoja para elegir
+    // entre varios) — cerrar la pantalla con la cámara todavía activa
+    // puede tumbar la app en celulares cuya cámara no tolera bien eso
+    // (reportado en un Infinix Smart 20: escaneaba y la app se cerraba de
+    // golpe, había que volver a escanear).
     setState(() => _procesando = true);
     await _controller.stop();
     if (!mounted) return;
+
+    if (codigos.length == 1) {
+      Navigator.pop(context, codigos.first.rawValue);
+      return;
+    }
 
     final elegido = await showModalBottomSheet<Barcode>(
       context: context,
