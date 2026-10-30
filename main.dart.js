@@ -146480,17 +146480,16 @@ n=A.b([],t.k8)
 for(m=a.a,l=m.length,k=0;k<m.length;m.length===l||(0,A.B)(m),++k){j=m[k]
 i=j.Q
 if(i==null||i.length===0||!o.A(0,i))continue
-n.push(j)}m=n.length
-if(m===0){s=1
-break}if(m===1){m=p.c
-if(m!=null){l=B.h.gU(n)
-A.aW(m,!1).bT(l.Q)}s=1
+n.push(j)}if(n.length===0){s=1
 break}p.E(new A.bbn(p))
 m=p.d
 s=3
 return A.k(m.cZ(0),$async$yP)
 case 3:l=p.c
 if(l==null){s=1
+break}if(n.length===1){m=B.h.gU(n)
+A.aW(l,!1).bT(m.Q)
+s=1
 break}s=4
 return A.k(A.a0j(new A.bbo(p,n),l,!0,t.Mk),$async$yP)
 case 4:h=c
