@@ -349,6 +349,17 @@ class _BuscadorCodigo extends StatelessWidget {
           textInputAction: TextInputAction.done,
           onSubmitted: onConfirmar,
         ),
+        const SizedBox(height: 10),
+        // Botón explícito además de "onSubmitted": en varios teclados
+        // (sobre todo algunos de Android con OEM) el botón "Listo"/"Enviar"
+        // del teclado no dispara onSubmitted de forma confiable, y sin un
+        // botón visible no había forma de continuar con el código escrito
+        // a mano — quedaba la pantalla sin reaccionar.
+        OutlinedButton.icon(
+          onPressed: () => onConfirmar(controller.text),
+          icon: const Icon(Icons.arrow_forward, size: 18),
+          label: const Text('Continuar con este código'),
+        ),
         const SizedBox(height: 14),
         OutlinedButton.icon(
           onPressed: onGenerar,

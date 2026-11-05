@@ -21,7 +21,11 @@ Future<void> editarEntradaDialog(BuildContext context, WidgetRef ref, Transaccio
   final perfil = ref.read(perfilActualProvider).valueOrNull;
   if (perfil == null) return;
 
-  var fecha = t.fechaHora;
+  // t.fechaHora viene en UTC de la base de datos — hay que convertir a
+  // local ANTES de mostrarla o de usarla como punto de partida del selector
+  // de fecha; si no, se puede ver (y guardar) un día distinto al real para
+  // horarios de noche en Ecuador (UTC-5).
+  var fecha = t.fechaHora.toLocal();
   final proveedorController = TextEditingController(text: t.proveedor);
   final numFacturaController = TextEditingController(text: t.numFactura);
   final claveController = TextEditingController(text: t.claveAccesoSri ?? '');
@@ -171,8 +175,9 @@ Future<void> editarEntradaDialog(BuildContext context, WidgetRef ref, Transaccio
     if (antes != despues) cambios.add((campo, antes, despues));
   }
 
+  final fechaOriginalLocal = t.fechaHora.toLocal();
   comparar('Fecha',
-      '${t.fechaHora.day.toString().padLeft(2, '0')}/${t.fechaHora.month.toString().padLeft(2, '0')}/${t.fechaHora.year}',
+      '${fechaOriginalLocal.day.toString().padLeft(2, '0')}/${fechaOriginalLocal.month.toString().padLeft(2, '0')}/${fechaOriginalLocal.year}',
       '${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year}');
   comparar('Proveedor', t.proveedor, proveedorController.text.trim());
   comparar('N° Factura/OC', t.numFactura, numFacturaController.text.trim());

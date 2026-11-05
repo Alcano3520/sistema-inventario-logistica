@@ -154,7 +154,7 @@ class _DescuentosGeneralScreenState extends ConsumerState<DescuentosGeneralScree
                     }),
                     title: Text('${d.empleadoNombre} — ${d.articuloDescripcion}'),
                     subtitle: Text(
-                        'CI: ${d.empleadoCedula} · ${_formatoFecha.format(d.fechaEntrega)} · \$${d.valorDescuento}'),
+                        'CI: ${d.empleadoCedula} · ${_formatoFecha.format(d.fechaEntrega.toLocal())} · \$${d.valorDescuento}'),
                   );
                 },
               ),
@@ -191,7 +191,7 @@ class _DescuentosGeneralScreenState extends ConsumerState<DescuentosGeneralScree
             return ListTile(
               title: Text('${d.empleadoNombre} — ${d.articuloDescripcion}'),
               subtitle: Text('Lote: ${d.loteNumero ?? '-'} · \$${d.valorDescuento}'),
-              trailing: Text(_formatoFecha.format(d.fechaEntrega)),
+              trailing: Text(_formatoFecha.format(d.fechaEntrega.toLocal())),
             );
           },
         );

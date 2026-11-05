@@ -32,9 +32,16 @@ class _HistorialScreenState extends ConsumerState<HistorialScreen> {
     super.dispose();
   }
 
-  String _fmtFecha(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year} '
-      '${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
+  /// Convierte a hora local ANTES de formatear — las fechas vienen de la
+  /// base de datos en UTC. Sin esto, un movimiento hecho de noche en
+  /// Ecuador (UTC-5) aparece con la fecha del día SIGUIENTE aquí, aunque en
+  /// la ficha del producto (que sí convierte a local) se vea el día
+  /// correcto — mismo movimiento, dos fechas distintas en dos pantallas.
+  String _fmtFecha(DateTime d) {
+    final local = d.toLocal();
+    return '${local.day.toString().padLeft(2, '0')}/${local.month.toString().padLeft(2, '0')}/${local.year} '
+        '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+  }
 
   @override
   Widget build(BuildContext context) {
