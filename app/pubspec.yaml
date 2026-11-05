@@ -71,6 +71,16 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.3
 
+# pdfrx_engine 0.4.4 (fijado por pdfrx ^2.4.5, que es la última versión
+# compatible con excel ^4.0.6) tiene un bug real de promoción de nulabilidad
+# a través de un `await` en pdf_file_cache.dart que el SDK de Dart actual
+# detecta como error de compilación. No hay versión más nueva de pdfrx_engine
+# compatible con excel (requieren archive/image más nuevos que excel soporta),
+# así que se usa una copia local con el único cambio necesario (`cache!`).
+dependency_overrides:
+  pdfrx_engine:
+    path: third_party/pdfrx_engine-0.4.4-patched
+
 flutter_launcher_icons:
   android: true
   ios: false

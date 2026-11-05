@@ -31,7 +31,7 @@ class MovimientosRepository {
     final transaccion = await supabase
         .from(tablas.transaccionesEntrada)
         .insert({
-          'fecha_hora': fecha.toIso8601String(),
+          'fecha_hora': fecha.toUtc().toIso8601String(),
           'proveedor': proveedor,
           'num_factura': numFactura,
           'observaciones': observaciones,
@@ -93,7 +93,7 @@ class MovimientosRepository {
   }) async {
     final clave = claveAccesoSri?.trim();
     await supabase.from(tablas.transaccionesEntrada).update({
-      'fecha_hora': fecha.toIso8601String(),
+      'fecha_hora': fecha.toUtc().toIso8601String(),
       'proveedor': proveedor,
       'num_factura': numFactura,
       'observaciones': observaciones,
@@ -130,7 +130,7 @@ class MovimientosRepository {
     final transaccion = await supabase
         .from(tablas.transaccionesSalida)
         .insert({
-          'fecha_hora': fecha.toIso8601String(),
+          'fecha_hora': fecha.toUtc().toIso8601String(),
           'bote': bote,
           'a_quien_entrega': aQuienEntrega,
           'identificacion_quien_recibe': identificacionQuienRecibe,
@@ -186,7 +186,7 @@ class MovimientosRepository {
     required List<DetalleItem> items,
   }) async {
     await supabase.from(tablas.transaccionesSalida).update({
-      'fecha_hora': fecha.toIso8601String(),
+      'fecha_hora': fecha.toUtc().toIso8601String(),
       'bote': bote,
       'a_quien_entrega': aQuienEntrega,
       'identificacion_quien_recibe': identificacionQuienRecibe,

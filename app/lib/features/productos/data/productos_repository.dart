@@ -119,7 +119,7 @@ class ProductosRepository {
       final transaccion = await supabase
           .from(tablas.transaccionesEntrada)
           .insert({
-            'fecha_hora': (fecha ?? DateTime.now()).toIso8601String(),
+            'fecha_hora': (fecha ?? DateTime.now()).toUtc().toIso8601String(),
             'proveedor': 'Conteo físico',
             'num_factura': (factura == null || factura.isEmpty) ? '' : factura,
             'observaciones': 'Ajuste por conteo físico de inventario',
@@ -139,7 +139,7 @@ class ProductosRepository {
       final transaccion = await supabase
           .from(tablas.transaccionesSalida)
           .insert({
-            'fecha_hora': DateTime.now().toIso8601String(),
+            'fecha_hora': DateTime.now().toUtc().toIso8601String(),
             'bote': 'Ajuste de inventario',
             'a_quien_entrega': 'Conteo físico',
             'proposito': 'Corrección por conteo físico de inventario',

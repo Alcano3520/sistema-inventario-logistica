@@ -102,7 +102,7 @@ class CargaMasivaRepository {
       final transaccion = await supabase
           .from(tablas.transaccionesEntrada)
           .insert({
-            'fecha_hora': (items.first['fecha'] as DateTime).toIso8601String(),
+            'fecha_hora': (items.first['fecha'] as DateTime).toUtc().toIso8601String(),
             'proveedor': 'Migración histórica',
             'observaciones': 'Datos migrados del sistema anterior',
             'usuario_id': usuarioId,
@@ -180,7 +180,7 @@ class CargaMasivaRepository {
         final transaccion = await supabase
             .from(tablas.transaccionesSalida)
             .insert({
-              'fecha_hora': (items.first['fecha'] as DateTime).toIso8601String(),
+              'fecha_hora': (items.first['fecha'] as DateTime).toUtc().toIso8601String(),
               'bote': items.first['bote'],
               'a_quien_entrega': 'Migración histórica',
               'proposito': 'Salida migrada del sistema anterior',
