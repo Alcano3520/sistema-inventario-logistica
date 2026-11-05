@@ -402,6 +402,10 @@ class _FormularioNuevoProductoState extends ConsumerState<_FormularioNuevoProduc
   String _categoria = '';
   String _ubicacion = '';
 
+  /// Fecha de la entrada — por defecto hoy, pero editable: el producto
+  /// puede haber ingresado físicamente antes de registrarlo en el sistema.
+  DateTime _fechaEntrada = DateTime.now();
+
   Uint8List? _fotoComprimida;
   bool _comprimiendoFoto = false;
   bool _guardando = false;
@@ -524,6 +528,7 @@ class _FormularioNuevoProductoState extends ConsumerState<_FormularioNuevoProduc
           usuarioNombre: usuario.nombre,
           numFactura: _facturaController.text,
           precioUnitario: num.tryParse(_precioController.text.trim()),
+          fecha: _fechaEntrada,
         );
       }
 
@@ -696,6 +701,26 @@ class _FormularioNuevoProductoState extends ConsumerState<_FormularioNuevoProduc
                 const SizedBox(height: 4),
                 const Text('Compra que respalda la cantidad inicial (opcional):', style: AppText.bodySecondary),
                 const SizedBox(height: 10),
+                InkWell(
+                  onTap: () async {
+                    final seleccionada = await showDatePicker(
+                      context: context,
+                      initialDate: _fechaEntrada,
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2100),
+                    );
+                    if (seleccionada != null) setState(() => _fechaEntrada = seleccionada);
+                  },
+                  child: InputDecorator(
+                    decoration: const InputDecoration(
+                      labelText: 'Fecha de ingreso',
+                      helperText: 'Por si el producto llegó antes de registrarlo aquí.',
+                    ),
+                    child: Text('${_fechaEntrada.day.toString().padLeft(2, '0')}/'
+                        '${_fechaEntrada.month.toString().padLeft(2, '0')}/${_fechaEntrada.year}'),
+                  ),
+                ),
+                const SizedBox(height: 14),
                 TextFormField(
                   controller: _facturaController,
                   decoration: const InputDecoration(labelText: 'N° de factura'),

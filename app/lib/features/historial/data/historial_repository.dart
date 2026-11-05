@@ -37,12 +37,12 @@ class HistorialRepository {
     final entradasData = await supabase
         .from(tablas.detalleEntradas)
         .select(
-            'id_transaccion, cantidad, transaccion:${tablas.transaccionesEntrada}(fecha_hora, proveedor, num_factura, firma_url, foto_factura_url)')
+            'id_transaccion, cantidad, transaccion:${tablas.transaccionesEntrada}(fecha_hora, proveedor, num_factura, firma_url, foto_factura_url, usuario_id, created_at)')
         .eq('cod', cod);
     final salidasData = await supabase
         .from(tablas.detalleSalidas)
         .select(
-            'id_transaccion, cantidad, transaccion:${tablas.transaccionesSalida}(fecha_hora, a_quien_entrega, proposito, firma_url, peticion_foto_url)')
+            'id_transaccion, cantidad, transaccion:${tablas.transaccionesSalida}(fecha_hora, a_quien_entrega, proposito, firma_url, peticion_foto_url, usuario_id, created_at)')
         .eq('cod', cod);
 
     final crudos = <({
@@ -50,6 +50,8 @@ class HistorialRepository {
       String tipo,
       num cantidad,
       String idTransaccion,
+      String usuarioId,
+      DateTime creadoEn,
       String? proveedor,
       String? numFactura,
       String? aQuien,
@@ -68,6 +70,8 @@ class HistorialRepository {
         tipo: 'Entrada',
         cantidad: mapa['cantidad'] as num? ?? 0,
         idTransaccion: mapa['id_transaccion'] as String,
+        usuarioId: t['usuario_id'] as String? ?? '',
+        creadoEn: DateTime.parse(t['created_at'] as String),
         proveedor: t['proveedor'] as String?,
         numFactura: t['num_factura'] as String?,
         aQuien: null,
@@ -86,6 +90,8 @@ class HistorialRepository {
         tipo: 'Salida',
         cantidad: mapa['cantidad'] as num? ?? 0,
         idTransaccion: mapa['id_transaccion'] as String,
+        usuarioId: t['usuario_id'] as String? ?? '',
+        creadoEn: DateTime.parse(t['created_at'] as String),
         proveedor: null,
         numFactura: null,
         aQuien: t['a_quien_entrega'] as String?,
@@ -106,6 +112,8 @@ class HistorialRepository {
         tipo: m.tipo,
         cantidad: m.cantidad,
         idTransaccion: m.idTransaccion,
+        usuarioId: m.usuarioId,
+        creadoEn: m.creadoEn,
         proveedor: m.proveedor,
         numFactura: m.numFactura,
         aQuien: m.aQuien,
@@ -129,6 +137,18 @@ class HistorialRepository {
         .maybeSingle();
     if (data == null) return null;
     return TransaccionEntrada.fromMap(data);
+  }
+
+  /// Igual que [obtenerEntradaPorId] pero para una Salida — para poder
+  /// abrir su corrección desde el kardex de un producto puntual.
+  Future<TransaccionSalida?> obtenerSalidaPorId(String idTransaccion) async {
+    final data = await supabase
+        .from(tablas.transaccionesSalida)
+        .select('*, detalles:${tablas.detalleSalidas}(*)')
+        .eq('id_transaccion', idTransaccion)
+        .maybeSingle();
+    if (data == null) return null;
+    return TransaccionSalida.fromMap(data);
   }
 
   /// Busca todas las transacciones de Entrada cuyo número de factura

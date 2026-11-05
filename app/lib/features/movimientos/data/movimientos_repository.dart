@@ -173,6 +173,39 @@ class MovimientosRepository {
     }
   }
 
+  /// Igual que [editarEntrada] pero para una Salida — misma idea de delta
+  /// en el stock (no hay trigger de UPDATE, se recalcula al final).
+  Future<void> editarSalida({
+    required String idTransaccion,
+    required DateTime fecha,
+    required String bote,
+    required String aQuienEntrega,
+    required String identificacionQuienRecibe,
+    required bool confirmacionRecepcion,
+    required String proposito,
+    required List<DetalleItem> items,
+  }) async {
+    await supabase.from(tablas.transaccionesSalida).update({
+      'fecha_hora': fecha.toIso8601String(),
+      'bote': bote,
+      'a_quien_entrega': aQuienEntrega,
+      'identificacion_quien_recibe': identificacionQuienRecibe,
+      'confirmacion_recepcion': confirmacionRecepcion,
+      'proposito': proposito,
+    }).eq('id_transaccion', idTransaccion);
+
+    for (final item in items) {
+      if (item.id == null) continue;
+      await supabase.from(tablas.detalleSalidas).update({
+        'cod': item.cod,
+        'producto': item.producto,
+        'cantidad': item.cantidad,
+      }).eq('id', item.id!);
+    }
+
+    await supabase.rpc(tablas.rpcRecalcularStocks);
+  }
+
   Future<void> _subirFirma({
     required String bucketPath,
     required Uint8List bytes,

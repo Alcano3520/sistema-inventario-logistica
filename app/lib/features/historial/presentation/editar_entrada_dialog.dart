@@ -8,6 +8,7 @@ import '../../movimientos/data/acta_correccion_pdf_service.dart';
 import '../../movimientos/presentation/entrada_screen.dart' show movimientosRepositoryProvider;
 import '../../productos/presentation/productos_providers.dart';
 import '../domain/transaccion.dart';
+import 'capacidad_edicion.dart';
 import 'historial_providers.dart';
 
 /// Corrige los datos de una Entrada/factura ya registrada — solo pensado
@@ -20,6 +21,11 @@ import 'historial_providers.dart';
 Future<void> editarEntradaDialog(BuildContext context, WidgetRef ref, TransaccionEntrada t) async {
   final perfil = ref.read(perfilActualProvider).valueOrNull;
   if (perfil == null) return;
+
+  final capacidad =
+      capacidadEdicion(perfil: perfil, usuarioIdRegistro: t.usuarioId, creadoEn: t.createdAt);
+  if (capacidad == CapacidadEdicion.ninguna) return;
+  final soloFecha = capacidad == CapacidadEdicion.soloFecha;
 
   // t.fechaHora viene en UTC de la base de datos — hay que convertir a
   // local ANTES de mostrarla o de usarla como punto de partida del selector
@@ -44,7 +50,7 @@ Future<void> editarEntradaDialog(BuildContext context, WidgetRef ref, Transaccio
     context: context,
     builder: (_) => StatefulBuilder(
       builder: (context, setDialogState) => AlertDialog(
-        title: const Text('Editar datos de la factura'),
+        title: Text(soloFecha ? 'Corregir fecha de la factura' : 'Editar datos de la factura'),
         content: SizedBox(
           width: (MediaQuery.of(context).size.width - 64).clamp(0, 420),
           child: SingleChildScrollView(
@@ -52,6 +58,14 @@ Future<void> editarEntradaDialog(BuildContext context, WidgetRef ref, Transaccio
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (soloFecha) ...[
+                  const Text(
+                    'Ya pasó el día del registro — ahora solo puedes corregir la fecha. '
+                    'Para cambiar otro dato, pídeselo a un administrador.',
+                    style: AppText.bodySecondary,
+                  ),
+                  const SizedBox(height: 10),
+                ],
                 InkWell(
                   onTap: () async {
                     final seleccionada = await showDatePicker(
@@ -68,60 +82,62 @@ Future<void> editarEntradaDialog(BuildContext context, WidgetRef ref, Transaccio
                         '${fecha.month.toString().padLeft(2, '0')}/${fecha.year}'),
                   ),
                 ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: proveedorController,
-                  decoration: const InputDecoration(labelText: 'Proveedor'),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: numFacturaController,
-                  decoration: const InputDecoration(labelText: 'N° Factura/OC'),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: claveController,
-                  decoration: const InputDecoration(labelText: 'Clave de acceso SRI'),
-                ),
-                if (itemsControllers.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  const Text('Productos:', style: TextStyle(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 8),
-                  ...t.items.where((i) => i.id != null).map((item) {
-                    final c = itemsControllers[item.id]!;
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(item.cod, style: AppText.bodySecondary),
-                          TextField(
-                            controller: c.producto,
-                            decoration: const InputDecoration(labelText: 'Producto'),
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: c.cantidad,
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                  decoration: const InputDecoration(labelText: 'Cantidad'),
+                if (!soloFecha) ...[
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: proveedorController,
+                    decoration: const InputDecoration(labelText: 'Proveedor'),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: numFacturaController,
+                    decoration: const InputDecoration(labelText: 'N° Factura/OC'),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: claveController,
+                    decoration: const InputDecoration(labelText: 'Clave de acceso SRI'),
+                  ),
+                  if (itemsControllers.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    const Text('Productos:', style: TextStyle(fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
+                    ...t.items.where((i) => i.id != null).map((item) {
+                      final c = itemsControllers[item.id]!;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(item.cod, style: AppText.bodySecondary),
+                            TextField(
+                              controller: c.producto,
+                              decoration: const InputDecoration(labelText: 'Producto'),
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: c.cantidad,
+                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                    decoration: const InputDecoration(labelText: 'Cantidad'),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: TextField(
-                                  controller: c.precio,
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                  decoration: const InputDecoration(labelText: 'Precio unitario'),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: TextField(
+                                    controller: c.precio,
+                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                    decoration: const InputDecoration(labelText: 'Precio unitario'),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
                 ],
                 const SizedBox(height: 16),
                 TextField(

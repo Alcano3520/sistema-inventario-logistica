@@ -33,6 +33,7 @@ class TransaccionEntrada {
   final DateTime fechaHora;
   final String proveedor;
   final String numFactura;
+  final String usuarioId;
   final String usuarioNombre;
   final String observaciones;
   final String? firmaUrl;
@@ -40,17 +41,25 @@ class TransaccionEntrada {
   final String? fotoFacturaUrl;
   final List<DetalleItem> items;
 
+  /// Cuándo se registró de verdad (no confundir con [fechaHora], que es la
+  /// fecha del movimiento y puede corregirse) — con esto se calcula si
+  /// quien lo registró todavía puede autocorregirlo (hoy: todo; día 2-3:
+  /// solo la fecha; después: ya no).
+  final DateTime createdAt;
+
   const TransaccionEntrada({
     required this.idTransaccion,
     required this.fechaHora,
     required this.proveedor,
     required this.numFactura,
+    required this.usuarioId,
     required this.usuarioNombre,
     required this.observaciones,
     required this.firmaUrl,
     this.claveAccesoSri,
     this.fotoFacturaUrl,
     required this.items,
+    required this.createdAt,
   });
 
   factory TransaccionEntrada.fromMap(Map<String, dynamic> map) {
@@ -59,6 +68,7 @@ class TransaccionEntrada {
       fechaHora: DateTime.parse(map['fecha_hora'] as String),
       proveedor: map['proveedor'] as String? ?? '',
       numFactura: map['num_factura'] as String? ?? '',
+      usuarioId: map['usuario_id'] as String? ?? '',
       usuarioNombre: map['usuario_nombre'] as String? ?? '',
       observaciones: map['observaciones'] as String? ?? '',
       firmaUrl: map['firma_url'] as String?,
@@ -67,6 +77,7 @@ class TransaccionEntrada {
       items: ((map['detalles'] as List?) ?? [])
           .map((e) => DetalleItem.fromMap(e as Map<String, dynamic>))
           .toList(),
+      createdAt: DateTime.parse(map['created_at'] as String),
     );
   }
 }
@@ -82,6 +93,11 @@ class MovimientoProducto {
   /// `id_transaccion` de la Entrada/Salida de la que vino este movimiento —
   /// para poder abrir "Editar factura" directo desde la ficha del producto.
   final String idTransaccion;
+
+  /// Quién registró este movimiento y cuándo — para calcular si todavía
+  /// puede autocorregirlo (ver [capacidadEdicion]).
+  final String usuarioId;
+  final DateTime creadoEn;
 
   // Entrada:
   final String? proveedor;
@@ -109,6 +125,8 @@ class MovimientoProducto {
     required this.tipo,
     required this.cantidad,
     required this.idTransaccion,
+    required this.usuarioId,
+    required this.creadoEn,
     this.proveedor,
     this.numFactura,
     this.aQuien,
@@ -128,11 +146,15 @@ class TransaccionSalida {
   final String identificacionQuienRecibe;
   final bool confirmacionRecepcion;
   final String proposito;
+  final String usuarioId;
   final String usuarioNombre;
   final String? firmaUrl;
   final String? peticionTexto;
   final String? peticionFotoUrl;
   final List<DetalleItem> items;
+
+  /// Ver nota en [TransaccionEntrada.createdAt] — mismo propósito.
+  final DateTime createdAt;
 
   const TransaccionSalida({
     required this.idTransaccion,
@@ -142,11 +164,13 @@ class TransaccionSalida {
     required this.identificacionQuienRecibe,
     required this.confirmacionRecepcion,
     required this.proposito,
+    required this.usuarioId,
     required this.usuarioNombre,
     required this.firmaUrl,
     this.peticionTexto,
     this.peticionFotoUrl,
     required this.items,
+    required this.createdAt,
   });
 
   factory TransaccionSalida.fromMap(Map<String, dynamic> map) {
@@ -158,6 +182,7 @@ class TransaccionSalida {
       identificacionQuienRecibe: map['identificacion_quien_recibe'] as String? ?? '',
       confirmacionRecepcion: map['confirmacion_recepcion'] as bool? ?? false,
       proposito: map['proposito'] as String? ?? '',
+      usuarioId: map['usuario_id'] as String? ?? '',
       usuarioNombre: map['usuario_nombre'] as String? ?? '',
       firmaUrl: map['firma_url'] as String?,
       peticionTexto: map['peticion_texto'] as String?,
@@ -165,6 +190,7 @@ class TransaccionSalida {
       items: ((map['detalles'] as List?) ?? [])
           .map((e) => DetalleItem.fromMap(e as Map<String, dynamic>))
           .toList(),
+      createdAt: DateTime.parse(map['created_at'] as String),
     );
   }
 }

@@ -109,6 +109,7 @@ class ProductosRepository {
     required String usuarioNombre,
     String? numFactura,
     num? precioUnitario,
+    DateTime? fecha,
   }) async {
     final delta = cantidadContada - stockActual;
     if (delta == 0) return;
@@ -118,7 +119,7 @@ class ProductosRepository {
       final transaccion = await supabase
           .from(tablas.transaccionesEntrada)
           .insert({
-            'fecha_hora': DateTime.now().toIso8601String(),
+            'fecha_hora': (fecha ?? DateTime.now()).toIso8601String(),
             'proveedor': 'Conteo físico',
             'num_factura': (factura == null || factura.isEmpty) ? '' : factura,
             'observaciones': 'Ajuste por conteo físico de inventario',

@@ -7,7 +7,9 @@ import '../../../core/app_theme.dart';
 import '../../../shared/widgets/visor_foto.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../historial/domain/transaccion.dart';
+import '../../historial/presentation/capacidad_edicion.dart';
 import '../../historial/presentation/editar_entrada_dialog.dart';
+import '../../historial/presentation/editar_salida_dialog.dart';
 import '../../historial/presentation/historial_providers.dart';
 import '../domain/producto.dart';
 import 'producto_editar_screen.dart';
@@ -100,11 +102,11 @@ class _ProductoDetalleScreenState extends ConsumerState<ProductoDetalleScreen> {
     }
   }
 
-  /// Abre la corrección de la factura/Entrada de la que vino este
+  /// Abre la corrección de la Entrada/factura de la que vino este
   /// movimiento del kardex — reutiliza el mismo flujo de Historial (nota
   /// obligatoria, acta PDF, recálculo de stock). Al terminar, refresca el
   /// kardex y el stock mostrado arriba, por si la cantidad cambió.
-  Future<void> _editarMovimiento(MovimientoProducto m) async {
+  Future<void> _editarMovimientoEntrada(MovimientoProducto m) async {
     final transaccion = await ref.read(historialRepositoryProvider).obtenerEntradaPorId(m.idTransaccion);
     if (transaccion == null) {
       if (mounted) {
@@ -115,6 +117,25 @@ class _ProductoDetalleScreenState extends ConsumerState<ProductoDetalleScreen> {
     }
     if (!mounted) return;
     await editarEntradaDialog(context, ref, transaccion);
+    await _refrescarTrasEditar();
+  }
+
+  /// Igual que [_editarMovimientoEntrada] pero para una Salida.
+  Future<void> _editarMovimientoSalida(MovimientoProducto m) async {
+    final transaccion = await ref.read(historialRepositoryProvider).obtenerSalidaPorId(m.idTransaccion);
+    if (transaccion == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('No se encontró la salida de este movimiento.')));
+      }
+      return;
+    }
+    if (!mounted) return;
+    await editarSalidaDialog(context, ref, transaccion);
+    await _refrescarTrasEditar();
+  }
+
+  Future<void> _refrescarTrasEditar() async {
     if (!mounted) return;
     final actualizado = ref.read(productosProvider).valueOrNull?.where((p) => p.cod == _producto.cod).firstOrNull;
     setState(() {
@@ -288,7 +309,7 @@ class _ProductoDetalleScreenState extends ConsumerState<ProductoDetalleScreen> {
 
   Widget _seccionHistorial() {
     final formatoFecha = DateFormat('dd/MM/yyyy HH:mm');
-    final puedeEditarFacturas = ref.watch(perfilActualProvider).valueOrNull?.puedeEditarFacturas ?? false;
+    final perfil = ref.watch(perfilActualProvider).valueOrNull;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -356,6 +377,10 @@ class _ProductoDetalleScreenState extends ConsumerState<ProductoDetalleScreen> {
                   final color = esEntrada ? AppColors.success : AppColors.info;
                   final fondo = esEntrada ? AppColors.successBg : AppColors.infoBg;
                   final fechaTexto = formatoFecha.format(m.fecha.toLocal());
+                  final puedeEditarEsteMovimiento = perfil != null &&
+                      capacidadEdicion(
+                              perfil: perfil, usuarioIdRegistro: m.usuarioId, creadoEn: m.creadoEn) !=
+                          CapacidadEdicion.ninguna;
                   return Container(
                     width: double.infinity,
                     margin: const EdgeInsets.only(bottom: 10),
@@ -379,10 +404,12 @@ class _ProductoDetalleScreenState extends ConsumerState<ProductoDetalleScreen> {
                               '${esEntrada ? '+' : '−'}${m.cantidad}',
                               style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 16),
                             ),
-                            if (esEntrada && puedeEditarFacturas) ...[
+                            if (puedeEditarEsteMovimiento) ...[
                               const SizedBox(width: 6),
                               InkWell(
-                                onTap: () => _editarMovimiento(m),
+                                onTap: () => esEntrada
+                                    ? _editarMovimientoEntrada(m)
+                                    : _editarMovimientoSalida(m),
                                 borderRadius: BorderRadius.circular(6),
                                 child: const Padding(
                                   padding: EdgeInsets.all(4),

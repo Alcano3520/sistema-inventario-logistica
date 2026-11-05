@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/app_theme.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../domain/transaccion.dart';
+import 'capacidad_edicion.dart';
 import 'editar_entrada_dialog.dart';
+import 'editar_salida_dialog.dart';
 import 'historial_providers.dart';
 
 enum _Vista { entradas, salidas, factura }
@@ -404,7 +406,10 @@ class _HistorialScreenState extends ConsumerState<HistorialScreen> {
   }
 
   void _mostrarDetalleEntrada(BuildContext context, TransaccionEntrada t) {
-    final puedeEditar = ref.read(perfilActualProvider).valueOrNull?.puedeEditarFacturas ?? false;
+    final perfil = ref.read(perfilActualProvider).valueOrNull;
+    final puedeEditar = perfil != null &&
+        capacidadEdicion(perfil: perfil, usuarioIdRegistro: t.usuarioId, creadoEn: t.createdAt) !=
+            CapacidadEdicion.ninguna;
     showDialog(
       context: context,
       builder: (dialogContext) => _DetalleModal(
@@ -432,9 +437,13 @@ class _HistorialScreenState extends ConsumerState<HistorialScreen> {
   }
 
   void _mostrarDetalleSalida(BuildContext context, TransaccionSalida t) {
+    final perfil = ref.read(perfilActualProvider).valueOrNull;
+    final puedeEditar = perfil != null &&
+        capacidadEdicion(perfil: perfil, usuarioIdRegistro: t.usuarioId, creadoEn: t.createdAt) !=
+            CapacidadEdicion.ninguna;
     showDialog(
       context: context,
-      builder: (_) => _DetalleModal(
+      builder: (dialogContext) => _DetalleModal(
         titulo: 'Salida ${t.idTransaccion}',
         campos: [
           'Fecha: ${_fmtFecha(t.fechaHora)}',
@@ -450,6 +459,12 @@ class _HistorialScreenState extends ConsumerState<HistorialScreen> {
         items: t.items,
         firmaUrl: t.firmaUrl,
         peticionFotoUrl: t.peticionFotoUrl,
+        onEditar: puedeEditar
+            ? () {
+                Navigator.of(dialogContext).pop();
+                editarSalidaDialog(context, ref, t);
+              }
+            : null,
       ),
     );
   }
